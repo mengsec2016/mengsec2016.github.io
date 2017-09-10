@@ -6,14 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>MengChen&#39;s Blog</title>
+  <title>火种CTF总结 | MengChen&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="MengChen&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="0x01 Web印象最深刻的就是最后一道Web题，这道题是校赛的一个sql注入题改的，遗憾的是，在大表哥的提示后，我也没能做出来。但是Get到了SQL注入的一个新姿势：">
+<meta name="keywords" content="CTF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="火种CTF总结">
+<meta property="og:url" content="http://yoursite.com/2017/09/10/火种CTF总结/index.html">
 <meta property="og:site_name" content="MengChen&#39;s Blog">
+<meta property="og:description" content="0x01 Web印象最深刻的就是最后一道Web题，这道题是校赛的一个sql注入题改的，遗憾的是，在大表哥的提示后，我也没能做出来。但是Get到了SQL注入的一个新姿势：">
+<meta property="og:updated_time" content="2017-09-10T08:22:44.320Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MengChen&#39;s Blog">
+<meta name="twitter:title" content="火种CTF总结">
+<meta name="twitter:description" content="0x01 Web印象最深刻的就是最后一道Web题，这道题是校赛的一个sql注入题改的，遗憾的是，在大表哥的提示后，我也没能做出来。但是Get到了SQL注入的一个新姿势：">
   
     <link rel="alternative" href="/atom.xml" title="MengChen&#39;s Blog" type="application/atom+xml">
   
@@ -149,16 +154,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-火种CTF总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-火种CTF总结" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/10/火种CTF总结/">火种CTF总结</a>
+    <h1 class="article-title" itemprop="name">
+      火种CTF总结
     </h1>
   
 
@@ -171,10 +174,36 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="0x01-Web"><a href="#0x01-Web" class="headerlink" title="0x01 Web"></a>0x01 Web</h2><p>印象最深刻的就是最后一道Web题，这道题是校赛的一个sql注入题改的，遗憾的是，在大表哥的提示后，我也没能做出来。但是Get到了SQL注入的一个新姿势：<br>
-        
-          <a class="article-more-a" href="/2017/09/10/火种CTF总结/#more">more >></a>
-        
+        <h2 id="0x01-Web"><a href="#0x01-Web" class="headerlink" title="0x01 Web"></a>0x01 Web</h2><p>印象最深刻的就是最后一道Web题，这道题是校赛的一个sql注入题改的，遗憾的是，在大表哥的提示后，我也没能做出来。但是Get到了SQL注入的一个新姿势：<br><a id="more"></a><br>正常查询：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select * from test where id = 1;</div><div class="line">+----+------+------+</div><div class="line">| Id | QAQ  | QAQ1 |</div><div class="line">+----+------+------+</div><div class="line">|  1 | 123  | 233  |</div><div class="line">+----+------+------+</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure>
+<p>错误查询：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select * from test where id = -1;</div><div class="line">Empty set (0.00 sec)</div></pre></td></tr></table></figure>
+<p>非正常查询：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select * from test where id = -1=(0)=1;</div><div class="line">+----+------+------+</div><div class="line">| Id | QAQ  | QAQ1 |</div><div class="line">+----+------+------+</div><div class="line">|  1 | 123  | 233  |</div><div class="line">+----+------+------+</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure>
+<p>这个语句很容易理解，首先是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select * from test where id = -1</div></pre></td></tr></table></figure></p>
+<p>这句话为假，即它的值为0，但是0 = 0，就成立了，成真，所以<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">select * from test where id = -1=(0)</div></pre></td></tr></table></figure></p>
+<p>的值为真，即为1，1=1成立，因此该句成立，从而返回查询结果。<br>与之类似</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select * from test where id =-1=(1)=0;</div><div class="line">+----+------+------+</div><div class="line">| Id | QAQ  | QAQ1 |</div><div class="line">+----+------+------+</div><div class="line">|  1 | 123  | 233  |</div><div class="line">+----+------+------+</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure>
+<p>甚至不等号”&lt;&gt;”,都可以。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; select * from test where id =-1&lt;&gt;(1)&lt;&gt;0;</div><div class="line">+----+------+------+</div><div class="line">| Id | QAQ  | QAQ1 |</div><div class="line">+----+------+------+</div><div class="line">|  1 | 123  | 233  |</div><div class="line">+----+------+------+</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure></p>
+<p>中间的语句可以用来构造Bool条件。<br>SQL语句实在是太灵活了，感觉是，只有想不到，没有做不到。。</p>
+<h2 id="0x02-Misc"><a href="#0x02-Misc" class="headerlink" title="0x02 Misc"></a>0x02 Misc</h2><p>杂项不愧是杂项，每次做题总能遇到没见过的。</p>
+<ol>
+<li>Thumbs.db文件<blockquote>
+<p>Thumbs.db是一个用于Microsoft Windows XP或mac os x缓存Windows Explorer的缩略图的文件。</p>
+</blockquote>
+</li>
+</ol>
+<p>这个题目给了一堆关于海贼王的图片，里面还有一个Thumbs.db文件，百度下载thumbs_viewer，可以打开该文件，然后获得两个图片，其中一个图片的原图是有问题的，直接Notepad++打开搜索字符串，获得Flag.</p>
+<p>2..ivs文件<br>这种文件可用来破解wifi密码。</p>
+<p>这个题目给了一个www.ivs文件和一个带密码的压缩包，推测通过www.ivs文件获取压缩包密码，使用Aircrack-ng软件打开.ivs文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">cygwin warning:</div><div class="line">  MS-DOS style path detected: E:\CTF\\xE6\xAF\x94\xE8\xB5\x9B\\xE7\x81\xAB\xE7\xA7\x8DCTF\wifi\www.ivs</div><div class="line">  Preferred POSIX equivalent is: /cygdrive/e/CTF/\xE6\xAF\x94\xE8\xB5\x9B/\xE7\x81\xAB\xE7\xA7\x8DCTF/wifi/www.ivs</div><div class="line">  CYGWIN environment variable option &quot;nodosfilewarning&quot; turns off this warning.</div><div class="line">  Consult the user&apos;s guide for more details about POSIX paths:</div><div class="line">    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames</div><div class="line">Read 36977 packets.</div><div class="line"></div><div class="line">   #  BSSID              ESSID                     Encryption</div><div class="line"></div><div class="line">   1  78:EB:14:0D:2B:10  ceshi                     WEP (36960 IVs)</div><div class="line">   2  1C:FA:68:D3:1B:2A  FMCN                      Unknown</div><div class="line">   3  00:87:36:1F:CB:C3  360WiFi-CBC3              Unknown</div><div class="line">   .......</div><div class="line"></div><div class="line">Index number of target network ?</div></pre></td></tr></table></figure>
+<p>选择1并回车<br>然后提示</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">KEY FOUND! [ 31:32:33:34:35 ] (ASCII: 12345 )</div></pre></td></tr></table></figure>
+<p>因此压缩包密码是12345.<br>打开压缩包使用wireshark打开。导出其中的文件。<br>其中有个文件内容为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">username=%E7%AD%94%E6%A1%88&amp;password=key%7Bbalabala%7D&amp;image.x=51&amp;image.y=45</div></pre></td></tr></table></figure>
+<p>password即为flag。</p>
+<h2 id="0x03-Wireshark导出数据包内文件的方法"><a href="#0x03-Wireshark导出数据包内文件的方法" class="headerlink" title="0x03 Wireshark导出数据包内文件的方法"></a>0x03 Wireshark导出数据包内文件的方法</h2><p>打开文件后，左上角文件-导出对象-HTTP<br>选择文件保存即可。</p>
+
       
 
       
@@ -196,16 +225,75 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/10/火种CTF总结/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/09/10/火种CTF总结/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2017/09/10/国赛的两个Web题/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">国赛的两个Web题</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -225,334 +313,14 @@
 
 
 
-
   
-    <article id="post-国赛的两个Web题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/10/国赛的两个Web题/">国赛的两个Web题</a>
-    </h1>
   
 
-        
-        <a href="/2017/09/10/国赛的两个Web题/" class="archive-article-date">
-  	<time datetime="2017-09-10T07:58:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在全国大学生信息安全竞赛(线上赛)上划了波水，对我来说题目挺难的，好多姿势都没见过。</p>
-<h2 id="0x00-两个最简单的Web的题解"><a href="#0x00-两个最简单的Web的题解" class="headerlink" title="0x00 两个最简单的Web的题解"></a>0x00 两个最简单的Web的题解</h2><h3 id="Web-PHP-execise"><a href="#Web-PHP-execise" class="headerlink" title="Web-PHP execise"></a>Web-PHP execise</h3><p>这个题目考察了PHP的几个简单的语法<br>首先在题目中执行phpinfo()函数<br>
-        
-          <a class="article-more-a" href="/2017/09/10/国赛的两个Web题/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">CTF</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">全国大学生信息安全竞赛</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/10/国赛的两个Web题/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-ourphp-v1-7-3-SQL-Injection" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/10/ourphp-v1-7-3-SQL-Injection/">Ourphp v1.7.3 SQL Injection</a>
-    </h1>
   
 
-        
-        <a href="/2017/09/10/ourphp-v1-7-3-SQL-Injection/" class="archive-article-date">
-  	<time datetime="2017-09-10T07:53:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>跟着表哥学习学习(ง •_•)ง</p>
-<h2 id="0x00-漏洞产生原理"><a href="#0x00-漏洞产生原理" class="headerlink" title="0x00 漏洞产生原理"></a>0x00 漏洞产生原理</h2><p>首先放上表哥给的Payload</p>
-<pre><code>)union selselectect 1,user(),3,4,5-- p0&apos;
-</code></pre><p>通过Payload往上找漏洞点</p>
-<pre><code>http://www.op.com/client/user/?cn-login.html
-</code></pre><p>首先根据登录页面的url，找到在templates/user目录下的cn_login.html,然后在会员登录表单中，找到调用的php文件的路径，在第31行<br>
-        
-          <a class="article-more-a" href="/2017/09/10/ourphp-v1-7-3-SQL-Injection/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SQL注入</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码审计</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/10/ourphp-v1-7-3-SQL-Injection/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-记一次渗透测试" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/10/记一次渗透测试/">记一次渗透测试</a>
-    </h1>
   
 
-        
-        <a href="/2017/09/10/记一次渗透测试/" class="archive-article-date">
-  	<time datetime="2017-09-10T05:43:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="0x00-信息收集"><a href="#0x00-信息收集" class="headerlink" title="0x00 信息收集"></a>0x00 信息收集</h2><p>直接访问，是wordpress博客</p>
-<pre><code>Apache/2.4.10 (Debian)
-</code></pre><p>使用御剑扫一下网站</p>
-<pre><code>http://218.2.197.234:2040/phpmyadmin/db_create.php
-http://218.2.197.234:2040/phpmyadmin/index.php
-http://218.2.197.234:2040/phpmyadmin/tbl_create.php
-http://218.2.197.234:2040/wp-admin/admin-ajax.php
-http://218.2.197.234:2040/wp-admin/install.php
-http://218.2.197.234:2040/wp-login.phphttp://218.2.197.234:2040/readme.html
-</code></pre>
-        
-          <a class="article-more-a" href="/2017/09/10/记一次渗透测试/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">CTF</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">渗透测试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/10/记一次渗透测试/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/10/hello-world/">Hello World</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/10/hello-world/" class="archive-article-date">
-  	<time datetime="2017-09-10T02:32:29.259Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/10/hello-world/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
 
 
@@ -575,8 +343,8 @@ http://218.2.197.234:2040/wp-login.phphttp://218.2.197.234:2040/readme.html
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
