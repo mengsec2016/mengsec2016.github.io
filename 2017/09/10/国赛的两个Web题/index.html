@@ -20,7 +20,7 @@
 <meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-3.png">
 <meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-4.png">
 <meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/Web-green-1.png">
-<meta property="og:updated_time" content="2017-09-10T08:01:55.738Z">
+<meta property="og:updated_time" content="2017-09-10T08:03:33.961Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="国赛的两个Web题">
 <meta name="twitter:description" content="在全国大学生信息安全竞赛(线上赛)上划了波水，对我来说题目挺难的，好多姿势都没见过。">
@@ -182,8 +182,7 @@
       
         <p>在全国大学生信息安全竞赛(线上赛)上划了波水，对我来说题目挺难的，好多姿势都没见过。</p>
 <a id="more"></a>
-<h2 id="0x00-两个最简单的Web的题解"><a href="#0x00-两个最简单的Web的题解" class="headerlink" title="0x00 两个最简单的Web的题解"></a>0x00 两个最简单的Web的题解</h2><p>这次比赛我就做了两个Web和一个签到题，有一个MISC在一大早跑到实验室问表哥要到提示，然后却因为找的工具不对一直出不了结果，最后没交上，心塞塞/(ㄒoㄒ)/~~</p>
-<h3 id="Web-PHP-execise"><a href="#Web-PHP-execise" class="headerlink" title="Web-PHP execise"></a>Web-PHP execise</h3><p>这个题目考察了PHP的几个简单的语法<br>首先在题目中执行phpinfo()函数<br><img src="http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-1.png" alt="image"><br>在其中的找到被禁用的函数</p>
+<h2 id="0x00-两个最简单的Web的题解"><a href="#0x00-两个最简单的Web的题解" class="headerlink" title="0x00 两个最简单的Web的题解"></a>0x00 两个最简单的Web的题解</h2><h3 id="Web-PHP-execise"><a href="#Web-PHP-execise" class="headerlink" title="Web-PHP execise"></a>Web-PHP execise</h3><p>这个题目考察了PHP的几个简单的语法<br>首先在题目中执行phpinfo()函数<br><img src="http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-1.png" alt="image"><br>在其中的找到被禁用的函数</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">disable_functions</div><div class="line">assert,system,passthru,exec,pcntl_exec,shell_exec,popen,proc_open,pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,fopen,file_get_contents,fread,file_get_contents,file,readfile,opendir,readdir,closedir,rewinddir,</div></pre></td></tr></table></figure>
 <p>然后通过getcwd()函数获取服务器当前目录路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">echo getcwd()</div></pre></td></tr></table></figure></p>
 <p><img src="http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-2.png" alt="image"><br>从而获取路径</p>
@@ -209,27 +208,6 @@
 
       
 
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -442,19 +420,19 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">CTF</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">全国大学生信息安全竞赛</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">SQL注入</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">代码审计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">CTF</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">全国大学生信息安全竞赛</a>
               </li>
              
               <li class="article-tag-list-item">
