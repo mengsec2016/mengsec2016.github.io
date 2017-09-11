@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Ourphp v1.7.3 SQL Injection | MengChen&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="跟着表哥学习学习(ง •_•)ง 0x00 漏洞产生原理首先放上表哥给的Payload )union selselectect 1,user(),3,4,5-- p0&amp;apos; 通过Payload往上找漏洞点 http://www.op.com/client/user/?cn-login.html 首先根据登录页面的url，找到在templates/user目录下的cn_login.html,然">
+  <meta name="description" content="跟着表哥学习学习(ง •_•)ง">
 <meta name="keywords" content="代码审计,SQL注入">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Ourphp v1.7.3 SQL Injection">
 <meta property="og:url" content="http://yoursite.com/2017/09/10/ourphp-v1-7-3-SQL-Injection/index.html">
 <meta property="og:site_name" content="MengChen&#39;s Blog">
-<meta property="og:description" content="跟着表哥学习学习(ง •_•)ง 0x00 漏洞产生原理首先放上表哥给的Payload )union selselectect 1,user(),3,4,5-- p0&amp;apos; 通过Payload往上找漏洞点 http://www.op.com/client/user/?cn-login.html 首先根据登录页面的url，找到在templates/user目录下的cn_login.html,然">
-<meta property="og:updated_time" content="2017-09-10T08:14:22.354Z">
+<meta property="og:description" content="跟着表哥学习学习(ง •_•)ง">
+<meta property="og:updated_time" content="2017-09-11T03:00:37.573Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ourphp v1.7.3 SQL Injection">
-<meta name="twitter:description" content="跟着表哥学习学习(ง •_•)ง 0x00 漏洞产生原理首先放上表哥给的Payload )union selselectect 1,user(),3,4,5-- p0&amp;apos; 通过Payload往上找漏洞点 http://www.op.com/client/user/?cn-login.html 首先根据登录页面的url，找到在templates/user目录下的cn_login.html,然">
+<meta name="twitter:description" content="跟着表哥学习学习(ง •_•)ง">
   
     <link rel="alternative" href="/atom.xml" title="MengChen&#39;s Blog" type="application/atom+xml">
   
@@ -174,12 +174,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>跟着表哥学习学习(ง •_•)ง</p>
+        <p>跟着表哥学习学习(ง •_•)ง<br><a id="more"></a></p>
 <h2 id="0x00-漏洞产生原理"><a href="#0x00-漏洞产生原理" class="headerlink" title="0x00 漏洞产生原理"></a>0x00 漏洞产生原理</h2><p>首先放上表哥给的Payload</p>
 <pre><code>)union selselectect 1,user(),3,4,5-- p0&apos;
 </code></pre><p>通过Payload往上找漏洞点</p>
 <pre><code>http://www.op.com/client/user/?cn-login.html
-</code></pre><p>首先根据登录页面的url，找到在templates/user目录下的cn_login.html,然后在会员登录表单中，找到调用的php文件的路径，在第31行<br><a id="more"></a><br>    action=”[.$webpath.]client/user/ourphp_play.class.php?ourphp_cms=login”<br><!-- more --><br>然后往上找到client/user目录中的ourphp_play.class.php，在第184行，将post传入的参数带入了数据库查询语句</p>
+</code></pre><p>首先根据登录页面的url，找到在templates/user目录下的cn_login.html,然后在会员登录表单中，找到调用的php文件的路径，在第31行</p>
+<pre><code>action=&quot;[.$webpath.]client/user/ourphp_play.class.php?ourphp_cms=login&quot;
+</code></pre><p>然后往上找到client/user目录中的ourphp_play.class.php，在第184行，将post传入的参数带入了数据库查询语句</p>
 <pre><code>$ourphp_rs = $db -&gt; select(&quot;`id`,`OP_Useremail`,`OP_Userpass`,`OP_Userstatus`,`OP_Username`&quot;,&quot;`ourphp_user`&quot;,&quot;WHERE (`OP_Useremail` = &apos;&quot;.dowith_sql($_POST[&quot;OP_Useremail&quot;]).&quot;&apos; || `OP_Usertel` = &apos;&quot;.dowith_sql($_POST[&quot;OP_Useremail&quot;]).&quot;&apos;) and `OP_Userpass` = &apos;&quot;.dowith_sql(substr(md5(md5($_REQUEST[&quot;OP_Userpass&quot;])),0,16)).&quot;&apos;&quot;);
 </code></pre><p>在其中使用了”dowith_sql()”函数将参数进行了过滤，很明显是自定义函数，定位一下，在function目录下的ourphp_function.php文件中的第10行.</p>
 <p>审计一下所谓的防注入函数，可以看到开发人员在此犯了一个严重的错误。首先使用addslashes()函数将一些敏感字符，比如单引号进行了转义，但是，在后续处理中又将单引号使用str_ireplace()函数替换掉了，这就相当于传入的单引号变成了反斜杠”\”。</p>

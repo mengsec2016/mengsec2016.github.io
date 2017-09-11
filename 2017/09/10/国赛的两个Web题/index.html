@@ -8,22 +8,22 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>国赛的两个Web题 | MengChen&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在全国大学生信息安全竞赛(线上赛)上划了波水，对我来说题目挺难的，好多姿势都没见过。 0x00 两个最简单的Web的题解Web-PHP execise这个题目考察了PHP的几个简单的语法首先在题目中执行phpinfo()函数">
+  <meta name="description" content="在全国大学生信息安全竞赛(线上赛)上划了波水，对我来说题目挺难的，好多姿势都没见过。">
 <meta name="keywords" content="CTF,全国大学生信息安全竞赛">
 <meta property="og:type" content="article">
 <meta property="og:title" content="国赛的两个Web题">
 <meta property="og:url" content="http://yoursite.com/2017/09/10/国赛的两个Web题/index.html">
 <meta property="og:site_name" content="MengChen&#39;s Blog">
-<meta property="og:description" content="在全国大学生信息安全竞赛(线上赛)上划了波水，对我来说题目挺难的，好多姿势都没见过。 0x00 两个最简单的Web的题解Web-PHP execise这个题目考察了PHP的几个简单的语法首先在题目中执行phpinfo()函数">
+<meta property="og:description" content="在全国大学生信息安全竞赛(线上赛)上划了波水，对我来说题目挺难的，好多姿势都没见过。">
 <meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-1.png">
 <meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-2.png">
 <meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-3.png">
 <meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-4.png">
 <meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/Web-green-1.png">
-<meta property="og:updated_time" content="2017-09-10T08:15:33.746Z">
+<meta property="og:updated_time" content="2017-09-11T03:00:00.775Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="国赛的两个Web题">
-<meta name="twitter:description" content="在全国大学生信息安全竞赛(线上赛)上划了波水，对我来说题目挺难的，好多姿势都没见过。 0x00 两个最简单的Web的题解Web-PHP execise这个题目考察了PHP的几个简单的语法首先在题目中执行phpinfo()函数">
+<meta name="twitter:description" content="在全国大学生信息安全竞赛(线上赛)上划了波水，对我来说题目挺难的，好多姿势都没见过。">
 <meta name="twitter:image" content="http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-1.png">
   
     <link rel="alternative" href="/atom.xml" title="MengChen&#39;s Blog" type="application/atom+xml">
@@ -180,8 +180,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在全国大学生信息安全竞赛(线上赛)上划了波水，对我来说题目挺难的，好多姿势都没见过。</p>
-<h2 id="0x00-两个最简单的Web的题解"><a href="#0x00-两个最简单的Web的题解" class="headerlink" title="0x00 两个最简单的Web的题解"></a>0x00 两个最简单的Web的题解</h2><h3 id="Web-PHP-execise"><a href="#Web-PHP-execise" class="headerlink" title="Web-PHP execise"></a>Web-PHP execise</h3><p>这个题目考察了PHP的几个简单的语法<br>首先在题目中执行phpinfo()函数<br><a id="more"></a><br><img src="http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-1.png" alt="image"><br>在其中的找到被禁用的函数</p>
+        <p>在全国大学生信息安全竞赛(线上赛)上划了波水，对我来说题目挺难的，好多姿势都没见过。<br><a id="more"></a></p>
+<h2 id="0x00-两个最简单的Web的题解"><a href="#0x00-两个最简单的Web的题解" class="headerlink" title="0x00 两个最简单的Web的题解"></a>0x00 两个最简单的Web的题解</h2><h3 id="Web-PHP-execise"><a href="#Web-PHP-execise" class="headerlink" title="Web-PHP execise"></a>Web-PHP execise</h3><p>这个题目考察了PHP的几个简单的语法<br>首先在题目中执行phpinfo()函数<br><img src="http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-1.png" alt="image"><br>在其中的找到被禁用的函数</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">disable_functions</div><div class="line">assert,system,passthru,exec,pcntl_exec,shell_exec,popen,proc_open,pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,fopen,file_get_contents,fread,file_get_contents,file,readfile,opendir,readdir,closedir,rewinddir,</div></pre></td></tr></table></figure>
 <p>然后通过getcwd()函数获取服务器当前目录路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">echo getcwd()</div></pre></td></tr></table></figure></p>
 <p><img src="http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-2.png" alt="image"><br>从而获取路径</p>
