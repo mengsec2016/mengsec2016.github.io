@@ -9,7 +9,7 @@
   <title>Ourphp v1.7.3 SQL Injection | MengChen&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="跟着表哥学习学习(ง •_•)ง 0x00 漏洞产生原理首先放上表哥给的Payload )union selselectect 1,user(),3,4,5-- p0&amp;apos; 通过Payload往上找漏洞点 http://www.op.com/client/user/?cn-login.html 首先根据登录页面的url，找到在templates/user目录下的cn_login.html,然">
-<meta name="keywords" content="SQL注入,代码审计">
+<meta name="keywords" content="代码审计,SQL注入">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Ourphp v1.7.3 SQL Injection">
 <meta property="og:url" content="http://yoursite.com/2017/09/10/ourphp-v1-7-3-SQL-Injection/index.html">
@@ -223,11 +223,11 @@ $ourphpstr = str_ireplace(&quot;&apos;&quot;,&quot;&quot;,$ourphpstr);
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SQL注入</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码审计</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码审计</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SQL注入</a>
         		</li>
       		
 		</ul>
@@ -447,11 +447,15 @@ getOwnMetadataKeys:function(t){return o(i(t),arguments.length<2?void 0:u(argumen
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">代码审计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">SQL注入</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">代码审计</a>
+                <a href="javascript:void(0)" class="js-tag color5">命令执行</a>
               </li>
              
               <li class="article-tag-list-item">

