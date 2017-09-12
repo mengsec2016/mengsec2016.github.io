@@ -26,3 +26,9 @@ date: 2017-09-11 09:49:24
 
 - https://github.com/y1ngz1/wooyun_drops_1000php_-
 
+# 密码学
+
+## RSA算法
+- http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html
+- http://www.ruanyifeng.com/blog/2013/07/rsa_algorithm_part_two.html
+
