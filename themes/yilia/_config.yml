@@ -7,9 +7,9 @@ menu:
 # SubNav
 subnav:
   github: "https://github.com/Gitmengchen"
-  weibo: "#"
+  #weibo: "http://weibo.com/u/5531846642/home"
   rss: "#"
-  zhihu: "#"
+  zhihu: "https://www.zhihu.com/people/meng-chen-38-26/activities"
   #qq: "#"
   #weixin: "#"
   #jianshu: "#"
@@ -17,7 +17,7 @@ subnav:
   #segmentfault: "#"
   #bilibili: "#"
   #acfun: "#"
-  #mail: "mailto:litten225@qq.com"
+  mail: "mailto:1090467301@qq.com"
   #facebook: "#"
   #google: "#"
   #twitter: "#"
