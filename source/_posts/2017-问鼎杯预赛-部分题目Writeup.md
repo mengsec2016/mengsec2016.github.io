@@ -30,7 +30,7 @@ tags:
 
 直接访问即可获得flag
 
-## 0x02 轻而易举
+### 0x02 轻而易举
 
 这个题是个社工题，一开始没人做出来，直到主办方给了提示
 
@@ -61,18 +61,18 @@ tags:
 得到一张flag
 ![](http://ou0111n4v.bkt.clouddn.com/test1.png)
 
-## 0x02 古典密码
+### 0x02 古典密码
 这个题主要考察字频统计攻击，上“[求pa](https://quipqiup.com/)”网站在线解密
 
 ![](http://ou0111n4v.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20170916201404.png)
 
 提交getflag
-## 0x03 瞒天过海
+### 0x03 瞒天过海
 只有一个名为++__++的文件，用winhex分析了一下发现是个数据包，导出了一个flag.rar的压缩包，里面有个flag.txt，但是加密了。
 ![](http://ou0111n4v.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20170916174625.png)
 没办法只能继续找线索。在导出http数据流的时候发现了个py脚本，拖出来跑一下得到`passwd={No_One_Can_Decrypt_Me}`，输入密码解出flag.txt ： `WDCTF{Seclab_CTF_2017}`
 
-## 0x04 小菜一碟
+### 0x04 小菜一碟
 给了一张二维码gif，分离出四张图片，拼接一下得到一张二维码，扫码得到一堆十六进制，放入winhex保存为.pyc文件，pyc反编译py得到一个py脚本：
 
 	#!/usr/bin/env python
