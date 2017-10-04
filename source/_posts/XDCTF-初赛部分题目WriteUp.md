@@ -1,5 +1,5 @@
 ---
-layout: w
+layout: 
 title: XDCTF 初赛部分题目WriteUp
 date: 2017-10-04 13:27:27
 tags:
@@ -8,8 +8,8 @@ tags:
 	- Writeup
 ---
 
-
-
+国庆假期水了下XDCTF的初赛，最后拿了个33名，没进决赛，不过学了不少东西，记一下
+<!-- more -->
 ## Crypto
 
 ### 0x01 基础为王
