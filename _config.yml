@@ -78,7 +78,7 @@ theme: yilia
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repository: https://github.com/Gitmengchen/Gitmengchen.github.io.git
+  repository: ssh://git@github.com/Gitmengchen/Gitmengchen.github.io
   branch: master
 #json
 jsonContent:
