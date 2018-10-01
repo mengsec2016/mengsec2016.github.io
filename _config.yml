@@ -12,7 +12,7 @@ timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
+url: http://iwenhu.cn/
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -99,3 +99,12 @@ jsonContent:
       excerpt: false
       categories: false
       tags: true
+## Plugins: http://hexo.io/plugins/
+#RSS订阅
+plugin:
+- hexo-generator-feed
+#Feed Atom
+feed:
+type: atom
+path: atom.xml
+limit: 20

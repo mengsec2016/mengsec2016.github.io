@@ -3,12 +3,13 @@
 menu:
   主页: /
   资料: /Learning
+  归档: /archives/index.html
 
 # SubNav
 subnav:
   github: "https://github.com/Gitmengchen"
   #weibo: "http://weibo.com/u/5531846642/home"
-  rss: "#"
+  rss: "http://iwenhu.cn/atom.xml"
   zhihu: "https://www.zhihu.com/people/meng-chen-38-26/activities"
   #qq: "#"
   #weixin: "#"
@@ -17,7 +18,7 @@ subnav:
   #segmentfault: "#"
   #bilibili: "#"
   #acfun: "#"
-  mail: "mailto:1090467301@qq.com"
+  mail: "mailto:imwenhu@gmail.com"
   #facebook: "#"
   #google: "#"
   #twitter: "#"
@@ -65,7 +66,7 @@ top: true
 # Miscellaneous
 baidu_analytics: ''
 google_analytics: ''
-favicon: /favicon.png
+favicon: /img/favicon.ico
 
 #你的头像url
 avatar: http://osn75zd5c.bkt.clouddn.com/xuexi.png
