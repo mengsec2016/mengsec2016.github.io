@@ -13,7 +13,7 @@ tags:
 条件竞争是指一个系统的运行结果依赖于不受控制的事件的先后顺序。当这些不受控制的事件并没有按照开发者想要的方式运行时，就可能会出现 bug。尤其在当前我们的系统中大量对资源进行共享，如果处理不当的话，就会产生条件竞争漏洞。
 
 来举个例子:
-```
+```python
 #-*-coding:utf-8-*-
 import threading
 COUNT = 0
@@ -52,7 +52,7 @@ Why？
 
 在很多网站中都会包含上传文件或者从远端获取文件保存在服务器的功能，比如修改头像。来看一个简单的例子：
 
-```
+```php
 <?php
   if($_FILES["file"]["error"] > 0)){
     move_uploaded_file($_FILES["file"]["tmp_name"],"upload/" . $_FILES["file"]["name"]);

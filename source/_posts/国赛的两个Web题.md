@@ -33,13 +33,13 @@ echo getcwd()
 /var/www/html
 ```
 然后获取当前目录下的所有文件的文件名
-```
+```p&#39;h&#39;p
 $dir="/var/www/html";print_r(scandir($dir))
 ```
 ![image](http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-3.png)
 判断flag在flag_62cfc2dc115277d0c04ed0f74e48e3e9.php这个文件中，但是PHP几乎所有对文件操作的函数都被禁用了。在这时想到了以前表哥们给我们出题的时候，有的Web题的源码直接显示在网页上了，利用的show_source()函数.于是乎：
 
-```
+```php
 include"flag_62cfc2dc115277d0c04ed0f74e48e3e9.php";show_source("flag_62cfc2dc115277d0c04ed0f74e48e3e9.php")
 ```
 从而获取flag
@@ -51,7 +51,7 @@ include"flag_62cfc2dc115277d0c04ed0f74e48e3e9.php";show_source("flag_62cfc2dc115
 
 主要考察的代码审计和SQL注入。首先有一个SVN源码泄露漏洞，利用工具将网站所有的源码下载下来，进行审计。关键代码如下:
 
-```
+```php
 $_POST=d_addslashes($_POST);
 $_GET=d_addslashes($_GET);
 function d_addslashes($array){
@@ -90,31 +90,31 @@ if (isset($_POST["name"])){
 ```
 最终目的是令$_SESSION['hat'] = 'black';这也就意味着在执行SQL语句时，可以返回数据。但是，在register.php的插入语句为
 
-```
+```php
 $sql = "insert into t_user (username,nickname,password) values('".$_POST['username']."', '".$_POST['nickname']."','".md5($_POST['password'])."')";
 ```
 它注册时写入数据的表与登陆时查询的表不是一个，这也把我的思路带偏了，我一开始认为，在register.php里面构造语句在t_info表中插入数据。但根据查到的资料显示，SQL只允许一个插入语句对一个表操作。没辙了。。去请教表哥们。
 关键点在login.php，即登录界面。
 关键语句
-```
+```php
 $name = str_replace("'", "", trim(waf($_POST["name"])));
 ```
 在POST传入name时，如果传进的字符串中有“'”单引号，则会被加上反斜杠进行转义，然后在waf里面，若有空格则会被去掉。然后“\'”中的单引号被去掉，成为了“\”,若这个反斜杠在结尾，则会把 
-```
+```php
 $sql = "select count(*) from t_info where username = '$name' or nickname = '$name'";
 ```
 第一个name的第二个单引号转义，导致
 
-```
+```php
 $name' or nickname =
 ```
 成为了字符串。因此令
 
-```
-name==(0)=1#'
+```php
+name==(0)=1#'	
 ```
 最终执行的SQL语句为
-```
+```php
 $sql = "select count(*) from t_info where username = '=(0)=1#\' or nickname = '=(0)=1#\'";
 ```
 该语句为真，因此返回数据，使得$_SESSION['hat'] = 'black';从而返回flag

