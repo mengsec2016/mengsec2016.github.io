@@ -73,7 +73,7 @@ Upgrade-Insecure-Requests: 1
 效果就是会在网站目录下生成一个名为`a.php`的shell，密码为1
 ### 3. 效果图
 
-![](http://osn75zd5c.bkt.clouddn.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-1.png)
+![](https://image.mengsec.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-1.png)
 
 ## 0x02 漏洞原理分析
 
@@ -192,11 +192,11 @@ private function _applyFilter($value)
 
 首先，我们利用`cookie`传入一个序列化后的数组，数组中有个键为`'adapter'`、值为一个实例化的`Typecho_Feed()`类的键值对。
 
-![](http://osn75zd5c.bkt.clouddn.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-2.png)
+![](https://image.mengsec.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-2.png)
 
 在实例化`Typecho_Db`类时，实例化后的`Typecho_Feed`类在`Db.php`中第120行进行了字符串拼接操作，调用了`Typecho_Feed`类的`__toString()`方法。
 
-![](http://osn75zd5c.bkt.clouddn.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-3.png)
+![](https://image.mengsec.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-3.png)
 
 于是进入了`Feed.php`第223行的`__toString()`方法中。在类`Typecho_Feed()`类中有个私有化数组成员`$_items`,
 在第284行对该数组进行了遍历，然后在第290行对`$item['author']`这个实例化的`screenName`成员进行操作。
@@ -204,18 +204,18 @@ private function _applyFilter($value)
 $content .= '<dc:creator>' . htmlspecialchars($item['author']->screenName) . '</dc:creator>' . self::EOL;
 ```
 
-![](http://osn75zd5c.bkt.clouddn.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-4.png)
+![](https://image.mengsec.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-4.png)
 
 如果`$item['author']`这个实例化的类中没有`screenName`这个成员或者这个成员是私有的，则会调用该实例化类的`__get()`魔术方法，
 并且`$item['author']`这个类我们是可以控制的，因此令它为`Typecho_Request`这个类，因为`Typecho_Request`中没有`screenName`这个成员
 然后就调用的`screenName`的`__get()`魔术方法，传入了一个值为`screenName`的`$key`，进入`Request.php`第295行`Typecho_Request`类的`$_params[]`中。
 
-![](http://osn75zd5c.bkt.clouddn.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-5.png)
+![](https://image.mengsec.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-5.png)
 
 有键为`screenName`的键值对，就将它的值传入`$value`中，然后进入了`_applyFilter()`这个方法中，如果类`Typecho_Request`的成员`_filter`存在，就将其的值遍历作为函数名。
 传入`call_user_func($filter, $value);`中，而`get()`方法中处理的`$value`就作为所执行函数的值传入其中`。于此代码执行
 
-![](http://osn75zd5c.bkt.clouddn.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-6.png)
+![](https://image.mengsec.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-6.png)
 
 简单的说，在这个流程中，`call_user_func()`函数的两个参数我们都可控，
 于是在此构成了任意代码执行。

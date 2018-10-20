@@ -62,15 +62,15 @@ https://ricterz.me/posts/Security%20Issues%20of%20Kubelet%20HTTP%28s%29%20Server
 https://47.75.146.42:10250/runningpods
 ```
 
-![](http://osn75zd5c.bkt.clouddn.com/HITBCTF2018-Web-baby-1.png)
+![](https://image.mengsec.com/HITBCTF2018-Web-baby-1.png)
 
 然后有命令执行漏洞，可以在容器里执行命令。一个个找flag
 
-![](http://osn75zd5c.bkt.clouddn.com/HITBCTF2018-Web-baby-2.png)
+![](https://image.mengsec.com/HITBCTF2018-Web-baby-2.png)
 
 在根目录发现flag.txt,直接读取
 
-![](http://osn75zd5c.bkt.clouddn.com/HITBCTF2018-Web-baby-3.png)
+![](https://image.mengsec.com/HITBCTF2018-Web-baby-3.png)
 
 HITB{KKKKKKKKKKKKKKKKKKKKKKKKK}
 
@@ -85,7 +85,7 @@ http://47.90.97.18:9999
 题目环境是Windows IIS7.0+php
 直接右键查看源代码，发现提示。
 
-![image](http://osn75zd5c.bkt.clouddn.com/HITBXCTF2018-Web-upload-1.png)
+![image](https://image.mengsec.com/HITBXCTF2018-Web-upload-1.png)
 ```php+HTML
 <!--pic.php?filename=default.jpg-->
 ```
@@ -94,11 +94,11 @@ http://47.90.97.18:9999
 
 随便找个文件上传，回显了一个文件名。
 
-![image](http://osn75zd5c.bkt.clouddn.com/HITBXCTF2018-Web-upload-2.png)
+![image](https://image.mengsec.com/HITBXCTF2018-Web-upload-2.png)
 
 令filename=返回的文件名，会给出上传图片的长和宽。
 
-![image](http://osn75zd5c.bkt.clouddn.com/HITBXCTF2018-Web-upload-3.png)
+![image](https://image.mengsec.com/HITBXCTF2018-Web-upload-3.png)
 
 看样子后台用函数getimagesize()来处理文件，但是PHP中getimagesize()函数有漏洞，这和前几天dedecms爆后台目录的原理一眼，详情
 ```
@@ -107,13 +107,13 @@ http://www.freebuf.com/column/164698.html
 
 然后可以借助pic.php的功能来穷举出上传文件的目录，由于爆破的人太多，使用burp单线程进行爆破，如图，这样就知道目录第一个字符是8,依次往后一位位找。
 
-![image](http://osn75zd5c.bkt.clouddn.com/HITBXCTF2018-Web-upload-4.png)
+![image](https://image.mengsec.com/HITBXCTF2018-Web-upload-4.png)
 
 最后就能得到文件上传的目录
 ```
 ?filename=..\..\..\..\..\..\inetpub\wwwroot\87194f13726af7cee27ba2cfe97b60df\1523619718.png
 ```
-![image](http://osn75zd5c.bkt.clouddn.com/HITBXCTF2018-Web-upload-5.png)
+![image](https://image.mengsec.com/HITBXCTF2018-Web-upload-5.png)
 
 然后就可以直接上传shell。
 
@@ -121,11 +121,11 @@ http://www.freebuf.com/column/164698.html
 
 利用Windows系统特性，构造：
 
-![image](http://osn75zd5c.bkt.clouddn.com/HITBXCTF2018-Web-upload-6.png)
+![image](https://image.mengsec.com/HITBXCTF2018-Web-upload-6.png)
 
 直接上传后，访问，成功解析。
 
-![image](http://osn75zd5c.bkt.clouddn.com/HITBXCTF2018-Web-upload-7.png)
+![image](https://image.mengsec.com/HITBXCTF2018-Web-upload-7.png)
 
 在phpinofo()中查看被禁用的函数
 ```
@@ -147,7 +147,7 @@ listDirFiles('c:/Inetpub/wwwroot/');
 ```
 利用hackbar进行URL编码后上传。发现有flag.php
 
-![image](http://osn75zd5c.bkt.clouddn.com/HITBXCTF2018-Web-upload-8.png)
+![image](https://image.mengsec.com/HITBXCTF2018-Web-upload-8.png)
 
 再构造代码
 ```php
@@ -159,6 +159,6 @@ listDirFiles('c:/Inetpub/wwwroot/');
   fclose($handle);
 ?>
 ```
-![image](http://osn75zd5c.bkt.clouddn.com/HITBXCTF2018-Web-upload-9.png)
+![image](https://image.mengsec.com/HITBXCTF2018-Web-upload-9.png)
 
 成功获取flag

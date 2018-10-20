@@ -36,13 +36,13 @@ POST:searchtype=5&order=}{end if} {if:1)print_r($_POST[a]($_POST[b]));//}{end if
 
 效果图
 
-![](http://osn75zd5c.bkt.clouddn.com/18-8-6/49244924.jpg)
+![](https://image.mengsec.com/18-8-6/49244924.jpg)
 
 ### 3. 漏洞原理分析
 
 #### 3.1 代码执行简单流程
 
-![](http://osn75zd5c.bkt.clouddn.com/18-8-6/81792070.jpg)
+![](https://image.mengsec.com/18-8-6/81792070.jpg)
 
 #### 3.2 详细分析
 

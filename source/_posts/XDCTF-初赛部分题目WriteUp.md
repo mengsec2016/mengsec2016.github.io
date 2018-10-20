@@ -17,7 +17,7 @@ tags:
 
 从给的数据包中，可以找到两个分别名为flag-1 flag-2的图片，提取出来以后，使用Stegosolve进行一次XOR操作即可获得flag
 
-![](http://osn75zd5c.bkt.clouddn.com/XDCTF-Crypto-1.png)
+![](https://image.mengsec.com/XDCTF-Crypto-1.png)
 
 
 ### 0x02 基础之Base64
@@ -161,8 +161,8 @@ for i in range(1, 256):
 
 	http contains "register"
 
-![](http://osn75zd5c.bkt.clouddn.com/XDCTF-Misc-%E9%82%AE%E7%AE%B1-1.png)
+![](https://image.mengsec.com/XDCTF-Misc-%E9%82%AE%E7%AE%B1-1.png)
 
 分别进行追踪流操作，经过尝试可以获得flag
 
-![](http://osn75zd5c.bkt.clouddn.com/XDCTF-Misc-%E9%82%AE%E7%AE%B1-2.png)
+![](https://image.mengsec.com/XDCTF-Misc-%E9%82%AE%E7%AE%B1-2.png)

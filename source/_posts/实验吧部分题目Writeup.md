@@ -437,7 +437,7 @@ ereg()函数可用%00截断，使用科学计数法可满足条件2
 00截断绕过，直接看图
 
 	
-![](http://osn75zd5c.bkt.clouddn.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Web-%E4%B8%8A%E4%BC%A0%E7%BB%95%E8%BF%87-1.png)
+![](https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Web-%E4%B8%8A%E4%BC%A0%E7%BB%95%E8%BF%87-1.png)
 
 flag为
 
@@ -493,7 +493,7 @@ flag为
 
 如图
 
-![](http://osn75zd5c.bkt.clouddn.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Web-%E8%B2%8C%E4%BC%BC%E6%9C%89%E7%82%B9%E9%9A%BE-1.png)
+![](https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Web-%E8%B2%8C%E4%BC%BC%E6%9C%89%E7%82%B9%E9%9A%BE-1.png)
 
 flag为
 
@@ -535,11 +535,11 @@ flag为
 
 把图片下载下来，尝试了各种姿势无果。然后用tweakpng检查一下文件，提示
 
-![](http://osn75zd5c.bkt.clouddn.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-deeeeee-1.png)
+![](https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-deeeeee-1.png)
 
 按照图示将其修改，把图片的高改长一点，发现flag、
 
-![](http://osn75zd5c.bkt.clouddn.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-deeeeee-2.png)
+![](https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-deeeeee-2.png)
 
 flag为
 
@@ -549,7 +549,7 @@ flag为
 
 给了一个压缩包和一个文档，压缩包中也有一个加密的文档，很明显就是明文攻击，直接上工具
 
-![](http://osn75zd5c.bkt.clouddn.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-%E8%BF%99%E5%B0%B1%E6%98%AF%E4%B8%80%E4%B8%AA%E5%9D%91-1.png)
+![](https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-%E8%BF%99%E5%B0%B1%E6%98%AF%E4%B8%80%E4%B8%AA%E5%9D%91-1.png)
 
 最后有坑，爆出来的密码最后几位是空格
 
@@ -571,7 +571,7 @@ flag为
 
 密码表为
 
-![](http://osn75zd5c.bkt.clouddn.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E7%B4%A7%E6%80%A5%E6%8A%A5%E6%96%87-1.png)
+![](https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E7%B4%A7%E6%80%A5%E6%8A%A5%E6%96%87-1.png)
 
 一一对应即可获得flag，为
 
@@ -592,7 +592,7 @@ flag为
 
 不过扔到kali里面使用binwalk分析一下发现有jpeg的文件头
 
-![](http://osn75zd5c.bkt.clouddn.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%9B%BE%E7%89%87%E9%87%8C%E7%9A%84%E5%8A%A8%E6%BC%AB-1.png)
+![](https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%9B%BE%E7%89%87%E9%87%8C%E7%9A%84%E5%8A%A8%E6%BC%AB-1.png)
 
 尝试将扩展名改为jpeg，获得一张动漫的图，百度识图一下，是七龙珠。
 再结合下面评论的提示
@@ -611,11 +611,11 @@ flag为
 
 给了一个压缩包和一个MP3文件，压缩包是有密码的，看起来密码在mp3中，使用Audacity分析音频无果，尝试mp3stego,密码尝试一下Canon.
 
-![](http://osn75zd5c.bkt.clouddn.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-Canon-1.png)
+![](https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-Canon-1.png)
 
 解密获得密码，将压缩文件中的文档解压出来，看起来像是base64，直接扔到工具里解一下，然后直接搜一下CTF，找的flag
 
-![](http://osn75zd5c.bkt.clouddn.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-Canon-2.png)
+![](https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-Canon-2.png)
 
 flag为
 
@@ -816,11 +816,11 @@ ps:最后有个空格
 
 猜测密码为winhex中65-71的16进制对应的字符的值。
 
-![](http://osn75zd5c.bkt.clouddn.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Crypto-%E5%8E%8B%E7%BC%A9%E7%9A%84%E9%97%AE%E9%A2%98-1.png)
+![](https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Crypto-%E5%8E%8B%E7%BC%A9%E7%9A%84%E9%97%AE%E9%A2%98-1.png)
 
 将其粘贴出来，即可解压出文件，去网上找个在线计算sha1的网站
 
-![](http://osn75zd5c.bkt.clouddn.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Crypto-%E5%8E%8B%E7%BC%A9%E7%9A%84%E9%97%AE%E9%A2%98-2.png)
+![](https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Crypto-%E5%8E%8B%E7%BC%A9%E7%9A%84%E9%97%AE%E9%A2%98-2.png)
 
 sha1为
 
@@ -1052,7 +1052,7 @@ ASCII转字符
 
 密码表
 
-![](http://osn75zd5c.bkt.clouddn.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Crypto-Theflash-14.jpg)
+![](https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Crypto-Theflash-14.jpg)
 
 	54 43 32 52 22 44 55 34 22 51 52 22 44 34 22 23 11 34 12
 	YSMWGTZOGVWGTOGHAOB

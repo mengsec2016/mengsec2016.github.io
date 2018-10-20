@@ -15,7 +15,7 @@ tags:
 ### Web-PHP execise
 这个题目考察了PHP的几个简单的语法
 首先在题目中执行phpinfo()函数
-![image](http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-1.png)
+![image](https://image.mengsec.com/Web-PHPexcise-1.png)
 在其中的找到被禁用的函数
 
 ```
@@ -26,7 +26,7 @@ assert,system,passthru,exec,pcntl_exec,shell_exec,popen,proc_open,pcntl_alarm,pc
 ```
 echo getcwd()
 ```
-![image](http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-2.png)
+![image](https://image.mengsec.com/Web-PHPexcise-2.png)
 从而获取路径
 
 ```
@@ -36,7 +36,7 @@ echo getcwd()
 ```p&#39;h&#39;p
 $dir="/var/www/html";print_r(scandir($dir))
 ```
-![image](http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-3.png)
+![image](https://image.mengsec.com/Web-PHPexcise-3.png)
 判断flag在flag_62cfc2dc115277d0c04ed0f74e48e3e9.php这个文件中，但是PHP几乎所有对文件操作的函数都被禁用了。在这时想到了以前表哥们给我们出题的时候，有的Web题的源码直接显示在网页上了，利用的show_source()函数.于是乎：
 
 ```php
@@ -44,7 +44,7 @@ include"flag_62cfc2dc115277d0c04ed0f74e48e3e9.php";show_source("flag_62cfc2dc115
 ```
 从而获取flag
 
-![image](http://osn75zd5c.bkt.clouddn.com/Web-PHPexcise-4.png)
+![image](https://image.mengsec.com/Web-PHPexcise-4.png)
 
 ### Web-wanna to see your hat?
 这题有毒，不拿到flag就给你10个绿帽子。。(╯‵□′)╯︵┻━┻
@@ -118,4 +118,4 @@ name==(0)=1#'
 $sql = "select count(*) from t_info where username = '=(0)=1#\' or nickname = '=(0)=1#\'";
 ```
 该语句为真，因此返回数据，使得$_SESSION['hat'] = 'black';从而返回flag
-![image](http://osn75zd5c.bkt.clouddn.com/Web-green-1.png)
+![image](https://image.mengsec.com/Web-green-1.png)

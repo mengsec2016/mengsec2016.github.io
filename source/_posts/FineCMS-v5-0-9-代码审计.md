@@ -22,15 +22,15 @@ FineCMS v5.0.9 任意文件上传&代码执行&SQL语句执行漏洞
 
 上传时使用burpsuite抓包
 
-![](http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-2.png)
+![](https://image.mengsec.com/fincms-5.0.9-2.png)
 
 将tx参数中的jpeg改为php,直接提交
 
-![](http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-3.png)
+![](https://image.mengsec.com/fincms-5.0.9-3.png)
 
 这样文件就传上去了，而且还能执行
 
-![](http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-4.png)
+![](https://image.mengsec.com/fincms-5.0.9-4.png)
 
 ### 漏洞原理剖析
 
@@ -84,7 +84,7 @@ if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $file, $result))
 
 在这里主要匹配的类似于"data:image/php;base64,"这种字符串，以"data:"开头，中间有"image/",结尾有";base64,"，但是"image/"和";base64,"之间的字符串只要是任意数字和字母即可。
 
-![](http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-1.png)
+![](https://image.mengsec.com/fincms-5.0.9-1.png)
 
 最严重的是，开发者在这里将(\w+)匹配到的字符串作为了传入文件的扩展名
 
@@ -94,9 +94,9 @@ if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $file, $result))
 
 然后文件就直接保存到服务器中了，在这之间没有任何的过滤，可以看一下测试代码
 
-![](http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-5.png)
+![](https://image.mengsec.com/fincms-5.0.9-5.png)
 
-![](http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-6.png)
+![](https://image.mengsec.com/fincms-5.0.9-6.png)
 
 至于路径中的uid，cookie中就有
 
@@ -115,7 +115,7 @@ index.php?c=api&m=data2&auth=50ce0d2401ce4802751739552c8e4467&param=action=cache
 
 执行效果
 
-![](http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-7.png)
+![](https://image.mengsec.com/fincms-5.0.9-7.png)
 
 ### 漏洞原理剖析
 
@@ -177,7 +177,7 @@ public function data2() {
 ```
 进入函数后，首先是安全码认证，这个在网站内部，但是很容易获得，就是cookie的名字的开头到第一个"_"处
 
-![](http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-8.png)
+![](https://image.mengsec.com/fincms-5.0.9-8.png)
 
 安全密钥在/config/system.php中第11行被定义
 
@@ -367,7 +367,7 @@ index.php?c=api&m=data2&auth=50ce0d2401ce4802751739552c8e4467&param=action=sql%2
 
 执行效果
 
-![](http://osn75zd5c.bkt.clouddn.com/fincms-5.0.9-9.png)
+![](https://image.mengsec.com/fincms-5.0.9-9.png)
 
 ### 漏洞原理剖析
 

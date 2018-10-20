@@ -59,17 +59,17 @@ tags:
 	python bwm.py decode day1.png day2.png test1.png
 
 得到一张flag
-![](http://ou0111n4v.bkt.clouddn.com/test1.png)
+![](https://image.mengsec.com/test1.png)
 
 ### 0x02 古典密码
 这个题主要考察字频统计攻击，上“[求pa](https://quipqiup.com/)”网站在线解密
 
-![](http://ou0111n4v.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20170916201404.png)
+![](https://image.mengsec.com/QQ%E6%88%AA%E5%9B%BE20170916201404.png)
 
 提交getflag
 ### 0x03 瞒天过海
 只有一个名为++__++的文件，用winhex分析了一下发现是个数据包，导出了一个flag.rar的压缩包，里面有个flag.txt，但是加密了。
-![](http://ou0111n4v.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20170916174625.png)
+![](https://image.mengsec.com/QQ%E6%88%AA%E5%9B%BE20170916174625.png)
 没办法只能继续找线索。在导出http数据流的时候发现了个py脚本，拖出来跑一下得到`passwd={No_One_Can_Decrypt_Me}`，输入密码解出flag.txt ： `WDCTF{Seclab_CTF_2017}`
 
 ### 0x04 小菜一碟

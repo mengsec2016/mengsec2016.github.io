@@ -147,7 +147,7 @@ for m in range(1,13):
 
 使用Apache Logs Viewer打开给的日志文件进行分析，发现进行了一个SQL盲注的过程
 
-![](http://osn75zd5c.bkt.clouddn.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Web%E6%BC%8F%E6%B4%9E_1.png)
+![](https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Web%E6%BC%8F%E6%B4%9E_1.png)
 
 可以将整个注入过程的日志进行url解码后手工分析，可以发现在
 ​	
@@ -180,7 +180,7 @@ print flag
 ### 0x02 磁盘镜像、
 
 在linux中直接挂载镜像即可
-![](http://osn75zd5c.bkt.clouddn.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E7%A3%81%E7%9B%98%E9%95%9C%E5%83%8F_1.png)
+![](https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E7%A3%81%E7%9B%98%E9%95%9C%E5%83%8F_1.png)
 
 也可以用命令，Mac本可以直接打开 = = 
 
@@ -190,7 +190,7 @@ print flag
 
 	http contains "ZmxhZ3"
 
-![](http://osn75zd5c.bkt.clouddn.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E9%BB%91%E5%AE%A2%E7%9A%84%E6%9C%BA%E5%AF%86%E4%BF%A1%E6%81%AF_1.png)
+![](https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E9%BB%91%E5%AE%A2%E7%9A%84%E6%9C%BA%E5%AF%86%E4%BF%A1%E6%81%AF_1.png)
 
 将找到的命令进行解码即可获得flag
 
@@ -231,11 +231,11 @@ while True:
 	文件-导出对象-HTTP
 发现存在flagaa,flagab,flagac,flagad,flagae,flagaf文件
 
-![](http://osn75zd5c.bkt.clouddn.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E4%BA%BA%E7%94%9F%E8%8B%A6%E7%9F%AD_1.png)
+![](https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E4%BA%BA%E7%94%9F%E8%8B%A6%E7%9F%AD_1.png)
 
 提取出来使用Winhex打开，发现flagaa的文件头是PK,猜测是被分割的压缩包，使用Winhex的文件合并工具，将其合并
 
-![](http://osn75zd5c.bkt.clouddn.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E4%BA%BA%E7%94%9F%E8%8B%A6%E7%9F%AD_2.jpg)
+![](https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E4%BA%BA%E7%94%9F%E8%8B%A6%E7%9F%AD_2.jpg)
 
 然后解伪加密即可获得flag
 
@@ -272,7 +272,7 @@ for i in range(100):
 如图，将所示位置的03 1E改为06 1E即可
 
 
-![](http://osn75zd5c.bkt.clouddn.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_gakki_1.png)
+![](https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_gakki_1.png)
 
 ### 0x02 hacker
 
@@ -312,7 +312,7 @@ base32解码
 看格式应该是有栅栏加密，使用工具
 
 
-![](http://osn75zd5c.bkt.clouddn.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E7%A5%9E%E5%A5%87%E7%9A%84%E4%BA%8C%E7%BB%B4%E7%A0%81_1.png)
+![](https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E7%A5%9E%E5%A5%87%E7%9A%84%E4%BA%8C%E7%BB%B4%E7%A0%81_1.png)
 
 根据flag的格式为flag{},猜测第三栏是正确的，然后进行凯撒解密
 
@@ -354,7 +354,7 @@ flag为
 
 很容易就可以找到关键代码
 
-![](http://osn75zd5c.bkt.clouddn.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Re_1.png)
+![](https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Re_1.png)
 
 只有当程序运行200000秒后才会出flag..
 我们可以看到flag只与k有关。
@@ -400,7 +400,7 @@ flag为
 ```
 直接赋值k的smali语句
 
-![](http://osn75zd5c.bkt.clouddn.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Re_2.png)
+![](https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Re_2.png)
 
 ## 靶场
 
@@ -428,11 +428,11 @@ source.tar.gz 源码泄露
 
 可以看到为格式化字符串漏洞，通过格式化字符串实现任意地址写从而更改key的值
 
-![](http://osn75zd5c.bkt.clouddn.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Pwn_1.png)
+![](https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Pwn_1.png)
 
 我们先用%x来查找字符串的偏移值（偏移值既字符串在栈中的位置距调用printf函数时当前栈的距离，可以通过gdb直接查看）
 
-![](http://osn75zd5c.bkt.clouddn.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Pwn_2.png)
+![](https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Pwn_2.png)
 
 可以看到当输入为12个%x时，正好输出aaaa，所以偏移值为12
 
@@ -440,7 +440,7 @@ source.tar.gz 源码泄露
 可以通过使用%nx(n为任意长度的十进制数字)来控制字符串长度，字符串长度为len(address)+n,通过将长度写入到偏移地址中来进行对任意地址进行任意读写。
 注意$n是更改两位，$hn更改四位
 
-![](http://osn75zd5c.bkt.clouddn.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Pwn_3.png)
+![](https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Pwn_3.png)
 
 如上我们就更改了最右边的两位为0x22
 同理，构造本题的exp为

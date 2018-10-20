@@ -17,7 +17,7 @@ tags:
 这题上来一大堆滑稽，特别炫酷。。
 
 用Burp抓包和firebug审查元素都没找到有用的东西，最后不小心碰了下F12..惊现flag..
-![](http://osn75zd5c.bkt.clouddn.com/bugku-Web2.png)
+![](https://image.mengsec.com/bugku-Web2.png)
 告诉自己以后别忘了“右键”-“查看元素”
 
 
@@ -415,10 +415,10 @@ flag为：
 
 把文件下载下来，一通工具分析。。并没有找到什么有价值的东西。看了看writeup，才知道要通过Winhex修改图片文件显示的长和宽才可以，该图片实际在下面有flag，但是由于显示的宽度不够，导致下面的那一部分不能够显示。
 
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-%E9%9A%90%E5%86%992_1.png)
+![](https://image.mengsec.com/Bugku-Misc-%E9%9A%90%E5%86%992_1.png)
 图示中左侧表示图像的宽，右侧表示图像的高，解题思路，就是将01修改的大一些，使得图像可显示的高度变大，由此显示出flag
 
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-%E9%9A%90%E5%86%992_2.png)
+![](https://image.mengsec.com/Bugku-Misc-%E9%9A%90%E5%86%992_2.png)
 
 这应该算是老套路了，但是我第一次见，记一下。
 
@@ -427,7 +427,7 @@ flag为：
 
 水题。。数据包用wireshark打开，题目提示telnet,随便右键选一个telnet类型的数据，右键追踪流，获得flag。
 
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-telnet-1.png)
+![](https://image.mengsec.com/Bugku-Misc-telnet-1.png)
 
 ## 这是一张单纯的图片？
 [题目地址](http://120.24.86.145:8002/misc/1.jpg "题目地址")
@@ -485,7 +485,7 @@ flag为：
 需要解密。使用key解密得
 
 	momoj2j.png
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-%E5%A6%B9%E5%AD%90%E7%9A%84%E9%99%8C%E9%99%8C-1.png)
+![](https://image.mengsec.com/Bugku-Misc-%E5%A6%B9%E5%AD%90%E7%9A%84%E9%99%8C%E9%99%8C-1.png)
 
 于是乎，访问
 
@@ -493,7 +493,7 @@ flag为：
 
 将获得的二维码反色一下即可获得flag
 
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-%E5%A6%B9%E5%AD%90%E7%9A%84%E9%99%8C%E9%99%8C-2.png)
+![](https://image.mengsec.com/Bugku-Misc-%E5%A6%B9%E5%AD%90%E7%9A%84%E9%99%8C%E9%99%8C-2.png)
 
 flag为
 
@@ -509,11 +509,11 @@ flag为
 ## 图穷匕现
 下载图片后，右键查看属性-详细信息，获得提示
 
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-%E5%9B%BE%E7%A9%B7%E5%8C%95%E7%8E%B0-1.png)
+![](https://image.mengsec.com/Bugku-Misc-%E5%9B%BE%E7%A9%B7%E5%8C%95%E7%8E%B0-1.png)
 
 根据提示，猜测在文件尾有线索，使用Winhex打开，发现类似16进制的相当长的字符串。
 
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-%E5%9B%BE%E7%A9%B7%E5%8C%95%E7%8E%B0-2.png)
+![](https://image.mengsec.com/Bugku-Misc-%E5%9B%BE%E7%A9%B7%E5%8C%95%E7%8E%B0-2.png)
 
 将其复制出来，使用hackbar的16进制转字符串功能，将其转换并保存。转换出一堆坐标点。提示中有说画图，写脚本将其按照像素点的形式画出来
 
@@ -537,7 +537,7 @@ flag为
 
 画出一个二维码，扫描获得flag
 
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-%E5%9B%BE%E7%A9%B7%E5%8C%95%E7%8E%B0-3.png)
+![](https://image.mengsec.com/Bugku-Misc-%E5%9B%BE%E7%A9%B7%E5%8C%95%E7%8E%B0-3.png)
 
 flag为
 
@@ -571,7 +571,7 @@ flag为
 
 然后使用Winhex打开，找到一串base64
 
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-convert-1.png)
+![](https://image.mengsec.com/Bugku-Misc-convert-1.png)
 
 	ZmxhZ3swMWEyNWVhM2ZkNjM0OWM2ZTYzNWExZDAxOTZlNzVmYn0=  
 
@@ -593,7 +593,7 @@ flag为
 	路由器密码查看器(RouterPassView)
 使用工具打开，搜索Password，点几下就能找到
 
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-%E5%AE%BD%E5%B8%A6%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2_1.png)
+![](https://image.mengsec.com/Bugku-Misc-%E5%AE%BD%E5%B8%A6%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2_1.png)
 
 最终flag为
 
@@ -613,11 +613,11 @@ flag为
 
 打开题目，给了一个数据包，既然是中国菜刀，那么过滤出所有http协议的数据来。有三条http的数据流
 
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-%E4%B8%AD%E5%9B%BD%E8%8F%9C%E5%88%80_1.png)
+![](https://image.mengsec.com/Bugku-Misc-%E4%B8%AD%E5%9B%BD%E8%8F%9C%E5%88%80_1.png)
 
 分别追踪每一个流，找到一点线索，
 
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-%E4%B8%AD%E5%9B%BD%E8%8F%9C%E5%88%80_2.png)
+![](https://image.mengsec.com/Bugku-Misc-%E4%B8%AD%E5%9B%BD%E8%8F%9C%E5%88%80_2.png)
 
 在第三条数据流中，解码传输的shell命令
 
@@ -646,7 +646,7 @@ base64解码得
 	?>
 看样子对flag.tar.gz进行了下载。所以服务器返回的数据中有flag，在Line-based text data右键，选择显示分组字节流，调整开始起点来除去开头的X@Y,然后将解码为改为压缩，可获取flag，如图所示
 
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-%E4%B8%AD%E5%9B%BD%E8%8F%9C%E5%88%80_3.png)
+![](https://image.mengsec.com/Bugku-Misc-%E4%B8%AD%E5%9B%BD%E8%8F%9C%E5%88%80_3.png)
 
 flag为
 
@@ -660,7 +660,7 @@ flag为
 
 使用Winhex打开图片，修改对应的值即可获得flag
 
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-%E5%86%8D%E6%9D%A5%E4%B8%80%E9%81%93%E9%9A%90%E5%86%99-1.png)
+![](https://image.mengsec.com/Bugku-Misc-%E5%86%8D%E6%9D%A5%E4%B8%80%E9%81%93%E9%9A%90%E5%86%99-1.png)
 
 flag为
 
@@ -696,8 +696,8 @@ flag为
 
 使用工具Aircrack-ng
 
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-%E6%83%B3%E8%B9%AD%E7%BD%91%E5%85%88%E8%A7%A3%E5%BC%80%E5%AF%86%E7%A0%81-1.png)
-![](http://osn75zd5c.bkt.clouddn.com/Bugku-Misc-%E6%83%B3%E8%B9%AD%E7%BD%91%E5%85%88%E8%A7%A3%E5%BC%80%E5%AF%86%E7%A0%81-2.png)
+![](https://image.mengsec.com/Bugku-Misc-%E6%83%B3%E8%B9%AD%E7%BD%91%E5%85%88%E8%A7%A3%E5%BC%80%E5%AF%86%E7%A0%81-1.png)
+![](https://image.mengsec.com/Bugku-Misc-%E6%83%B3%E8%B9%AD%E7%BD%91%E5%85%88%E8%A7%A3%E5%BC%80%E5%AF%86%E7%A0%81-2.png)
 
 
 flag为

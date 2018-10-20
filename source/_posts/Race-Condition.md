@@ -40,7 +40,7 @@ if __name__ == '__main__':
 ```
 这是一个很简单的多线程计数，按照程序的逻辑，到程序执行完毕，`COUNT`的值应该是10，但事实并不是这样，`COUNT`的值不但达不到10，而且每次执行的效果都不一样。
 
-![](http://osn75zd5c.bkt.clouddn.com/Race%20Condition-1.png)
+![](https://image.mengsec.com/Race%20Condition-1.png)
 
 Why？
 
@@ -74,17 +74,17 @@ Why？
 
 使用burp抓包上传一个shell，先将文件名改成`233.jpg`
 
-![](http://osn75zd5c.bkt.clouddn.com/Race%20Condition-2.png)
+![](https://image.mengsec.com/Race%20Condition-2.png)
 
 要求上传可执行文件，改成`233.php`
 
-![](http://osn75zd5c.bkt.clouddn.com/Race%20Condition-3.png)
+![](https://image.mengsec.com/Race%20Condition-3.png)
 
 两个flag到手
 
 然后告诉你这个文件扩展名在黑名单里，尝试`php4`,`php5`,`phtml`,发现`phtml`不在黑名单，但文件还是被删掉了。
 
-![](http://osn75zd5c.bkt.clouddn.com/Race%20Condition-4.png)
+![](https://image.mengsec.com/Race%20Condition-4.png)
 
 文件还是在服务器中存在过的，这就存在了条件竞争漏洞，在文件被删除之前，我们可以访问它来执行命令。
 
@@ -99,7 +99,7 @@ while True:
         print r.text
 ```
 
-![](http://osn75zd5c.bkt.clouddn.com/Race%20Condition-5.png)
+![](https://image.mengsec.com/Race%20Condition-5.png)
 
 ### 3.2 0CTF2018-Easy User Manage System
 
@@ -115,22 +115,22 @@ If you make your phone to be 8.8.8.8, I will give you a flag.
 ```
 其中还给了一个页面用来修改IP地址。
 
-![image](http://osn75zd5c.bkt.clouddn.com/20180CTF-Web-EUMS-1.png)
+![image](https://image.mengsec.com/20180CTF-Web-EUMS-1.png)
 
 
 题目考察的是多个session进行条件竞争。
 
 我们首先成功注册一个账号，并且通过IP验证，为了实现有多个session，分别在两个不同的浏览器上登陆。
 
-![image](http://osn75zd5c.bkt.clouddn.com/20180CTF-Web-EUMS-2.png)
+![image](https://image.mengsec.com/20180CTF-Web-EUMS-2.png)
 
 此时两个都在登录状态，然后都到修改IP的那个界面，其中一个提交自己VPS的IP，如果IP地址重复的话，可以通过IP的16进制来进行绕过，提交之后就会跳转，让你输入验证码，输入验证码后暂时不用提交，此时去另一个浏览器上页面填写IP地址为8.8.8.8。如图：
 
-![image](http://osn75zd5c.bkt.clouddn.com/20180CTF-Web-EUMS-3.png)
+![image](https://image.mengsec.com/20180CTF-Web-EUMS-3.png)
 
 然后直接使用burp进行抓包，先点击提交8.8.8.8IP的那个，然后再提交验证码，这两个包都会被burp拦截，然后直接点击Intercept off放行，即可获得flag。
 
-![image](http://osn75zd5c.bkt.clouddn.com/20180CTF-Web-EUMS-4.png)
+![image](https://image.mengsec.com/20180CTF-Web-EUMS-4.png)
 
 在该题目中，服务器通过session对请求顺序建立了锁，因此我们需要多个session，使用两个浏览器登录同一个账户即可。在将IP改为8.8.8.8时，有短时间的网络请求堵塞，我们在这个时间段，使用另一个session提交请求，即可通过验证，成功将IP改为8.8.8.8，然后获得flag。这个题目算是一个对数据库操作的条件竞争漏洞的典型例子。
 

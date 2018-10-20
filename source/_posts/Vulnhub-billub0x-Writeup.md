@@ -66,7 +66,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 我们可以知道，靶机开启了80端口(HTTP)和22端口(SSH)。Web服务器是`Apache httpd 2.2.22`。
 直接访问`http://192.168.134.130/`
 
-![](http://osn75zd5c.bkt.clouddn.com/Vulnhub-billub0x-Writeup-1.png)
+![](https://image.mengsec.com/Vulnhub-billub0x-Writeup-1.png)
 
 先别急着注入，使用Kali下的工具`dirb`扫一下目录。
 ```
@@ -106,11 +106,11 @@ http://192.168.134.130/index
 ```
 首先是`http://192.168.134.130/test`,直接访问显示:
 
-![](http://osn75zd5c.bkt.clouddn.com/Vulnhub-billub0x-Writeup-2.png)
+![](https://image.mengsec.com/Vulnhub-billub0x-Writeup-2.png)
 
 尝试POST一个`file=index.php`。发现可以下载。`file=/etc/passwd`也可以下载，存在任意文件下载漏洞。
 
-![](http://osn75zd5c.bkt.clouddn.com/Vulnhub-billub0x-Writeup-3.png)
+![](https://image.mengsec.com/Vulnhub-billub0x-Writeup-3.png)
 
 根据之前扫到的目录，可以将源代码全部下载下来：
 ```
@@ -124,11 +124,11 @@ $conn = mysqli_connect("127.0.0.1","billu","b0x_billu","ica_lab");
 
 不过查到了`phpmyadmin`的配置文件中会有服务器的账号密码，借助之前的那个任意文件下载，我们可以获得配置文件`config.inc.php`。
 
-![](http://osn75zd5c.bkt.clouddn.com/Vulnhub-billub0x-Writeup-4.png)
+![](https://image.mengsec.com/Vulnhub-billub0x-Writeup-4.png)
 
 就直接获取了靶机的root的账号密码`root:roottoor`
 
-![](http://osn75zd5c.bkt.clouddn.com/Vulnhub-billub0x-Writeup-5.png)
+![](https://image.mengsec.com/Vulnhub-billub0x-Writeup-5.png)
 
 再加上靶机开着ssh服务，直接ssh连接登录就行。
 
@@ -175,12 +175,12 @@ if(isset($_POST['continue']))
 	
 }
 ```
-![](http://osn75zd5c.bkt.clouddn.com/Vulnhub-billub0x-Writeup-6.png)
+![](https://image.mengsec.com/Vulnhub-billub0x-Writeup-6.png)
 
 接下来找个地方上传一个包含php代码的文件即可。
 登录之后，在添加用户`Add User`的地方正好有个上传图片文件的地方。
 
-![](http://osn75zd5c.bkt.clouddn.com/Vulnhub-billub0x-Writeup-7.png)
+![](https://image.mengsec.com/Vulnhub-billub0x-Writeup-7.png)
 
 创建一个`mengchen.gif`文件，内容如下
 ```
@@ -192,11 +192,11 @@ move_uploaded_file($_FILES['image']['tmp_name'], 'uploaded_images/'.$_FILES['ima
 ```
 上传的文件在`uploaded_images`中，直接访问`http://192.168.134.130/uploaded_images/`就能看到
 
-![](http://osn75zd5c.bkt.clouddn.com/Vulnhub-billub0x-Writeup-8.png)
+![](https://image.mengsec.com/Vulnhub-billub0x-Writeup-8.png)
 
 这样就可以借助本地文件包含漏洞来执行shell了。
 
-![](http://osn75zd5c.bkt.clouddn.com/Vulnhub-billub0x-Writeup-9.png)
+![](https://image.mengsec.com/Vulnhub-billub0x-Writeup-9.png)
 
 现在我是`www-data`权限。但是使用数据包很不方便，使用`msfvenom`生成一个WebShell：
 ```
@@ -214,11 +214,11 @@ exploit
 ```
 然后使用burp发包，执行上传的WebShell。成功的返回了一个`Meterpreter`。
 
-![](http://osn75zd5c.bkt.clouddn.com/Vulnhub-billub0x-Writeup-10.png)
+![](https://image.mengsec.com/Vulnhub-billub0x-Writeup-10.png)
 
 创建一个shell，执行`uname -a`查看一下内核版本。
 
-![](http://osn75zd5c.bkt.clouddn.com/Vulnhub-billub0x-Writeup-11.png)
+![](https://image.mengsec.com/Vulnhub-billub0x-Writeup-11.png)
 
 因为我现在只是`www-data`用户权限，需要找一下内核漏洞来进行提权。
 
@@ -226,6 +226,6 @@ exploit
 
 将代码保存到kali上，`exploit.c`。接着使用Meterpreter的upload命令，将exp上传到靶机的tmp目录下，使用gcc编译执行，成功获取到了root权限。
 
-![](http://osn75zd5c.bkt.clouddn.com/Vulnhub-billub0x-Writeup-12.png)
+![](https://image.mengsec.com/Vulnhub-billub0x-Writeup-12.png)
 
 

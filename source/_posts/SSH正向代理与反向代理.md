@@ -41,7 +41,7 @@ tags:
 
 ## 2. 拓扑
 
-![](http://osn75zd5c.bkt.clouddn.com/Blog_SSH%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86_tuopu.png)
+![](https://image.mengsec.com/Blog_SSH%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86_tuopu.png)
 
 ## 3. 测试
 从上面的拓扑图中，hacker是不能直接访问处于内网中的Web服务器的Web服务。我们可以通过中间的代理服务器来建立一条SSH隧道来达成这一目的。
@@ -52,15 +52,15 @@ tags:
 
 	ssh -p 22 -qngfNTR 6666:localhost:22 root@172.19.0.2
 
-![](http://osn75zd5c.bkt.clouddn.com/Blog_SSH%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86_1.png)
+![](https://image.mengsec.com/Blog_SSH%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86_1.png)
 
 然后查看Web服务器中的进程
 
-![](http://osn75zd5c.bkt.clouddn.com/Blog_SSH%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86_2.png)
+![](https://image.mengsec.com/Blog_SSH%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86_2.png)
 
 此时在代理服务器上，已经开始在6666端口开始监听了。
 
-![](http://osn75zd5c.bkt.clouddn.com/Blog_SSH%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86_3.png)
+![](https://image.mengsec.com/Blog_SSH%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86_3.png)
 
 第二步，hacker在自己机器上执行命令
 
@@ -70,11 +70,11 @@ tags:
 
 我们直接在Web服务器上用python开启一个HTTP服务
 
-![](http://osn75zd5c.bkt.clouddn.com/Blog_SSH%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86_4.png)
+![](https://image.mengsec.com/Blog_SSH%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86_4.png)
 
 然后在hacker中使用proxychains进行代理访问127.0.0.1的8080端口，即可成功的访问到刚刚用python开启的Web服务
 
-![](http://osn75zd5c.bkt.clouddn.com/Blog_SSH%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86_5.png)
+![](https://image.mengsec.com/Blog_SSH%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86_5.png)
 
 
 于此，我们成功的在hacker与内网之间建立了一条SSH隧道。
