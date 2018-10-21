@@ -28,7 +28,7 @@ tags:
 
 脚本如下
 
-```python
+```
 # -*- coding: cp936 -*-
 b64chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 with open('data.txt', 'rb') as f:
@@ -61,7 +61,7 @@ python用来执行系统命令的四种方法都行不通，故意引用一个�
 而且glob模块并没有被禁用，可以借助它来列目录
 
 
-```python
+```
 import glob
 for filename in glob.glob(r''):
 	print filename
@@ -77,7 +77,7 @@ flag页面的URL为`http://web.ctf.xidian.edu.cn/web3/?file=flag.html`，推测�
 
 将flag.html改为index.php获得源码
 
-```php
+```
 php
 <?php
 /*//设置open_basedir
@@ -110,8 +110,7 @@ echo file_get_contents($file);
 
 由于正则表达式过滤了形如`127.0.0.1`的ip，使用整形ip来代替，扫描内网。
 
-```python
-python
+```
 #-*- coding:utf-8 -*-
 import socket
 import requests
@@ -128,11 +127,10 @@ for i in range(1, 256):
 		break
 ```
 
-
 172.18.0.2有flag
 
 
-```html
+```
 172.18.0.2 2886860802
 <html>
 <head><title>403 Forbidden</title></head>

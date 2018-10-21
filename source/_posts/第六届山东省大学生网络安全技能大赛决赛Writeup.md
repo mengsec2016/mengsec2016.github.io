@@ -16,7 +16,7 @@ tags:
 
 python脚本
 ​	
-```python
+```
 from Crypto.PublicKey import RSA
 pub = RSA.importKey(open('pub.key').read())
 n = long(pub.n)
@@ -29,14 +29,14 @@ print 'e(hex):',hex(e)
 
 openssl命令
 
-```shell
+```
 openssl rsa -in pub.key -pubin -modulus -text
 ```
 
 然后通过工具yafu将n进行大数分解获得p和q,然后使用脚本生成私钥
 
 
-```python
+```
 import math
 import sys
 from Crypto.PublicKey import RSA
@@ -68,7 +68,7 @@ private.close()
 
 脚本
 
-```python
+```
 import rsa
 prifile = open('private.pem')
 p = prifile.read()
@@ -80,7 +80,7 @@ print message
 
 命令
 
-```shell
+```
 openssl rsautl -decrypt -in enc1 -inkey 6.key -out flag.txt 
 ```
 ### 0x02 RSA2
@@ -88,7 +88,7 @@ openssl rsautl -decrypt -in enc1 -inkey 6.key -out flag.txt
 给了两个n,而且e都一样，可以利用欧几里得算法求它们两个的最大公约数
 
 
-```python
+```
 def gcd(a, b):
 	if(a < b):
 		a, b = b, a
@@ -111,7 +111,7 @@ def gcd(a, b):
 
 解密python脚本
 
-```python
+```
 #coding:utf-8
 m = 'dikxourxd'
 strs = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -131,7 +131,7 @@ print(flag)
 
 根据MD5的生成原理，可以发现被篡改的字符为中间的"h"，是小明的生日，那么为6位或者8位数字，脚本爆破即可
 
-```python
+```
 import hashlib
 for m in range(1,13):
 	for d in range(1,33):
@@ -161,7 +161,7 @@ for m in range(1,13):
 	102 108 97 103 123 51 50 56 55 102 101 51 48 48 102 50 56 101 50 52 97 101 102 97 50 100 56 54 56 56 51 56 51 50 99 57 102 125
 也可以使用python脚本进行分析
 
-```python
+```
 import re
 f = open("access.log")
 sqli = []
@@ -208,7 +208,7 @@ print flag
 
 base混合加密呗，直接上脚本爆破
 
-```python
+```
 import base64
 file = open('base.txt','r')
 st = file.read()
@@ -243,7 +243,7 @@ while True:
 
 根据图片名称"xor",可知是异或，写脚本
 
-```python
+```
 f = open('flag.png')
 enc = f.read()
 f.close()
@@ -282,7 +282,7 @@ for i in range(100):
 
 直接打开flag.txt，给了一堆坐标，很明显是图片像素的RGB值，使用脚本将图片画出来,将文件拉到末尾可知有78400个点，开根号后为280，即图片的边长。
 
-```python
+```
 #!/usr/bin/env python
 from PIL import Image
 MAX = 280
@@ -369,7 +369,7 @@ flag为
 3.	更改程序的流程，直接出flag。
 
 求k的脚本如下：
-```python
+```
  	k=0
  	flag=0
  	for i in xrange(200000,0,-1):

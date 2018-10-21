@@ -17,7 +17,7 @@ tags:
 
 通过这个命令来获取内存镜像的摘要信息，比如OS，Service Pack和硬件架构等，个人认为这个命令最主要的作用是给进一步分析指明`profile`，也就是使用其他插件时加载的配置文件。
 
-```shell
+```
 volatility -f easy_dump.img imageinfo
 ```
 
@@ -191,7 +191,7 @@ yispyweise!dmsx_tthv_arr_didvi
 
 看起来很像坐标点，使用python的PIL库画出来。
 
-```python
+```
 from PIL import Image
 
 file = open('hint.txt','r')

