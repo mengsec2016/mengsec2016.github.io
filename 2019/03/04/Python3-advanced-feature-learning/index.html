@@ -1,0 +1,574 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Python3 高级特性学习——协程 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Python3 高级特性学习——协程">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-03-04 17:23" pubdate>
+        2019年3月4日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.9k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      52
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Python3 高级特性学习——协程</h1>
+            
+            <div class="markdown-body">
+              <p>最近想着重写一下自己很久前写的<code>CMS</code>指纹识别器，当时采用了<code>Python</code>的多线程来提高效率，由于<code>GIL锁</code>的存在，提升并不大。在查找资料的时候发现了<code>Python</code>协程这个高级特性，花了几天时间学习，在此整理一下。</p>
+<a id="more"></a>
+
+<h2 id="1-可迭代、迭代器、生成器"><a href="#1-可迭代、迭代器、生成器" class="headerlink" title="1. 可迭代、迭代器、生成器"></a>1. 可迭代、迭代器、生成器</h2><p>可迭代 <code>!==</code> 迭代器 <code>!==</code> 生成器</p>
+<h3 id="1-1-可迭代"><a href="#1-1-可迭代" class="headerlink" title="1.1 可迭代"></a>1.1 可迭代</h3><p>在<code>Python3</code>中，有很多可迭代的对象，比如字符串、列表、字典等，但它们并不是迭代器。<br>可以借助<code>collections</code>这个模块的<code>isinstance()</code>方法，来判断这个对象是否可迭代(<code>Iterable</code>)，是否是迭代器(<code>Iterator</code>)，是否是生成器(<code>Generator</code>)。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> collections<br><span class="hljs-keyword">from</span> collections.abc <span class="hljs-keyword">import</span> Iterable, Iterator, Generator<br><br><span class="hljs-comment"># 字符串</span><br>tstr = <span class="hljs-string">&quot;MengSec&quot;</span><br>print(<span class="hljs-string">&quot;字符串：&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(tstr))<br>print(<span class="hljs-built_in">isinstance</span>(tstr, Iterable))<br>print(<span class="hljs-built_in">isinstance</span>(tstr, Iterator))<br>print(<span class="hljs-built_in">isinstance</span>(tstr, Generator))<br><br><span class="hljs-comment"># 列表</span><br>tlist = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]<br>print(<span class="hljs-string">&quot;列表：&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(tlist))<br>print(<span class="hljs-built_in">isinstance</span>(tlist, Iterable))<br>print(<span class="hljs-built_in">isinstance</span>(tlist, Iterator))<br>print(<span class="hljs-built_in">isinstance</span>(tlist, Generator))<br><br><span class="hljs-comment"># 字典</span><br>tdict = &#123;<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;MengChen&quot;</span>&#125;<br>print(<span class="hljs-string">&quot;字典：&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(tdict))<br>print(<span class="hljs-built_in">isinstance</span>(tdict, Iterable))<br>print(<span class="hljs-built_in">isinstance</span>(tdict, Iterator))<br>print(<span class="hljs-built_in">isinstance</span>(tdict, Generator))<br></code></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs ada">字符串：MengSec<br><span class="hljs-literal">True</span><br><span class="hljs-literal">False</span><br><span class="hljs-literal">False</span><br>列表：[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]<br><span class="hljs-literal">True</span><br><span class="hljs-literal">False</span><br><span class="hljs-literal">False</span><br>字典：&#123;<span class="hljs-symbol">&#x27;name</span>&#x27;: <span class="hljs-symbol">&#x27;MengChen</span>&#x27;&#125;<br><span class="hljs-literal">True</span><br><span class="hljs-literal">False</span><br><span class="hljs-literal">False</span><br></code></pre></td></tr></table></figure>
+<p>由输出可知，这些对象都是可迭代的，但不是迭代器，也不是生成器。但是它们都可以使用for来循环。</p>
+<blockquote>
+<p>可迭代对象，是其内部实现了<code>__iter__()</code>或者<code>__getitem__()</code>魔术方法。</p>
+</blockquote>
+<h3 id="1-2-迭代器"><a href="#1-2-迭代器" class="headerlink" title="1.2 迭代器"></a>1.2 迭代器</h3><p>与可迭代的对象相比，迭代器其实是在内部多实现了一个<code>__next__()</code>方法，在迭代器中，不仅可以使用<code>for</code>循环来获取元素，也可以使用<code>next()</code>来获取元素。 </p>
+<blockquote>
+<p>迭代器遵循Python的迭代器协议，也就是对象要实现<code>__iter()__</code>和<code>next()</code>方法，在Python3中要实现<code>__next__()</code>， <code>__iter()__</code> 方法返回迭代器对象本身，<code>next()</code>方法返回容器的下一个元素，在没有后续元素时抛出<code>StopIteration</code>异常</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> collections.abc <span class="hljs-keyword">import</span> Iterator<br><br>List = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>] <span class="hljs-comment"># 定义一个可迭代的列表</span><br>print(<span class="hljs-built_in">isinstance</span>(List, Iterator)) <span class="hljs-comment"># 判断是否是迭代器</span><br>List_Iterator = <span class="hljs-built_in">iter</span>(List) <span class="hljs-comment"># 使用iter()方法将其转换为迭代器</span><br>print(<span class="hljs-built_in">isinstance</span>(List_Iterator, Iterator)) <span class="hljs-comment"># 判断是否为迭代器</span><br>print(<span class="hljs-built_in">next</span>(List_Iterator)) <span class="hljs-comment"># 使用next()方法来获取元素</span><br>print(<span class="hljs-built_in">next</span>(List_Iterator))<br>print(<span class="hljs-built_in">next</span>(List_Iterator))<br>print(<span class="hljs-built_in">next</span>(List_Iterator))<br></code></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ada"><span class="hljs-literal">False</span><br><span class="hljs-literal">True</span><br><span class="hljs-number">1</span><br><span class="hljs-number">2</span><br><span class="hljs-number">3</span><br><span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
+<p><code>Python</code>的<code>for</code>循环实质上是先通过内置函数<code>iter()</code>获得一个迭代器，然后再不断调用<code>next()</code>函数实现的；</p>
+<h3 id="1-3-生成器"><a href="#1-3-生成器" class="headerlink" title="1.3 生成器"></a>1.3 生成器</h3><p>生成器，可以理解为，当需要它其中的元素时，才会经过计算生成该元素。从而在内存中节省大量的空间。<br>迭代器可以使用<code>next()</code>和<code>for</code>来遍历，而生成器是在它的基础上，又实现了一个<code>yield</code>，也可以说生成器是一种特殊的迭代器。<br><code>yield</code>可以理解为一种中断，在每次调用<code>next()</code>时，函数都会中断在<code>yield</code>处，并且返回当前的值。当没有遇到<code>yield</code>时，程序会抛出异常<code>StopIteration</code>。</p>
+<p>创建一个生成器主要有两种办法</p>
+<ol>
+<li>使用列表生成式</li>
+</ol>
+<p>需要注意与列表推导式的区别</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> collections.abc <span class="hljs-keyword">import</span> Iterable, Iterator, Generator<br><br>List1 = [x <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>)] <span class="hljs-comment"># 列表推导式</span><br>print(<span class="hljs-built_in">isinstance</span>(List1, Iterable))<br>print(<span class="hljs-built_in">isinstance</span>(List1, Iterator))<br>print(<span class="hljs-built_in">isinstance</span>(List1, Generator))<br>List2 = (x <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>)) <span class="hljs-comment"># 列表生成式</span><br>print(<span class="hljs-built_in">isinstance</span>(List2, Iterable))<br>print(<span class="hljs-built_in">isinstance</span>(List2, Iterator))<br>print(<span class="hljs-built_in">isinstance</span>(List2, Generator))<br></code></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ada"><span class="hljs-literal">True</span><br><span class="hljs-literal">False</span><br><span class="hljs-literal">False</span><br><span class="hljs-literal">True</span><br><span class="hljs-literal">True</span><br><span class="hljs-literal">True</span><br></code></pre></td></tr></table></figure>
+<ol start="2">
+<li>实现<code>yield</code>的函数</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test</span>(<span class="hljs-params">n</span>):</span><br>    now = <span class="hljs-number">0</span><br>    <span class="hljs-keyword">while</span> now &lt; n:<br>        <span class="hljs-keyword">yield</span> now<br>        now += <span class="hljs-number">1</span><br><br>gen = test(<span class="hljs-number">10</span>)<br>print(<span class="hljs-built_in">isinstance</span>(gen, Generator))  <span class="hljs-comment"># 输出True</span><br></code></pre></td></tr></table></figure>
+<p>生成器在其生命周期中，拥有四个状态</p>
+<blockquote>
+<p><code>GEN_CREATED</code> # 等待开始执行<br><code>GEN_RUNNING</code> # 解释器正在执行（只有在多线程应用中才能看到这个状态）<br><code>GEN_SUSPENDED</code> # 在yield表达式处暂停<br><code>GEN_CLOSED</code> # 执行结束</p>
+</blockquote>
+<h3 id="1-4-生成器-gt-协程"><a href="#1-4-生成器-gt-协程" class="headerlink" title="1.4 生成器-&gt;协程"></a>1.4 生成器-&gt;协程</h3><p>在生成器中，使用<code>yield</code>来实现了暂停函数执行的功能，那么在函数暂停执行的时候，是否可以给它发送某些信息呢。这在编程模型上，类似于实现了子程序，经过后面的发展，诞生了协程。</p>
+<p>在维基百科中，协程是这么定义的：</p>
+<blockquote>
+<p>协程是计算机程序的一类组件，推广了非抢先多任务的子程序，允许执行被挂起与被恢复</p>
+</blockquote>
+<p>给暂停中的函数传递信息</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> collections.abc <span class="hljs-keyword">import</span> Iterable, Iterator, Generator<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test</span>(<span class="hljs-params">N</span>):</span><br>    index = <span class="hljs-number">0</span><br>    <span class="hljs-keyword">while</span> index &lt; N:<br>        <span class="hljs-comment"># 通过send()发送的信息将赋值给jump</span><br>        jump = <span class="hljs-keyword">yield</span> index<br>        <span class="hljs-keyword">if</span> jump <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>            jump = <span class="hljs-number">1</span><br>        index += jump<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    a = test(<span class="hljs-number">5</span>)<br>    print(<span class="hljs-built_in">next</span>(a)) <span class="hljs-comment"># 0 &lt; 5 在yield处阻塞</span><br>    print(a.send(<span class="hljs-number">2</span>)) <span class="hljs-comment"># 继续往下执行 此时jump == 2。则index = 0 + 2 = 2，然后阻塞</span><br>    print(<span class="hljs-built_in">next</span>(a)) <span class="hljs-comment"># 没有给jump传值，此时jump == 1。index = 2 + 1 = 3，然后阻塞</span><br>    print(a.send(-<span class="hljs-number">3</span>)) <span class="hljs-comment"># 给jump传值为-3，继续往下执行，index = 3 - 3 = 0，此时继续阻塞在yield处，程序结束。</span><br></code></pre></td></tr></table></figure>
+
+
+<h2 id="2-协程"><a href="#2-协程" class="headerlink" title="2. 协程"></a>2. 协程</h2><p>在<code>Python3.4</code>中，引入了<code>asyncio</code>这个标准库，它直接内置了对<code>异步IO</code>的支持。</p>
+<h3 id="2-1-如何创建协程"><a href="#2-1-如何创建协程" class="headerlink" title="2.1 如何创建协程"></a>2.1 如何创建协程</h3><p>借助<code>asyncio</code>这个标准库，我们使用<code>async</code>关键字可以很方便的定义或者创建协程(<code>Coroutine</code>)。</p>
+<p>直接上代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> collections.abc <span class="hljs-keyword">import</span> Generator, Coroutine<br><br><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test</span>(<span class="hljs-params">a</span>):</span><br>    print(<span class="hljs-string">&quot;hello, &quot;</span> + a)<br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    coroutine = test(<span class="hljs-string">&quot;MengSec&quot;</span>) <span class="hljs-comment"># 生成一个协程对象</span><br>    print(coroutine)<br>    print(<span class="hljs-built_in">isinstance</span>(coroutine, Generator)) <span class="hljs-comment"># 判断协程是不是生成器</span><br>    print(<span class="hljs-built_in">isinstance</span>(coroutine, Coroutine)) <span class="hljs-comment"># 判断是不是协程</span><br></code></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight vbnet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs vbnet">&lt;coroutine <span class="hljs-type">object</span> test at <span class="hljs-number">0</span>x106449848&gt;<br><span class="hljs-literal">False</span><br><span class="hljs-literal">True</span><br><span class="hljs-symbol">sys:</span><span class="hljs-number">1</span>: RuntimeWarning: coroutine <span class="hljs-comment">&#x27;test&#x27; was never awaited</span><br></code></pre></td></tr></table></figure>
+<p>可以看到，协程对象<code>coroutine</code>中的函数并没有执行，使用<code>async</code>关键词创建的协程对象不是生成器。而且程序还返回了一个<code>Warning</code>。</p>
+<p>在前面我们知道了，协程是在生成器的基础上实现的。通过<code> @asyncio.coroutine</code>装饰器，可以将一个生成器函数<strong>标记</strong>为协程，可以将其直接当做协程使用，但是它本质上还是一个生成器<code>Generator</code>。</p>
+<p>拿前面的一个例子修改一下，上代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> collections.abc <span class="hljs-keyword">import</span> Generator, Coroutine<br><span class="hljs-keyword">import</span> asyncio<br><br><span class="hljs-meta">@asyncio.coroutine</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test</span>(<span class="hljs-params">n</span>):</span><br>    now = <span class="hljs-number">0</span><br>    <span class="hljs-keyword">while</span> now &lt; n:<br>        <span class="hljs-keyword">yield</span> now<br>        now += <span class="hljs-number">1</span><br><br>generator = test(<span class="hljs-number">10</span>)<br>print(generator)<br>print(<span class="hljs-built_in">isinstance</span>(generator, Generator)) <span class="hljs-comment"># 判断是不是生成器</span><br>print(<span class="hljs-built_in">isinstance</span>(generator, Coroutine)) <span class="hljs-comment"># 判断是不是协程</span><br></code></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php">&lt;<span class="hljs-built_in">generator</span> <span class="hljs-keyword">object</span> test at <span class="hljs-number">0x1051ff840</span>&gt;<br><span class="hljs-literal">True</span><br><span class="hljs-literal">False</span><br></code></pre></td></tr></table></figure>
+<h3 id="2-2-协程是如何工作的"><a href="#2-2-协程是如何工作的" class="headerlink" title="2.2 协程是如何工作的"></a>2.2 协程是如何工作的</h3><p>首先列出在<code>asyncio</code>中贯穿始终的概念</p>
+<ul>
+<li><code>event_loop</code> 事件循环：程序开启一个无限的循环，程序员会把一些函数（协程）注册到事件循环上。当满足事件发生的时候，调用相应的协程函数，事件循环是asyncio的核心。事件循环运行异步任务和回调，执行网络IO操作以及运行子进程。</li>
+<li><code>coroutine</code>协程：协程对象，指一个使用<code>async</code>关键字定义的函数，它的调用不会立即执行函数，而是会返回一个协程对象。协程对象需要注册到事件循环，由事件循环调用。</li>
+<li><code>future</code>对象： 代表将来执行或没有执行的任务的结果。它和<code>task</code>上没有本质的区别</li>
+<li><code>task</code>任务：一个协程对象就是一个原生可以挂起的函数，任务则是对协程进一步封装，其中包含任务的各种状态。<code>Task</code>对象是 <code>Future</code>的子类，它将<code>coroutine</code>和<code>Future</code>联系在一起，将<code>coroutine</code>封装成一个<code>Future</code>对象。</li>
+<li><code>async/await</code>关键字：<code>python3.5</code>中用于定义协程的关键字，<code>async</code>定义一个协程，<code>await</code>用于挂起阻塞的异步调用接口。</li>
+</ul>
+<p>协程的工作流程</p>
+<ol>
+<li>创建一个协程对象</li>
+<li>将协程转换为<code>task</code>任务</li>
+<li>定义<code>event_loop</code>容器</li>
+<li>将<code>task</code>任务放入<code>event_loop</code>容器中触发</li>
+</ol>
+<p>上代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> asyncio<br><br><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test</span>(<span class="hljs-params">a</span>):</span><br>    print(<span class="hljs-string">&quot;hello, &quot;</span> + a)<br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    coroutine = test(<span class="hljs-string">&quot;MengSec&quot;</span>) <span class="hljs-comment"># 生成一个协程对象</span><br>    loop = asyncio.get_event_loop() <span class="hljs-comment"># 定义事件循环对象</span><br>    task = loop.create_task(coroutine) <span class="hljs-comment"># 将协程转换为task任务</span><br>    loop.run_until_complete(task) <span class="hljs-comment"># 将task任务扔进事件循环对象中触发</span><br></code></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs autohotkey"><span class="hljs-built_in">hello,</span> MengSec<br></code></pre></td></tr></table></figure>
+<h3 id="2-3-如何获取协程函数的返回值"><a href="#2-3-如何获取协程函数的返回值" class="headerlink" title="2.3 如何获取协程函数的返回值"></a>2.3 如何获取协程函数的返回值</h3><p><code>Task</code>对象是<code>Future</code>对象的子类，它保存了协程函数运行的状态。我们可以通过它来获取协程函数的返回值，具体来说有两种方式</p>
+<h4 id="2-3-1-直接获取Task的结果"><a href="#2-3-1-直接获取Task的结果" class="headerlink" title="2.3.1 直接获取Task的结果"></a>2.3.1 直接获取Task的结果</h4><p>当协程函数运行结束后，我们需要得到其返回值，第一种方式就是等到<code>task</code>状态为<code>finish</code>时，调用<code>task</code>的<code>result</code>方法获取返回值。</p>
+<p>修改一下前面的例子</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> asyncio<br><br><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test</span>(<span class="hljs-params">a</span>):</span><br>    print(<span class="hljs-string">&quot;hello, &quot;</span> + a)<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Returned value&quot;</span><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    coroutine = test(<span class="hljs-string">&quot;MengSec&quot;</span>) <span class="hljs-comment"># 生成一个协程对象</span><br>    loop = asyncio.get_event_loop() <span class="hljs-comment"># 定义事件循环对象</span><br>    task = loop.create_task(coroutine) <span class="hljs-comment"># 将协程转换为task任务</span><br>    loop.run_until_complete(task) <span class="hljs-comment"># 将task任务扔进事件循环对象中触发</span><br>    print(task.result()) <span class="hljs-comment"># 直接获得Task执行结束的结果</span><br></code></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs autohotkey"><span class="hljs-built_in">hello,</span> MengSec<br>Returned value<br></code></pre></td></tr></table></figure>
+<h4 id="2-3-2-绑定回调函数"><a href="#2-3-2-绑定回调函数" class="headerlink" title="2.3.2 绑定回调函数"></a>2.3.2 绑定回调函数</h4><p>回调的实现有两种。</p>
+<p>一种是利用同步编程实现的回调。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> asyncio<br><span class="hljs-keyword">import</span> time<br><br><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test</span>(<span class="hljs-params">a</span>):</span><br>    print(<span class="hljs-string">&quot;执行一个非常耗时的IO操作&quot;</span>)<br>    time.sleep(<span class="hljs-number">2</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;暂停了&#123;&#125;秒&quot;</span>.<span class="hljs-built_in">format</span>(a)<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    coroutine = test(<span class="hljs-string">&quot;2&quot;</span>) <span class="hljs-comment"># 生成一个协程对象</span><br>    loop = asyncio.get_event_loop() <span class="hljs-comment"># 定义事件循环对象</span><br>    task = loop.create_task(coroutine) <span class="hljs-comment"># 将协程转换为task任务</span><br>    loop.run_until_complete(task) <span class="hljs-comment"># 将task任务扔进事件循环对象中触发</span><br>    print(task.result()) <span class="hljs-comment"># 直接获得Task执行结束的结果</span><br></code></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plain">执行一个非常耗时的IO操作<br>暂停了2秒<br></code></pre></td></tr></table></figure>
+<p>另一种是通过<code>asyncio</code>自带的添加回调函数的功能来实现。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> asyncio<br><span class="hljs-keyword">import</span> time<br><br><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test</span>(<span class="hljs-params">a</span>):</span><br>    print(<span class="hljs-string">&quot;执行一个非常耗时的IO操作&quot;</span>)<br>    time.sleep(<span class="hljs-number">2</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;暂停了&#123;&#125;秒&quot;</span>.<span class="hljs-built_in">format</span>(a)<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">callback</span>(<span class="hljs-params">future</span>):</span><br>    print(<span class="hljs-string">&quot;正在执行回调函数，获取返回的结果是：&quot;</span>, future.result())<br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    coroutine = test(<span class="hljs-string">&quot;2&quot;</span>) <span class="hljs-comment"># 生成一个协程对象</span><br>    loop = asyncio.get_event_loop() <span class="hljs-comment"># 定义事件循环对象</span><br>    task = loop.create_task(coroutine) <span class="hljs-comment"># 将协程转换为task任务</span><br>    task.add_done_callback(callback) <span class="hljs-comment"># 添加回调函数</span><br>    loop.run_until_complete(task) <span class="hljs-comment"># 将task任务扔进事件循环对象中触发</span><br></code></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plain">执行一个非常耗时的IO操作<br>正在执行回调函数，获取返回的结果是： 暂停了2秒<br></code></pre></td></tr></table></figure>
+<h3 id="2-4-协程中的并发"><a href="#2-4-协程中的并发" class="headerlink" title="2.4 协程中的并发"></a>2.4 协程中的并发</h3><p>首先理解一下并发和并行</p>
+<blockquote>
+<p>并发通常指有多个任务需要同时进行，并行则是同一时刻有多个任务执行。用多线程、多进程、协程来说，协程实现并发，多线程与多进程实现并行</p>
+</blockquote>
+<p><code>asyncio</code>实现并发，就需要多个协程来完成任务，每当有任务阻塞的时候就<code>await</code>，然后其他协程继续工作。</p>
+<p>第一步，创建包含多个协程的列表。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> asyncio<br><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test</span>():</span> <span class="hljs-comment"># 定义一个协程函数</span><br>    print(<span class="hljs-string">&quot;Before IO...&quot;</span>)<br>    <span class="hljs-keyword">await</span> asyncio.sleep(<span class="hljs-number">1</span>) <span class="hljs-comment"># 假定有一个IO任务，阻塞</span><br>    print(<span class="hljs-string">&quot;After IO...&quot;</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;任务执行完毕&quot;</span><br><span class="hljs-comment"># 创建三个协程对象</span><br>a = test()<br>b = test()<br>c = test()<br><span class="hljs-comment"># 将三个协程对象转换为Task对象，并存到list中。</span><br>tasks = [<br>    asyncio.ensure_future(a),<br>    asyncio.ensure_future(b),<br>    asyncio.ensure_future(c),<br>]<br></code></pre></td></tr></table></figure>
+<p>第二步，将这些协程添加到事件循环中。</p>
+<p>同样有两种办法</p>
+<ul>
+<li>使用 <code>asyncio.wait()</code><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">loop = asyncio.get_event_loop()<br>loop.run_until_complete(asyncio.wait(tasks))<br></code></pre></td></tr></table></figure></li>
+<li>使用 <code>asyncio.gather()</code><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">loop = asyncio.get_event_loop()<br>loop.run_until_complete(asyncio.gather(*tasks))<br></code></pre></td></tr></table></figure>
+最后的结果，使用<code>task.result</code>来查看</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> task <span class="hljs-keyword">in</span> tasks:<br>    print(<span class="hljs-string">&quot;任务执行结果为： &quot;</span>, task.result())<br></code></pre></td></tr></table></figure>
+<p>完整代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> asyncio<br><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test</span>():</span> <span class="hljs-comment"># 定义一个协程函数</span><br>    print(<span class="hljs-string">&quot;Before IO...&quot;</span>)<br>    <span class="hljs-keyword">await</span> asyncio.sleep(<span class="hljs-number">1</span>) <span class="hljs-comment"># 假定有一个IO任务，阻塞</span><br>    print(<span class="hljs-string">&quot;After IO...&quot;</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;任务执行完毕&quot;</span><br><span class="hljs-comment"># 创建三个协程对象</span><br>a = test()<br>b = test()<br>c = test()<br><span class="hljs-comment"># 将三个协程对象转换为Task对象，并存到list中。</span><br>tasks = [<br>    asyncio.ensure_future(a),<br>    asyncio.ensure_future(b),<br>    asyncio.ensure_future(c),<br>]<br>loop = asyncio.get_event_loop()<br>loop.run_until_complete(asyncio.wait(tasks))<br><span class="hljs-comment"># loop.run_until_complete(asyncio.gather(*tasks))</span><br><span class="hljs-keyword">for</span> task <span class="hljs-keyword">in</span> tasks:<br>    print(<span class="hljs-string">&quot;任务执行结果为： &quot;</span>, task.result())<br></code></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs gams"><span class="hljs-function"><span class="hljs-title">Before</span></span> IO...<br><span class="hljs-function"><span class="hljs-title">Before</span></span> IO...<br><span class="hljs-function"><span class="hljs-title">Before</span></span> IO...<br><span class="hljs-function"><span class="hljs-title">After</span></span> IO...<br><span class="hljs-function"><span class="hljs-title">After</span></span> IO...<br><span class="hljs-function"><span class="hljs-title">After</span></span> IO...<br>任务执行结果为：  任务执行完毕<br>任务执行结果为：  任务执行完毕<br>任务执行结果为：  任务执行完毕<br></code></pre></td></tr></table></figure>
+<h2 id="3-协程爬虫"><a href="#3-协程爬虫" class="headerlink" title="3. 协程爬虫"></a>3. 协程爬虫</h2><p>我们日常写爬虫使用的<code>requests</code>库，并不支持异步，协程在本质上运行的时候，整个事件循环还是跑在单线程上的，<code>requests</code>等库在进行网络请求的时候，会将整个线程阻塞，导致事件循环不能继续，也就不能达到协程异步的效果了。</p>
+<h3 id="3-1-使用aiohttp"><a href="#3-1-使用aiohttp" class="headerlink" title="3.1 使用aiohttp"></a>3.1 使用aiohttp</h3><p>不过<code>python</code>中有<code>aiohttp</code>这个库来支持异步爬虫的编写。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> asyncio<br><span class="hljs-keyword">import</span> aiohttp<br><br><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">run</span>(<span class="hljs-params">url</span>):</span><br>    print(<span class="hljs-string">&quot;开始执行爬虫...&quot;</span>,url)<br>    <span class="hljs-keyword">async</span> <span class="hljs-keyword">with</span> aiohttp.ClientSession() <span class="hljs-keyword">as</span> session:<br>        <span class="hljs-keyword">async</span> <span class="hljs-keyword">with</span> session.get(url) <span class="hljs-keyword">as</span> resp:<br>            print(resp.url)<br><br>url_list = [<span class="hljs-string">&quot;https://www.baidu.com&quot;</span>,<span class="hljs-string">&quot;https://mengsec.com&quot;</span>]<br><br>tasks = [asyncio.ensure_future(run(url)) <span class="hljs-keyword">for</span> url <span class="hljs-keyword">in</span> url_list]<br>loop = asyncio.get_event_loop()<br>loop.run_until_complete(asyncio.wait(tasks))<br></code></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs awk">开始执行爬虫... https:<span class="hljs-regexp">//</span>www.baidu.com<br>开始执行爬虫... https:<span class="hljs-regexp">//m</span>engsec.com<br>https:<span class="hljs-regexp">//m</span>engsec.com<br>https:<span class="hljs-regexp">//</span>www.baidu.com<br></code></pre></td></tr></table></figure>
+<h3 id="3-2-使用requests"><a href="#3-2-使用requests" class="headerlink" title="3.2 使用requests"></a>3.2 使用requests</h3><blockquote>
+<p>函数(例如io读写，requests网络请求)阻塞了客户代码与asycio事件循环的唯一线程，因此在执行调用时，整个应用程序都会冻结。这个问题的解决方法是，使用事件循环对象的 run_in_executor方法。asyncio的事件循环在背后维护着一个ThreadPoolExecutor对象，我们可以调用run_in_executor方法，把可调用对象发给它执行。</p>
+</blockquote>
+<p>先看一下官方<code>demo</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> asyncio<br><span class="hljs-keyword">import</span> concurrent.futures<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">blocking_io</span>():</span><br>    <span class="hljs-comment"># File operations (such as logging) can block the</span><br>    <span class="hljs-comment"># event loop: run them in a thread pool.</span><br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;/dev/urandom&#x27;</span>, <span class="hljs-string">&#x27;rb&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>        <span class="hljs-keyword">return</span> f.read(<span class="hljs-number">100</span>)<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">cpu_bound</span>():</span><br>    <span class="hljs-comment"># CPU-bound operations will block the event loop:</span><br>    <span class="hljs-comment"># in general it is preferable to run them in a</span><br>    <span class="hljs-comment"># process pool.</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">sum</span>(i * i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">10</span> ** <span class="hljs-number">7</span>))<br><br><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span>():</span><br>    loop = asyncio.get_running_loop()<br><br>    <span class="hljs-comment">## Options:</span><br><br>    <span class="hljs-comment"># 1. Run in the default loop&#x27;s executor:</span><br>    result = <span class="hljs-keyword">await</span> loop.run_in_executor(<br>        <span class="hljs-literal">None</span>, blocking_io)<br>    print(<span class="hljs-string">&#x27;default thread pool&#x27;</span>, result)<br><br>    <span class="hljs-comment"># 2. Run in a custom thread pool:</span><br>    <span class="hljs-keyword">with</span> concurrent.futures.ThreadPoolExecutor() <span class="hljs-keyword">as</span> pool:<br>        result = <span class="hljs-keyword">await</span> loop.run_in_executor(<br>            pool, blocking_io)<br>        print(<span class="hljs-string">&#x27;custom thread pool&#x27;</span>, result)<br><br>    <span class="hljs-comment"># 3. Run in a custom process pool:</span><br>    <span class="hljs-keyword">with</span> concurrent.futures.ProcessPoolExecutor() <span class="hljs-keyword">as</span> pool:<br>        result = <span class="hljs-keyword">await</span> loop.run_in_executor(<br>            pool, cpu_bound)<br>        print(<span class="hljs-string">&#x27;custom process pool&#x27;</span>, result)<br><br>asyncio.run(main())<br></code></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">default</span> thread pool b&#x27;\xe<span class="hljs-number">7</span>\xdb+\x<span class="hljs-number">18</span>\xfaB\xfc-\xc<span class="hljs-number">3</span>\x<span class="hljs-number">9</span>c\x<span class="hljs-number">0</span>b<span class="hljs-number">1</span>\xb<span class="hljs-number">8</span>\xbdMw\x<span class="hljs-number">8</span>fK\x<span class="hljs-number">93</span>\x<span class="hljs-number">15</span>Q$\xe<span class="hljs-number">8</span>\xd<span class="hljs-number">8</span>\x<span class="hljs-number">90</span>\xc<span class="hljs-number">1</span>\xce\x<span class="hljs-number">8</span>fB\xb<span class="hljs-number">8</span>\x<span class="hljs-number">1</span>b\x<span class="hljs-number">05</span>\xa<span class="hljs-number">2</span> \x<span class="hljs-number">90</span>\xa<span class="hljs-number">1</span>\x<span class="hljs-number">0</span>cv\xc<span class="hljs-number">9</span>\x<span class="hljs-number">15</span>E\xa<span class="hljs-number">3</span>\x<span class="hljs-number">94</span>\xa<span class="hljs-number">6</span>\xc<span class="hljs-number">8</span>J\xc<span class="hljs-number">9</span>\x<span class="hljs-number">1</span>bP\xed\xc<span class="hljs-number">47</span>\x<span class="hljs-number">7</span>f\x<span class="hljs-number">98</span>,\x<span class="hljs-number">8</span>bc\xb<span class="hljs-number">7</span>\xf<span class="hljs-number">4</span>p<span class="hljs-number">1</span>\xd<span class="hljs-number">6</span>\xb<span class="hljs-number">4</span>p\x<span class="hljs-number">03</span>\xbaQ\xb<span class="hljs-number">0</span>\xbeC\xe<span class="hljs-number">6</span>\x<span class="hljs-number">08</span>\xbb]<span class="hljs-number">0</span>n\xfe<span class="hljs-number">9</span>\xe<span class="hljs-number">96</span>\xaa%\xc<span class="hljs-number">8</span>\x<span class="hljs-number">8</span>f<span class="hljs-number">1</span>\xae\x<span class="hljs-number">92</span>\xde\x<span class="hljs-number">0</span>bv\x<span class="hljs-number">83</span>\x<span class="hljs-number">86</span>\x<span class="hljs-number">0</span>c\xa<span class="hljs-number">1</span>\x<span class="hljs-number">8</span>b\x<span class="hljs-number">1</span>c\xbf\x<span class="hljs-number">16</span>\xdb\xa<span class="hljs-number">7</span>&#x27;<br><span class="hljs-attribute">custom</span> thread pool b&#x27;\xd<span class="hljs-number">8</span>\x<span class="hljs-number">91</span>\x<span class="hljs-number">83</span>N\x<span class="hljs-number">88</span>\xce&gt;\xb<span class="hljs-number">4</span>sPA\xae\xcf\xdd/\x<span class="hljs-number">94</span>j\xdc<span class="hljs-number">1</span>Uj\xf<span class="hljs-number">1</span>P\xfcv\x<span class="hljs-number">84</span>\xf<span class="hljs-number">1</span>\x<span class="hljs-number">90</span>z\x<span class="hljs-number">1</span>a~<span class="hljs-number">8</span>S\x<span class="hljs-number">9</span>e\x<span class="hljs-number">146</span>\xb<span class="hljs-number">7</span>o\xc<span class="hljs-number">0</span>\x<span class="hljs-number">03</span>b\x<span class="hljs-number">1</span>ee\x<span class="hljs-number">18</span>oZ\xeeG\xb<span class="hljs-number">5</span>*S\r\xadu\xc<span class="hljs-number">3</span>\x<span class="hljs-number">8</span>f\\\xb<span class="hljs-number">2</span>q\x<span class="hljs-number">1</span>b\xe<span class="hljs-number">9</span>S&lt;!\xde\xff\x<span class="hljs-number">02</span>\xba\x<span class="hljs-number">03</span>&gt;\xd<span class="hljs-number">4</span>\x<span class="hljs-number">04</span>\x<span class="hljs-number">80</span>\xfa<span class="hljs-number">5</span>\xc<span class="hljs-number">3</span>\x<span class="hljs-number">1</span>a\x<span class="hljs-number">11</span>\xef\xd<span class="hljs-number">4</span>\xef\xd<span class="hljs-number">6</span>^]\x<span class="hljs-number">1</span>dv\x<span class="hljs-number">8</span>eC\x<span class="hljs-number">96</span>t\xcb\xcb:r\x<span class="hljs-number">84</span>\x<span class="hljs-number">1</span>d\xb<span class="hljs-number">5</span>\xecC\\&#x27;<br><span class="hljs-attribute">custom</span> process pool <span class="hljs-number">333333283333335000000</span><br></code></pre></td></tr></table></figure>
+<p>如果我们想在异步爬虫中使用最常用的<code>requests</code>库，可以使用<code>run_in_executor()</code>方法.新建一个线程来执行网络请求。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> asyncio<br><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> time<br><br><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">run</span>(<span class="hljs-params">url</span>):</span><br>    print(<span class="hljs-string">&quot;开始执行爬虫...&quot;</span>,url)<br>    print(<span class="hljs-string">&quot;开始执行时间：&quot;</span>, time.time())<br>    loop = asyncio.get_event_loop()<br>    response = <span class="hljs-keyword">await</span> loop.run_in_executor(<span class="hljs-literal">None</span>, requests.get, url)<br>    print(response.url)<br>    print(<span class="hljs-string">&quot;结束执行时间：&quot;</span>, time.time())<br>    <br>url_list = [<span class="hljs-string">&quot;https://www.baidu.com&quot;</span>,<span class="hljs-string">&quot;https://mengsec.com&quot;</span>]<br><br>tasks = [asyncio.ensure_future(run(url)) <span class="hljs-keyword">for</span> url <span class="hljs-keyword">in</span> url_list]<br>loop = asyncio.get_event_loop()<br>loop.run_until_complete(asyncio.wait(tasks))<br></code></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs awk">开始执行爬虫... https:<span class="hljs-regexp">//</span>www.baidu.com<br>开始执行时间： <span class="hljs-number">1551690906.5337</span><br>开始执行爬虫... https:<span class="hljs-regexp">//m</span>engsec.com<br>开始执行时间： <span class="hljs-number">1551690906.534755</span><br>https:<span class="hljs-regexp">//</span>www.baidu.com/<br>结束执行时间： <span class="hljs-number">1551690906.618516</span><br>https:<span class="hljs-regexp">//m</span>engsec.com/<br>结束执行时间： <span class="hljs-number">1551690908.009247</span><br></code></pre></td></tr></table></figure>
+<p>从输出来看，<code>requests</code>库的网络请求成功异步执行了。</p>
+<p>在后面，我们就可以借助<code>run_in_executor()</code>来使用一些常用的但不支持异步的库来实现自己的目的了。</p>
+<h2 id="4-参考"><a href="#4-参考" class="headerlink" title="4. 参考"></a>4. 参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014317793224211f408912d9c04f2eac4d2af0d5d3d7b2000">https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014317793224211f408912d9c04f2eac4d2af0d5d3d7b2000</a></li>
+<li><a target="_blank" rel="noopener" href="http://wiki.jikexueyuan.com/project/explore-python/Advanced-Features/generator.html">http://wiki.jikexueyuan.com/project/explore-python/Advanced-Features/generator.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://thief.one/2018/06/21/1/">https://thief.one/2018/06/21/1/</a></li>
+<li><a target="_blank" rel="noopener" href="https://yangsoon.github.io/2018/03/16/asyncio-%E5%88%9D%E6%8E%A2/">https://yangsoon.github.io/2018/03/16/asyncio-%E5%88%9D%E6%8E%A2/</a></li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%8D%8F%E7%A8%8B/">协程</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Python/">Python</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/06/04/prompt1_to_win/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">XSS靶场练习（一）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/02/27/code-breaking-lumenserial/">
+                        <span class="hidden-mobile">从lumenserial中学phar反序列化漏洞</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

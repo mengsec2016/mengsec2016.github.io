@@ -1,0 +1,508 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>2017-问鼎杯预赛-部分题目Writeup - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="2017-问鼎杯预赛-部分题目Writeup">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2017-09-18 18:08" pubdate>
+        2017年9月18日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      815 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      10
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">2017-问鼎杯预赛-部分题目Writeup</h1>
+            
+            <div class="markdown-body">
+              <p>在火车上比的，就做了一部分题目，由于没有足够的时间做题，也没能进决赛/(ㄒoㄒ)/~~</p>
+<a id="more"></a>
+<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><h3 id="0x01-老眼昏花"><a href="#0x01-老眼昏花" class="headerlink" title="0x01 老眼昏花"></a>0x01 老眼昏花</h3><p>直接点击链接进入，提示</p>
+<pre><code>Can you tell me what year is this? 
+Year is not true.
+</code></pre>
+<p>尝试使用get传一个year的参数</p>
+<pre><code>http://sec2.hdu.edu.cn/84cdc76cabf41bd7c961f6ab12f117d8/?year=2017
+</code></pre>
+<p>又提示</p>
+<pre><code>Can you tell me what year is this? 
+Yes this year is 2017, but you can&#39;t input 7 in fact.
+</code></pre>
+<p>要求输入的不能有7，尝试一下浮点数</p>
+<pre><code>http://sec2.hdu.edu.cn/84cdc76cabf41bd7c961f6ab12f117d8/?year=2016.999999999999999999999999999999999999999999999999999999999999999
+</code></pre>
+<p>直接访问即可获得flag</p>
+<h3 id="0x02-轻而易举"><a href="#0x02-轻而易举" class="headerlink" title="0x02 轻而易举"></a>0x02 轻而易举</h3><p>这个题是个社工题，一开始没人做出来，直到主办方给了提示</p>
+<p>根据文章下面的作者找到后台地址<br>/fuckme/index.php<br>直接根据文章中提供的信息，可以暴力破解出：</p>
+<pre><code>后台账号名为翟欣欣的qq邮箱
+847085251@qq.com
+密码为车牌号
+NB51A5
+</code></pre>
+<p>直接登录，在其中文章中有两篇待审核，其中一篇的下面有一个</p>
+<pre><code>From [/b7010bcfcdb62922d4e4a5ec8d79fb33.php](/b7010bcfcdb62922d4e4a5ec8d79fb33.php)
+</code></pre>
+<p>直接将其加载网址后面访问即可获得flag</p>
+<h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><h3 id="0x01-画风不一样的喵"><a href="#0x01-画风不一样的喵" class="headerlink" title="0x01 画风不一样的喵"></a>0x01 画风不一样的喵</h3><p>下载下来是一张图片，修改扩展名，得到一个压缩包，解压出来得到两张看起来相同的图片还有一个tips.txt，</p>
+<pre><code>Although two days doing the same things, but day2 has a secret than day1
+-。-
+</code></pre>
+<p>这种两张图片的题上一次在某竞赛中出现过，当时不了解盲水印攻击没做出来，这次有了经验，直接上脚本，配合命令：</p>
+<pre><code>python bwm.py decode day1.png day2.png test1.png
+</code></pre>
+<p>得到一张flag<br><img src="https://image.mengsec.com/test1.png" srcset="/img/loading.gif"></p>
+<h3 id="0x02-古典密码"><a href="#0x02-古典密码" class="headerlink" title="0x02 古典密码"></a>0x02 古典密码</h3><p>这个题主要考察字频统计攻击，上“<a target="_blank" rel="noopener" href="https://quipqiup.com/">求pa</a>”网站在线解密</p>
+<p><img src="https://image.mengsec.com/QQ%E6%88%AA%E5%9B%BE20170916201404.png" srcset="/img/loading.gif" alt="1"></p>
+<p>提交getflag</p>
+<h3 id="0x03-瞒天过海"><a href="#0x03-瞒天过海" class="headerlink" title="0x03 瞒天过海"></a>0x03 瞒天过海</h3><p>只有一个名为++__++的文件，用winhex分析了一下发现是个数据包，导出了一个flag.rar的压缩包，里面有个flag.txt，但是加密了。<br><img src="https://image.mengsec.com/QQ%E6%88%AA%E5%9B%BE20170916174625.png" srcset="/img/loading.gif"><br>没办法只能继续找线索。在导出http数据流的时候发现了个py脚本，拖出来跑一下得到<code>passwd=&#123;No_One_Can_Decrypt_Me&#125;</code>，输入密码解出flag.txt ： <code>WDCTF&#123;Seclab_CTF_2017&#125;</code></p>
+<h3 id="0x04-小菜一碟"><a href="#0x04-小菜一碟" class="headerlink" title="0x04 小菜一碟"></a>0x04 小菜一碟</h3><p>给了一张二维码gif，分离出四张图片，拼接一下得到一张二维码，扫码得到一堆十六进制，放入winhex保存为.pyc文件，pyc反编译py得到一个py脚本：</p>
+<pre><code>#!/usr/bin/env python
+# encoding: utf-8
+# 访问 http://tool.lu/pyc/ 查看更多信息
+import random
+key = &#39;ctf&#39;
+strr = &#39;186,98,180,154,139,192,114,14,102,168,43,136,52,218,85,100,43&#39;
+
+def func1(str1, key):
+    random.seed(key)
+    str2 = &#39;&#39;
+    for c in str1:
+        str2 += str(ord(c) ^ random.randint(0, 255)) + &#39;,&#39;
+    
+    str2 = str2.strip(&#39;,&#39;)
+    return str2
+</code></pre>
+<p>​<br>    def func2(str2, key):<br>        random.seed(key)<br>        str1 = ‘’<br>        for i in str2.split(‘,’):<br>            i = int(i)<br>            str1 += chr(i ^ random.randint(0, 255))</p>
+<pre><code>    return str1
+
+print &quot;func1:&quot;+func1(strr, key)+&quot;\n&quot;
+print &quot;func2:&quot;+func2(strr, key)+&quot;\n&quot;
+print &quot;func1(func2):&quot;+func2(func1(strr, key), key)
+</code></pre>
+<p>其中func1()是加密函数，func2()是解密函数，strr中的内容是经过第一个函数加密后的字符串，所以我们只需要加上一句<code>print func2(strr, key)</code></p>
+<p>运行一下就可以得到`flag{U_r_Greatt!}</p>
+<p>PS：Windows和Linux中python生成随机数机制有问题，这个代码只有在Linux下运行才可以获得flag</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/CTF/">CTF</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Writeup/">Writeup</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%97%AE%E9%BC%8E%E6%9D%AF/">问鼎杯</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2017/10/04/XDCTF-%E5%88%9D%E8%B5%9B%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AEWriteUp/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">XDCTF 初赛部分题目WriteUp</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017/09/11/FineCMS-v5-0-9-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                        <span class="hidden-mobile">FineCMS v5.0.9 代码审计</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

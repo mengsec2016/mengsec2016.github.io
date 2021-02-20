@@ -1,0 +1,490 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>条件竞争（Race Condition） - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="条件竞争（Race Condition）">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-04-07 19:55" pubdate>
+        2018年4月7日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.7k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      20
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">条件竞争（Race Condition）</h1>
+            
+            <div class="markdown-body">
+              <p>在0CTF2018中划了划水，学到了不少东西，赛后总结整理下”条件竞争”漏洞知识点。</p>
+<a id="more"></a>
+
+<h2 id="1-漏洞简介"><a href="#1-漏洞简介" class="headerlink" title="1. 漏洞简介"></a>1. 漏洞简介</h2><p>条件竞争是指一个系统的运行结果依赖于不受控制的事件的先后顺序。当这些不受控制的事件并没有按照开发者想要的方式运行时，就可能会出现 bug。尤其在当前我们的系统中大量对资源进行共享，如果处理不当的话，就会产生条件竞争漏洞。</p>
+<p>来举个例子:</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs stata">#-*-coding:utf-8-*-<br>import threading<br><span class="hljs-keyword">COUNT</span> = 0<br><br>def <span class="hljs-keyword">Run</span>(threads_name):<br>	<span class="hljs-keyword">global</span> <span class="hljs-keyword">COUNT</span><br>	read_value = <span class="hljs-keyword">COUNT</span><br>	<span class="hljs-keyword">print</span> <span class="hljs-string">&quot;COUNT in Thread-%s is %d&quot;</span> % (str(threads_name), read_value)<br>	<span class="hljs-keyword">COUNT</span> = read_value + 1<br><br>def main():<br>	threads = []<br>	<span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-keyword">range</span>(10):<br>		t = threading.Thread(target=<span class="hljs-keyword">Run</span>,<span class="hljs-keyword">args</span>=(j,))<br>		threads.<span class="hljs-keyword">append</span>(t)<br>		t.start()<br>	<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-keyword">range</span>(len(threads)):<br>		threads[i].join()<br>	<span class="hljs-keyword">print</span>(<span class="hljs-string">&quot;Finally, The COUNT is %d&quot;</span> % (<span class="hljs-keyword">COUNT</span>,))<br><br><span class="hljs-keyword">if</span> __name__ == &#x27;__main__&#x27;:<br>	main()<br><br></code></pre></td></tr></table></figure>
+<p>这是一个很简单的多线程计数，按照程序的逻辑，到程序执行完毕，<code>COUNT</code>的值应该是10，但事实并不是这样，<code>COUNT</code>的值不但达不到10，而且每次执行的效果都不一样。</p>
+<p><img src="https://image.mengsec.com/Race%20Condition-1.png" srcset="/img/loading.gif"></p>
+<p>Why？</p>
+<p>我们可以假设，当<code>COUNT</code>是3时，线程th1读取<code>COUNT</code>，然后读取到了3，然后CPU将控制权给了线程th2,线程th2同样对其进行读取，还是3，然后接下来th1和th2都将<code>COUNT</code>加到4，然而我们的预期是加到5。在这里，程序中多个线程之间就产生了资源竞争，这种情况发生了多次，于是最后的结果就和我们的预期不一样了。</p>
+<h2 id="2-Web中的条件竞争"><a href="#2-Web中的条件竞争" class="headerlink" title="2. Web中的条件竞争"></a>2. Web中的条件竞争</h2><p>由于网站的特殊性，Web服务器处理多用户的请求时，是并发进行的，因此，如果并发处理不当或者相关逻辑操作设计的不合理的时候，就会导致条件竞争漏洞。简单点说就是在你要做一件事情的时候用很快的速度插了个队并做了另外一件事。而这就导致了一些不好的事情。</p>
+<p>在很多网站中都会包含上传文件或者从远端获取文件保存在服务器的功能，比如修改头像。来看一个简单的例子：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>  <span class="hljs-keyword">if</span>(<span class="hljs-variable">$_FILES</span>[<span class="hljs-string">&quot;file&quot;</span>][<span class="hljs-string">&quot;error&quot;</span>] &gt; <span class="hljs-number">0</span>))&#123;<br>    move_uploaded_file(<span class="hljs-variable">$_FILES</span>[<span class="hljs-string">&quot;file&quot;</span>][<span class="hljs-string">&quot;tmp_name&quot;</span>],<span class="hljs-string">&quot;upload/&quot;</span> . <span class="hljs-variable">$_FILES</span>[<span class="hljs-string">&quot;file&quot;</span>][<span class="hljs-string">&quot;name&quot;</span>]);<br>    <span class="hljs-comment">//check file</span><br>    unlink(<span class="hljs-string">&quot;upload/&quot;</span>._FILES[<span class="hljs-string">&quot;file&quot;</span>][<span class="hljs-string">&quot;name&quot;</span>]));<br>    <span class="hljs-comment">//...</span><br> &#125;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<p>这段代码看似一切正常，先将上传的文件上传到Web目录，然后检查文件的安全性，如果发现文件不安全就马上通过<code>unlink()</code>将其删除。但是，当程序在服务端并发处理用户请求时问题就来了。如果在文件上传成功后但是在相关安全检查发现它是不安全文件删除它以前，这个文件就被执行了那么会怎样呢？</p>
+<p>假设攻击者上传了一个用来生成恶意shell的文件，在上传完成和安全检查完成并删除它的间隙，攻击者通过不断地发起访问请求的方法访问了该文件，该文件就会被执行，并且在服务器上生成一个恶意shell。至此，该文件的任务就已全部完成，至于后面发现它是一个不安全的文件并把它删除的问题都已经不重要了，因为攻击者已经成功的入侵了服务器。</p>
+<h2 id="3-CTF实例"><a href="#3-CTF实例" class="headerlink" title="3. CTF实例"></a>3. CTF实例</h2><h3 id="3-1-CUMT平台上的-上传三"><a href="#3-1-CUMT平台上的-上传三" class="headerlink" title="3.1 CUMT平台上的 上传三"></a>3.1 CUMT平台上的 上传三</h3><p><a target="_blank" rel="noopener" href="http://202.119.201.199/challenge/web/uploadfile/">题目地址</a></p>
+<p>使用burp抓包上传一个shell，先将文件名改成<code>233.jpg</code></p>
+<p><img src="https://image.mengsec.com/Race%20Condition-2.png" srcset="/img/loading.gif"></p>
+<p>要求上传可执行文件，改成<code>233.php</code></p>
+<p><img src="https://image.mengsec.com/Race%20Condition-3.png" srcset="/img/loading.gif"></p>
+<p>两个flag到手</p>
+<p>然后告诉你这个文件扩展名在黑名单里，尝试<code>php4</code>,<code>php5</code>,<code>phtml</code>,发现<code>phtml</code>不在黑名单，但文件还是被删掉了。</p>
+<p><img src="https://image.mengsec.com/Race%20Condition-4.png" srcset="/img/loading.gif"></p>
+<p>文件还是在服务器中存在过的，这就存在了条件竞争漏洞，在文件被删除之前，我们可以访问它来执行命令。</p>
+<p>先写个py脚本循环访问上传的文件，然后burp的Intruder模块多次上传文件，即可获得flag。</p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs processing"><span class="hljs-keyword">import</span> requests<br>url = <span class="hljs-string">&#x27;http://202.119.201.199/challenge/web/uploadfile/upload/233.phtml&#x27;</span><br><span class="hljs-keyword">while</span> True:<br>    r = requests.<span class="hljs-built_in">get</span>(url)<br>    <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;flag&#x27;</span> in  r.<span class="hljs-built_in">text</span>:<br>        <span class="hljs-built_in">print</span> r.<span class="hljs-built_in">text</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/Race%20Condition-5.png" srcset="/img/loading.gif"></p>
+<h3 id="3-2-0CTF2018-Easy-User-Manage-System"><a href="#3-2-0CTF2018-Easy-User-Manage-System" class="headerlink" title="3.2 0CTF2018-Easy User Manage System"></a>3.2 0CTF2018-Easy User Manage System</h3><p>题目中把IP当作手机，通过开放80端口的HTTP服务来接收注册账号时的验证码。<br>收到的验证码在HTTP的请求头里。</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs accesslog"><span class="hljs-number">202.120.7.196</span> - - <span class="hljs-string">[03/Apr/2018 20:31:15]</span> <span class="hljs-string">&quot;<span class="hljs-keyword">HEAD</span> /?037d95ce2da397602f4acc0b3227fcbc HTTP/1.1&quot;</span> <span class="hljs-number">200</span> -<br></code></pre></td></tr></table></figure>
+<p>注册完账号后，发现提示</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">If you make your phone <span class="hljs-selector-tag">to</span> be <span class="hljs-number">8.8</span>.<span class="hljs-number">8.8</span>, <span class="hljs-selector-tag">I</span> will give you <span class="hljs-selector-tag">a</span> flag.<br></code></pre></td></tr></table></figure>
+<p>其中还给了一个页面用来修改IP地址。</p>
+<p><img src="https://image.mengsec.com/20180CTF-Web-EUMS-1.png" srcset="/img/loading.gif" alt="image"></p>
+<p>题目考察的是多个session进行条件竞争。</p>
+<p>我们首先成功注册一个账号，并且通过IP验证，为了实现有多个session，分别在两个不同的浏览器上登陆。</p>
+<p><img src="https://image.mengsec.com/20180CTF-Web-EUMS-2.png" srcset="/img/loading.gif" alt="image"></p>
+<p>此时两个都在登录状态，然后都到修改IP的那个界面，其中一个提交自己VPS的IP，如果IP地址重复的话，可以通过IP的16进制来进行绕过，提交之后就会跳转，让你输入验证码，输入验证码后暂时不用提交，此时去另一个浏览器上页面填写IP地址为8.8.8.8。如图：</p>
+<p><img src="https://image.mengsec.com/20180CTF-Web-EUMS-3.png" srcset="/img/loading.gif" alt="image"></p>
+<p>然后直接使用burp进行抓包，先点击提交8.8.8.8IP的那个，然后再提交验证码，这两个包都会被burp拦截，然后直接点击Intercept off放行，即可获得flag。</p>
+<p><img src="https://image.mengsec.com/20180CTF-Web-EUMS-4.png" srcset="/img/loading.gif" alt="image"></p>
+<p>在该题目中，服务器通过session对请求顺序建立了锁，因此我们需要多个session，使用两个浏览器登录同一个账户即可。在将IP改为8.8.8.8时，有短时间的网络请求堵塞，我们在这个时间段，使用另一个session提交请求，即可通过验证，成功将IP改为8.8.8.8，然后获得flag。这个题目算是一个对数据库操作的条件竞争漏洞的典型例子。</p>
+<h2 id="4-总结以及漏洞修复"><a href="#4-总结以及漏洞修复" class="headerlink" title="4. 总结以及漏洞修复"></a>4. 总结以及漏洞修复</h2><p>条件竞争漏洞产生的很大一部分原因是程序不严谨，对于并发操作没有做好限制，毕竟开发者在进行代码开发的时候，常常倾向于代码会以线性的方式执行，而并行服务器会同时执行多个线程，这就会导致意想不到的结果。</p>
+<p>条件竞争漏洞的修复主要看开发者，以上述的Web漏洞为例：</p>
+<ul>
+<li>对于数据库的操作，比较正统的方法是设置锁</li>
+<li>对于文件上传，“引狼入室”的方法不可取，最好在上传到目录之前就进行充分的检测，最好使用白名单。</li>
+</ul>
+<h2 id="5-参考链接"><a href="#5-参考链接" class="headerlink" title="5. 参考链接"></a>5. 参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://www.361way.com/python-thread/3425.html">http://www.361way.com/python-thread/3425.html</a></li>
+<li><a target="_blank" rel="noopener" href="http://wiki.secbug.net/web_race-condtion.html">http://wiki.secbug.net/web_race-condtion.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/u011377996/article/details/79511160">https://blog.csdn.net/u011377996/article/details/79511160</a></li>
+<li><a target="_blank" rel="noopener" href="https://coxxs.me/676">https://coxxs.me/676</a></li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%9D%A1%E4%BB%B6%E7%AB%9E%E4%BA%89/">条件竞争</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/04/11/Vulnhub-billub0x-Writeup/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Vulnhub-billub0x-Writeup</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017/12/26/SSH%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/">
+                        <span class="hidden-mobile">SSH正向代理与反向代理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

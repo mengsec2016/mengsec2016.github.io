@@ -1,0 +1,491 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Java Web安全入门——S2漏洞测试环境搭建 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Java Web安全入门——S2漏洞测试环境搭建">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-10-29 21:40" pubdate>
+        2019年10月29日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      19
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Java Web安全入门——S2漏洞测试环境搭建</h1>
+            
+            <div class="markdown-body">
+              <p>最近准备入坑Java安全，先从最经典的Struts2漏洞开始吧</p>
+<a id="more"></a>
+
+<h2 id="1-测试环境简介"><a href="#1-测试环境简介" class="headerlink" title="1. 测试环境简介"></a>1. 测试环境简介</h2><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">MacOS</span> <span class="hljs-number">10</span>.<span class="hljs-number">15</span><br><span class="hljs-attribute">Java</span> <span class="hljs-number">1</span>.<span class="hljs-number">8</span>.<span class="hljs-number">0</span>_<span class="hljs-number">191</span><br><span class="hljs-attribute">IDEA</span> <span class="hljs-number">2019</span>.<span class="hljs-number">2</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">Tomcat</span> <span class="hljs-number">9</span>.<span class="hljs-number">0</span>.<span class="hljs-number">27</span><br></code></pre></td></tr></table></figure>
+<h2 id="2-具体操作步骤"><a href="#2-具体操作步骤" class="headerlink" title="2. 具体操作步骤"></a>2. 具体操作步骤</h2><p>第一步，创建一个Maven项目，如图所示，勾选<code>Create from archetype</code>，并且选择下面的<code>webapp</code>。</p>
+<p><img src="https://image.mengsec.com/struts/env/image-20191028204945920.png" srcset="/img/loading.gif" alt="image-20191028204945920"></p>
+<p>点击<code>Next</code>。</p>
+<p><img src="https://image.mengsec.com/struts/env/image-20191028205104917.png" srcset="/img/loading.gif" alt="image-20191028205104917"></p>
+<p>在这里，<code>GroupId</code>和<code>ArtifactId</code>自定义就好，剩下的一路<code>Next</code>。</p>
+<p><img src="https://image.mengsec.com/struts/env/image-20191028205254286.png" srcset="/img/loading.gif" alt="image-20191028205254286"></p>
+<p>项目创建完毕后，选择右下角的<code>Enable Auto-Import</code>，然后等待<code>Maven</code>构建完毕。</p>
+<p>我们刚刚创建完毕的项目如图所示。</p>
+<p><img src="https://image.mengsec.com/struts/env/image-20191028205534771.png" srcset="/img/loading.gif" alt="image-20191028205534771"></p>
+<p>接下来我们分别添加并配置Maven的<code>pom.xml</code>，Tomcat的<code>web.xml</code>，Struts2的<code>struts.xml</code>。</p>
+<p>在main目录下创建一个java文件夹，里面放置我们自定义的java类文件，如果IDEA没有将java文件夹标识为资源文件夹的话，可以在文件夹上右键，将其标识为资源文件夹。</p>
+<p><img src="https://image.mengsec.com/struts/env/image-20191028210132922.png" srcset="/img/loading.gif" alt="image-20191028210132922"></p>
+<p>在里面我们创建自定义的Java Package。</p>
+<p><img src="https://image.mengsec.com/struts/env/image-20191028210415377.png" srcset="/img/loading.gif" alt="image-20191028210415377"></p>
+<p>然后在其中创建一个名为<code>LoginAction</code>的Java类，内容为</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.mengsec.s2001.action;<br><br><span class="hljs-keyword">import</span> com.opensymphony.xwork2.ActionSupport;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LoginAction</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ActionSupport</span> </span>&#123;<br>    <span class="hljs-keyword">private</span> String username = <span class="hljs-keyword">null</span>;<br>    <span class="hljs-keyword">private</span> String password = <span class="hljs-keyword">null</span>;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getUsername</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.username;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getPassword</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.password;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setUsername</span><span class="hljs-params">(String username)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.username = username;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setPassword</span><span class="hljs-params">(String password)</span> </span>&#123;<br>        <span class="hljs-keyword">this</span>.password = password;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">execute</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;<br>        <span class="hljs-keyword">if</span> ((<span class="hljs-keyword">this</span>.username.isEmpty()) || (<span class="hljs-keyword">this</span>.password.isEmpty())) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;error&quot;</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span> ((<span class="hljs-keyword">this</span>.username.equalsIgnoreCase(<span class="hljs-string">&quot;admin&quot;</span>))<br>                &amp;&amp; (<span class="hljs-keyword">this</span>.password.equals(<span class="hljs-string">&quot;admin&quot;</span>))) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;success&quot;</span>;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;error&quot;</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>接下来修改<code>pom.xml</code>，添加</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.struts<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>struts2-core<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.0.8<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>添加这个配置之后，Maven会自动将对应版本的Jar包下载导入，不需要手工配置了，但是这里有个小坑。</p>
+<p>IDEA默认不会自动编译发布Java文件夹中的资源文件，可以在<code>pom.xml</code>的<code>build</code>标签中添加以下配置。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">resources</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">resource</span>&gt;</span><br>		<span class="hljs-tag">&lt;<span class="hljs-name">directory</span>&gt;</span>main/java<span class="hljs-tag">&lt;/<span class="hljs-name">directory</span>&gt;</span><br>		<span class="hljs-tag">&lt;<span class="hljs-name">includes</span>&gt;</span><br>			<span class="hljs-tag">&lt;<span class="hljs-name">include</span>&gt;</span>**/*.xml<span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span><br>		<span class="hljs-tag">&lt;/<span class="hljs-name">includes</span>&gt;</span><br>	<span class="hljs-tag">&lt;/<span class="hljs-name">resource</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">resources</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>再修改<code>web.xml</code>，在这里主要是配置<code>struts2</code>的过滤器。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">web-app</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">display-name</span>&gt;</span>S2-001 Example<span class="hljs-tag">&lt;/<span class="hljs-name">display-name</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">filter</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">filter-name</span>&gt;</span>struts2<span class="hljs-tag">&lt;/<span class="hljs-name">filter-name</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">filter-class</span>&gt;</span>org.apache.struts2.dispatcher.FilterDispatcher<span class="hljs-tag">&lt;/<span class="hljs-name">filter-class</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">filter</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">filter-mapping</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">filter-name</span>&gt;</span>struts2<span class="hljs-tag">&lt;/<span class="hljs-name">filter-name</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">url-pattern</span>&gt;</span>/*<span class="hljs-tag">&lt;/<span class="hljs-name">url-pattern</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">filter-mapping</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">welcome-file-list</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">welcome-file</span>&gt;</span>index.jsp<span class="hljs-tag">&lt;/<span class="hljs-name">welcome-file</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">welcome-file-list</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">web-app</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>在<code>webapp</code>目录下创建&amp;修改两个文件——<code>index.jsp</code>&amp;<code>welcome.jsp</code>，内容如下。</p>
+<p><strong>index.jsp</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs jsp">&lt;%@ page language=<span class="hljs-string">&quot;java&quot;</span> contentType=<span class="hljs-string">&quot;text/html; charset=UTF-8&quot;</span><br>         pageEncoding=<span class="hljs-string">&quot;UTF-8&quot;</span>%&gt;<br>&lt;%@ taglib prefix=<span class="hljs-string">&quot;s&quot;</span> uri=<span class="hljs-string">&quot;/struts-tags&quot;</span> %&gt;<br>&lt;!DOCTYPE html PUBLIC <span class="hljs-string">&quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;</span> <span class="hljs-string">&quot;http://www.w3.org/TR/html4/loose.dtd&quot;</span>&gt;<br>&lt;html&gt;<br>&lt;head&gt;<br>    &lt;meta http-equiv=<span class="hljs-string">&quot;Content-Type&quot;</span> content=<span class="hljs-string">&quot;text/html; charset=UTF-8&quot;</span>&gt;<br>    &lt;title&gt;S2-001&lt;/title&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br>&lt;h2&gt;S2-001 Demo&lt;/h2&gt;<br>&lt;p&gt;link: &lt;a href=<span class="hljs-string">&quot;https://cwiki.apache.org/confluence/display/WW/S2-001&quot;</span>&gt;https:<span class="hljs-comment">//cwiki.apache.org/confluence/display/WW/S2-001&lt;/a&gt;&lt;/p&gt;</span><br>&lt;s:form action=<span class="hljs-string">&quot;login&quot;</span>&gt;<br>    &lt;s:textfield name=<span class="hljs-string">&quot;username&quot;</span> label=<span class="hljs-string">&quot;username&quot;</span> /&gt;<br>    &lt;s:textfield name=<span class="hljs-string">&quot;password&quot;</span> label=<span class="hljs-string">&quot;password&quot;</span> /&gt;<br>    &lt;s:submit&gt;&lt;/s:submit&gt;<br>&lt;/s:form&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;<br></code></pre></td></tr></table></figure>
+<p><strong>welcome.jsp</strong></p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs jsp">&lt;%@ page language=<span class="hljs-string">&quot;java&quot;</span> contentType=<span class="hljs-string">&quot;text/html; charset=UTF-8&quot;</span><br>         pageEncoding=<span class="hljs-string">&quot;UTF-8&quot;</span>%&gt;<br>&lt;%@ taglib prefix=<span class="hljs-string">&quot;s&quot;</span> uri=<span class="hljs-string">&quot;/struts-tags&quot;</span> %&gt;<br>&lt;!DOCTYPE html PUBLIC <span class="hljs-string">&quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;</span> <span class="hljs-string">&quot;http://www.w3.org/TR/html4/loose.dtd&quot;</span>&gt;<br>&lt;html&gt;<br>&lt;head&gt;<br>    &lt;meta http-equiv=<span class="hljs-string">&quot;Content-Type&quot;</span> content=<span class="hljs-string">&quot;text/html; charset=UTF-8&quot;</span>&gt;<br>    &lt;title&gt;S2-001&lt;/title&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br>&lt;p&gt;Hello &lt;s:property value=&quot;username&quot;&gt;&lt;/s:property&gt;&lt;/p&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;<br><br></code></pre></td></tr></table></figure>
+<p>然后在<code>main</code>文件夹下创建一个<code>resources</code>文件夹，内部添加一个<code>struts.xml</code>，内容为：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">struts</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">package</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;S2-001&quot;</span> <span class="hljs-attr">extends</span>=<span class="hljs-string">&quot;struts-default&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">action</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;login&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;com.mengsec.s2001.action.LoginAction&quot;</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">result</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;success&quot;</span>&gt;</span>welcome.jsp<span class="hljs-tag">&lt;/<span class="hljs-name">result</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">result</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;error&quot;</span>&gt;</span>index.jsp<span class="hljs-tag">&lt;/<span class="hljs-name">result</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">action</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">package</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">struts</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>创建完毕的目录如图所示：</p>
+<p><img src="https://image.mengsec.com/struts/env/image-20191028212239345.png" srcset="/img/loading.gif" alt="image-20191028212239345"></p>
+<p>接下来配置Tomcat服务器，在Mac上的话，直接<code>brew install tomcat</code>即可安装<code>tomcat9</code>，安装的路径为<code>/usr/local/Cellar/tomcat/9.0.27</code>。</p>
+<p>添加一个本地的Tomcat服务器。</p>
+<p><img src="https://image.mengsec.com/struts/env/image-20191028212557928.png" srcset="/img/loading.gif" alt="image-20191028212557928"></p>
+<p>配置好Tomcat服务器的路径。</p>
+<p><img src="https://image.mengsec.com/struts/env/image-20191028212649942.png" srcset="/img/loading.gif" alt="image-20191028212649942"></p>
+<p>在这里，默认的<code>8080</code>端口与<code>burp</code>的<code>8080</code>端口冲突了，我修改为<code>8008</code>端口了。</p>
+<p><img src="https://image.mengsec.com/struts/env/image-20191028212837833.png" srcset="/img/loading.gif" alt="image-20191028212837833"></p>
+<p>然后再点击<code>Deployment</code>，添加一个<code>artifacts</code>。</p>
+<p><img src="https://image.mengsec.com/struts/env/image-20191028212937692.png" srcset="/img/loading.gif" alt="image-20191028212937692"></p>
+<p>创建完毕后保存配置即可。</p>
+<p>然后点击左上角的绿色三角就可以运行了。</p>
+<p><img src="https://image.mengsec.com/struts/env/image-20191028213137196.png" srcset="/img/loading.gif" alt="image-20191028213137196"></p>
+<p>测试一下Payload，在username中输入</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs haml"><span class="hljs-tag">%&#123;1+1&#125;</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/struts/env/image-20191028213237824.png" srcset="/img/loading.gif" alt="image-20191028213237824"></p>
+<p>至此我们的测试环境就搭建完毕了。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Java-Web/">Java-Web</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%8A%98%E8%85%BE/">折腾</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/10/29/Java-Web-S2-001/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Java Web安全入门——S2-001漏洞分析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/10/27/uniview-rce-analysis/">
+                        <span class="hidden-mobile">Uniview RCE 漏洞分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

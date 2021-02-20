@@ -1,0 +1,537 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>phpbrew+nginx打造多版本php开发环境 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="phpbrew+nginx打造多版本php开发环境">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-01-28 21:31" pubdate>
+        2019年1月28日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      27
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">phpbrew+nginx打造多版本php开发环境</h1>
+            
+            <div class="markdown-body">
+              <p>苦于Mac平台上没有类似于phpstudy这样的免费的集成开发环境，MAMP功能不够强大，Pro版又太贵了，MxSrvs这种的免费集成开发环境定制性不强。docker一个个编译安装部署又太过于麻烦，尝试了很多方法，踩了不少坑，最后决定在本地用phpbrew和nginx来实现多版本php集成开发环境。</p>
+<a id="more"></a>
+
+<h2 id="1-安装"><a href="#1-安装" class="headerlink" title="1. 安装"></a>1. 安装</h2><p>首先需要安装三个东西</p>
+<ol>
+<li>Homebrew</li>
+<li>Nginx</li>
+<li>phpbrew</li>
+</ol>
+<h3 id="1-1-安装Homebrew"><a href="#1-1-安装Homebrew" class="headerlink" title="1.1  安装Homebrew"></a>1.1  安装Homebrew</h3><p><a target="_blank" rel="noopener" href="https://brew.sh/">HomeBrew</a>是Mac上的包管理器，非常好用。</p>
+<p>一条命令就能安装</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">/usr/</span>bin<span class="hljs-regexp">/ruby -e &quot;$(curl -fsSL https:/</span><span class="hljs-regexp">/raw.githubusercontent.com/</span>Homebrew<span class="hljs-regexp">/install/m</span>aster/install)<span class="hljs-string">&quot;</span><br></code></pre></td></tr></table></figure>
+<h3 id="1-2-安装Nginx"><a href="#1-2-安装Nginx" class="headerlink" title="1.2 安装Nginx"></a>1.2 安装Nginx</h3><p>使用Homebrew可以很容易的安装nginx，默认的是安装Nginx最新版</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-keyword">brew </span><span class="hljs-keyword">install </span>nginx<br></code></pre></td></tr></table></figure>
+<p>安装完毕后可以查看Nginx版本</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs applescript">$ nginx -v<br>nginx <span class="hljs-built_in">version</span>: nginx/<span class="hljs-number">1.15</span><span class="hljs-number">.8</span><br></code></pre></td></tr></table></figure>
+<h3 id="1-3-安装PHPbrew"><a href="#1-3-安装PHPbrew" class="headerlink" title="1.3 安装PHPbrew"></a>1.3 安装PHPbrew</h3><p> <a target="_blank" rel="noopener" href="https://github.com/phpbrew/phpbrew">PHPbrew</a> 是个多平台的php管理工具。在这里只列出我配置时的一些操作，具体请移步PHPbrew的<a target="_blank" rel="noopener" href="https://github.com/phpbrew/phpbrew/wiki">wiki</a>。</p>
+<ul>
+<li>安装依赖</li>
+</ul>
+<p>对于Homebrew，则就是</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">xcode-select --<span class="hljs-keyword">install</span><br><span class="hljs-keyword">brew </span><span class="hljs-keyword">install </span>automake autoconf curl pcre <span class="hljs-keyword">bison </span>re2c mhash libtool icu4c gettext <span class="hljs-keyword">jpeg </span>openssl libxml2 mcrypt gmp libevent<br><span class="hljs-keyword">brew </span>link icu4c<br><span class="hljs-keyword">brew </span>link --force openssl<br><span class="hljs-keyword">brew </span>link --force libxml2<br></code></pre></td></tr></table></figure>
+<p>对于后面的三个link操作，我这里都会出警告：</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs lasso">Warning: Refusing <span class="hljs-keyword">to</span> <span class="hljs-keyword">link</span> macOS<span class="hljs-params">-provided</span> software:xxx<br></code></pre></td></tr></table></figure>
+<p>猜测是SIP的问题，但是不想关SIP，就直接按照brew的提示直接把路径添加到环境变量里了。</p>
+<ul>
+<li>下载phpbrew。</li>
+</ul>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">curl -L -O https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/phpbrew/</span>phpbrew<span class="hljs-regexp">/raw/m</span>aster/phpbrew<br>chmod +x phpbrew<br>sudo mv phpbrew <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/bin/</span>phpbrew<br></code></pre></td></tr></table></figure>
+<ul>
+<li>初始化phpbrew</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs csharp">phpbrew <span class="hljs-keyword">init</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li>接着在 <code>.zshrc</code> 文件增加如下行(如果是命令行是Bash，那就在用户目录.bashrc下添加)</li>
+</ul>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gradle">[[ -e ~<span class="hljs-regexp">/.phpbrew/</span>bashrc ]] &amp;&amp; <span class="hljs-keyword">source</span> ~<span class="hljs-regexp">/.phpbrew/</span>bashrc<br></code></pre></td></tr></table></figure>
+<ul>
+<li>然后设置库路径</li>
+</ul>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">phpbrew lookup-prefix homebrew</span><br></code></pre></td></tr></table></figure>
+<h2 id="2-PHPbrew-简单使用方法"><a href="#2-PHPbrew-简单使用方法" class="headerlink" title="2. PHPbrew 简单使用方法"></a>2. PHPbrew 简单使用方法</h2><h3 id="2-1-PHP版本获取"><a href="#2-1-PHP版本获取" class="headerlink" title="2.1 PHP版本获取"></a>2.1 PHP版本获取</h3><p>列出已经安装的php</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">phpbrew list</span><br></code></pre></td></tr></table></figure>
+<p>列出已知的PHP版本</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs erlang">$ phpbrew known<br><span class="hljs-number">7.3</span>: <span class="hljs-number">7.3</span>.<span class="hljs-number">1</span>, <span class="hljs-number">7.3</span>.<span class="hljs-number">0</span> ...<br><span class="hljs-number">7.2</span>: <span class="hljs-number">7.2</span>.<span class="hljs-number">14</span>, <span class="hljs-number">7.2</span>.<span class="hljs-number">13</span>, <span class="hljs-number">7.2</span>.<span class="hljs-number">12</span>, <span class="hljs-number">7.2</span>.<span class="hljs-number">11</span>, <span class="hljs-number">7.2</span>.<span class="hljs-number">10</span>, <span class="hljs-number">7.2</span>.<span class="hljs-number">9</span>, <span class="hljs-number">7.2</span>.<span class="hljs-number">8</span>, <span class="hljs-number">7.2</span>.<span class="hljs-number">7</span> ...<br><span class="hljs-number">7.1</span>: <span class="hljs-number">7.1</span>.<span class="hljs-number">26</span>, <span class="hljs-number">7.1</span>.<span class="hljs-number">25</span>, <span class="hljs-number">7.1</span>.<span class="hljs-number">24</span>, <span class="hljs-number">7.1</span>.<span class="hljs-number">23</span>, <span class="hljs-number">7.1</span>.<span class="hljs-number">22</span>, <span class="hljs-number">7.1</span>.<span class="hljs-number">21</span>, <span class="hljs-number">7.1</span>.<span class="hljs-number">20</span>, <span class="hljs-number">7.1</span>.<span class="hljs-number">19</span> ...<br><span class="hljs-number">7.0</span>: <span class="hljs-number">7.0</span>.<span class="hljs-number">33</span>, <span class="hljs-number">7.0</span>.<span class="hljs-number">32</span>, <span class="hljs-number">7.0</span>.<span class="hljs-number">31</span>, <span class="hljs-number">7.0</span>.<span class="hljs-number">30</span>, <span class="hljs-number">7.0</span>.<span class="hljs-number">29</span>, <span class="hljs-number">7.0</span>.<span class="hljs-number">28</span>, <span class="hljs-number">7.0</span>.<span class="hljs-number">27</span>, <span class="hljs-number">7.0</span>.<span class="hljs-number">26</span> ...<br><span class="hljs-number">5.6</span>: <span class="hljs-number">5.6</span>.<span class="hljs-number">40</span>, <span class="hljs-number">5.6</span>.<span class="hljs-number">39</span>, <span class="hljs-number">5.6</span>.<span class="hljs-number">38</span>, <span class="hljs-number">5.6</span>.<span class="hljs-number">37</span>, <span class="hljs-number">5.6</span>.<span class="hljs-number">36</span>, <span class="hljs-number">5.6</span>.<span class="hljs-number">35</span>, <span class="hljs-number">5.6</span>.<span class="hljs-number">34</span>, <span class="hljs-number">5.6</span>.<span class="hljs-number">33</span> ...<br><span class="hljs-number">5.5</span>: <span class="hljs-number">5.5</span>.<span class="hljs-number">38</span>, <span class="hljs-number">5.5</span>.<span class="hljs-number">37</span>, <span class="hljs-number">5.5</span>.<span class="hljs-number">36</span>, <span class="hljs-number">5.5</span>.<span class="hljs-number">35</span>, <span class="hljs-number">5.5</span>.<span class="hljs-number">34</span>, <span class="hljs-number">5.5</span>.<span class="hljs-number">33</span>, <span class="hljs-number">5.5</span>.<span class="hljs-number">32</span>, <span class="hljs-number">5.5</span>.<span class="hljs-number">31</span> ...<br><span class="hljs-number">5.4</span>: <span class="hljs-number">5.4</span>.<span class="hljs-number">45</span>, <span class="hljs-number">5.4</span>.<span class="hljs-number">44</span>, <span class="hljs-number">5.4</span>.<span class="hljs-number">43</span>, <span class="hljs-number">5.4</span>.<span class="hljs-number">42</span>, <span class="hljs-number">5.4</span>.<span class="hljs-number">41</span>, <span class="hljs-number">5.4</span>.<span class="hljs-number">40</span>, <span class="hljs-number">5.4</span>.<span class="hljs-number">39</span>, <span class="hljs-number">5.4</span>.<span class="hljs-number">38</span> ...<br><span class="hljs-number">5.3</span>: <span class="hljs-number">5.3</span>.<span class="hljs-number">29</span>, <span class="hljs-number">5.3</span>.<span class="hljs-number">28</span>, <span class="hljs-number">5.3</span>.<span class="hljs-number">27</span>, <span class="hljs-number">5.3</span>.<span class="hljs-number">26</span>, <span class="hljs-number">5.3</span>.<span class="hljs-number">25</span>, <span class="hljs-number">5.3</span>.<span class="hljs-number">24</span>, <span class="hljs-number">5.3</span>.<span class="hljs-number">23</span>, <span class="hljs-number">5.3</span>.<span class="hljs-number">22</span> ...<br></code></pre></td></tr></table></figure>
+<p>使用 <code>--more</code>参数可以列出更多版本</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">phpbrew known <span class="hljs-comment">--more</span><br></code></pre></td></tr></table></figure>
+<p>使用<code>--old</code>参数可以列出已知的旧版本</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">phpbrew known <span class="hljs-comment">--old</span><br></code></pre></td></tr></table></figure>
+<h3 id="2-2-获取PHP编译参数"><a href="#2-2-获取PHP编译参数" class="headerlink" title="2.2 获取PHP编译参数"></a>2.2 获取PHP编译参数</h3><p>列出php的一些编译参数</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs vim">$ phpbrew variants<br>Variant<span class="hljs-variable">s:</span><br>  <span class="hljs-keyword">all</span>, apxs2, bcmath, bz2, calendar, cgi, cli, ctype, curl, dba, <span class="hljs-keyword">debug</span>, dom,<br>  dtrace, editline, embed, exif, fileinfo, <span class="hljs-built_in">filter</span>, fpm, ftp, gcov, gd,<br>  gettext, gmp, hash, <span class="hljs-built_in">iconv</span>, icu, <span class="hljs-keyword">imap</span>, inifile, inline, intl, ipc, ipv6,<br>  json, kerberos, ldap, libgcc, mbregex, mbstring, mcrypt, mhash, mysql,<br>  opcache, openssl, pcntl, pcre, pdo, pear, pgsql, phar, phpdbg, posix,<br>  readline, session, soap, sockets, sqlite, static, tidy, tokenizer, wddx,<br>  xml, xml_all, xmlrpc, zip, zlib, zts<br><br>Virtual variant<span class="hljs-variable">s:</span><br>  db<span class="hljs-variable">s:</span> sqlite, mysql, pgsql, pdo<br>  <span class="hljs-keyword">m</span><span class="hljs-variable">b:</span> mbstring, mbregex<br>  neutra<span class="hljs-variable">l:</span><br>  smal<span class="hljs-variable">l:</span> bz2, cli, dom, <span class="hljs-built_in">filter</span>, ipc, json, mbregex, mbstring, pcre, phar,<br>  posix, readline, xml, curl, openssl<br>  defaul<span class="hljs-variable">t:</span> bcmath, bz2, calendar, cli, ctype, dom, fileinfo, <span class="hljs-built_in">filter</span>, ipc,<br>  json, mbregex, mbstring, mhash, mcrypt, pcntl, pcre, pdo, pear, phar,<br>  posix, readline, sockets, tokenizer, xml, curl, openssl, zip<br>  everythin<span class="hljs-variable">g:</span> dba, ipv6, dom, calendar, wddx, static, inifile, inline, cli,<br>  ftp, <span class="hljs-built_in">filter</span>, gcov, zts, json, hash, exif, mbstring, mbregex, libgcc,<br>  pdo, posix, embed, sockets, <span class="hljs-keyword">debug</span>, phpdbg, zip, bcmath, fileinfo, ctype,<br>  cgi, soap, pcntl, phar, session, tokenizer, opcache, <span class="hljs-keyword">imap</span>, ldap, tidy,<br>  kerberos, xmlrpc, fpm, dtrace, pcre, mhash, mcrypt, zlib, curl, readline,<br>  editline, gd, intl, icu, openssl, mysql, sqlite, pgsql, xml, xml_all,<br>  gettext, <span class="hljs-built_in">iconv</span>, bz2, ipc, gmp, pear<br>  <br>Using variants <span class="hljs-keyword">to</span> build PHP:<br>  phpbrew install php-<span class="hljs-number">5.3</span>.<span class="hljs-number">10</span> +default<br>  phpbrew install php-<span class="hljs-number">5.3</span>.<span class="hljs-number">10</span> +mysql +pdo<br>  phpbrew install php-<span class="hljs-number">5.3</span>.<span class="hljs-number">10</span> +mysql +pdo +apxs2<br>  phpbrew install php-<span class="hljs-number">5.3</span>.<span class="hljs-number">10</span> +mysql +pdo +apxs2=/usr/bin/apxs2<br></code></pre></td></tr></table></figure>
+<h3 id="2-3-编译PHP"><a href="#2-3-编译PHP" class="headerlink" title="2.3 编译PHP"></a>2.3 编译PHP</h3><p>默认配置安装PHP:</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">phpbrew</span> install <span class="hljs-number">5</span>.<span class="hljs-number">4</span>.<span class="hljs-number">40</span> +default<br></code></pre></td></tr></table></figure>
+<p>测试安装:</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">phpbrew</span> install --test <span class="hljs-number">5</span>.<span class="hljs-number">4</span>.<span class="hljs-number">40</span><br></code></pre></td></tr></table></figure>
+<p>显示debug信息:</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">phpbrew</span> -d install --test <span class="hljs-number">5</span>.<span class="hljs-number">4</span>.<span class="hljs-number">40</span><br></code></pre></td></tr></table></figure>
+<p>安装旧版本:</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">phpbrew</span> install --old <span class="hljs-number">5</span>.<span class="hljs-number">2</span>.<span class="hljs-number">13</span><br></code></pre></td></tr></table></figure>
+<h3 id="2-4-PHP使用和切换"><a href="#2-4-PHP使用和切换" class="headerlink" title="2.4 PHP使用和切换"></a>2.4 PHP使用和切换</h3><p>临时使用:</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">phpbrew</span> use <span class="hljs-number">5</span>.<span class="hljs-number">4</span>.<span class="hljs-number">40</span><br></code></pre></td></tr></table></figure>
+<p>切换版本(设置默认版本):</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">phpbrew</span> switch <span class="hljs-number">5</span>.<span class="hljs-number">4</span>.<span class="hljs-number">40</span><br></code></pre></td></tr></table></figure>
+<p>关闭phpbrew:</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">phpbrew</span> <span class="hljs-literal">off</span><br></code></pre></td></tr></table></figure>
+<h2 id="3-配置过程"><a href="#3-配置过程" class="headerlink" title="3. 配置过程"></a>3. 配置过程</h2><p>首先编译需要的PHP版本，在此我使用php-fpm来实现PHP和Nginx通信，需要在编译php时，添加+fpm参数。</p>
+<h3 id="3-1-编译php"><a href="#3-1-编译php" class="headerlink" title="3.1 编译php"></a>3.1 编译php</h3><p>在之前我已经配置好了php-5.6.40，在此我以php 7.2.14为例，再进行一次配置。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">phpbrew</span> install <span class="hljs-number">7</span>.<span class="hljs-number">2</span>.<span class="hljs-number">14</span> +default +fpm +dbs +mb +bz<span class="hljs-number">2</span>=/usr/local/Cellar/bzip<span class="hljs-number">2</span>/<span class="hljs-number">1</span>.<span class="hljs-number">0</span>.<span class="hljs-number">6</span>_<span class="hljs-number">1</span> +zlib=/usr/local/Cellar/zlib/<span class="hljs-number">1</span>.<span class="hljs-number">2</span>.<span class="hljs-number">11</span><br></code></pre></td></tr></table></figure>
+<p>在这里，直接使用<code>phpbrew install 7.2.14 +default +fpm</code>进行编译，程序找不到bzip2和zlib的路径，需要手动指定该路径。后面在添加一些配置参数时，如果报错说xxx不存在，而且你已经使用brew安装了的话，可以用该方法手动指定路径。</p>
+<p>接下来phpbrew会自动下载并编译该版本，在我电脑上大概需要7分钟。</p>
+<p>然后切换到php 7.2.14。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-variable">$</span> phpbrew <span class="hljs-keyword">switch</span> php<span class="hljs-literal">-7</span>.<span class="hljs-number">2.14</span><br><span class="hljs-variable">$</span> php <span class="hljs-literal">-v</span><br>PHP <span class="hljs-number">7.2</span>.<span class="hljs-number">14</span> (<span class="hljs-built_in">cli</span>) (built: Jan <span class="hljs-number">28</span> <span class="hljs-number">2019</span> <span class="hljs-number">23</span>:<span class="hljs-number">20</span>:<span class="hljs-number">43</span>) ( NTS )<br>Copyright (c) <span class="hljs-number">1997</span><span class="hljs-literal">-2018</span> The PHP <span class="hljs-built_in">Group</span><br>Zend Engine v3.<span class="hljs-number">2.0</span>, Copyright (c) <span class="hljs-number">1998</span><span class="hljs-literal">-2018</span> Zend Technologies<br></code></pre></td></tr></table></figure>
+<p>可以看到php 7.2.14已经安装成功了。</p>
+<h3 id="3-2-修改配置文件"><a href="#3-2-修改配置文件" class="headerlink" title="3.2 修改配置文件"></a>3.2 修改配置文件</h3><p>首先修改php-fpm的配置文件。</p>
+<p>phpbrew的默认安装目录是在用户家目录下的<code>.phpbrew</code>文件夹中。</p>
+<p>首先修改php-fpm的配置文件，在我电脑上，也就是<code>/Users/mengchen/.phpbrew/php/php-7.2.14/etc</code>。</p>
+<p>打开<code>php-fpm.d</code>目录下的<code>www.conf</code>配置文件。对其做以下修改</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">为了避免一些权限问题，我直接使用当前用户来启用php-fpm。<br>;<span class="hljs-keyword">user</span> <span class="hljs-title">= nobody</span><br>;<span class="hljs-keyword">group</span> <span class="hljs-title">= nobody</span><br>listen = <span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">9000</span><br></code></pre></td></tr></table></figure>
+<p>启动php-fpm</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">phpbrew fpm <span class="hljs-literal">start</span><br></code></pre></td></tr></table></figure>
+<p>接下来修改Nginx配置文件，路径<code>/usr/local/etc/nginx/nginx.conf</code></p>
+<p>在这里，我把我的web目录放到了<code>/Users/mengchen/www</code>下，Nginx监听端口修改为80端口。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-section">server</span> &#123;<br>    <span class="hljs-attribute">listen</span>       <span class="hljs-number">80</span>;<br>    <span class="hljs-attribute">server_name</span>  localhost;<br><br>    <span class="hljs-attribute">location</span> / &#123;<br>        <span class="hljs-attribute">root</span>   /Users/mengchen/www;<br>        <span class="hljs-attribute">index</span>  index.html index.htm index.php;<br>    &#125;<br>    <span class="hljs-attribute">error_page</span>   <span class="hljs-number">500</span> <span class="hljs-number">502</span> <span class="hljs-number">503</span> <span class="hljs-number">504</span>  /50x.html;<br>    <span class="hljs-attribute">location</span> = /50x.html &#123;<br>        <span class="hljs-attribute">root</span>   html;<br>    &#125;<br>    <span class="hljs-attribute">location</span> <span class="hljs-regexp">~ \.php$</span> &#123;<br>        <span class="hljs-attribute">root</span>           html;<br>        <span class="hljs-attribute">fastcgi_pass</span>   <span class="hljs-number">127.0.0.1:9000</span>;<br>        <span class="hljs-attribute">fastcgi_index</span>  index.php;<br>        <span class="hljs-attribute">fastcgi_param</span>  SCRIPT_FILENAME  /Users/mengchen/www$fastcgi_script_name;<br>        <span class="hljs-attribute">include</span>        fastcgi_params;<br>    &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>Nginx检查配置文件，然后重新加载配置文件</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs gradle">$ sudo nginx -t<br>nginx: the configuration <span class="hljs-keyword">file</span> <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/etc/</span>nginx/nginx.conf syntax is ok<br>nginx: configuration <span class="hljs-keyword">file</span> <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/etc/</span>nginx/nginx.conf test is successful<br>$ sudo nginx -s reload<br></code></pre></td></tr></table></figure>
+<p>在Web目录下创建<code>index.php</code>文件来做测试</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>	system(<span class="hljs-string">&#x27;whoami&#x27;</span>);<br>	phpinfo();<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<p>直接访问<code>http://localhost/index.php</code></p>
+<p><img src="https://image.mengsec.com/phpbrew+nginx/1.png" srcset="/img/loading.gif" alt="1"></p>
+<p>为了安全性，可以只允许本机来访问Nginx，本来就是本地开发环境，影响不大。</p>
+<p>也可以使用Apache来代替Nginx，配置文件不太一样，不过本质都是使用FPM来进行通信，在此就不详细列了。</p>
+<h3 id="3-3-php版本切换脚本"><a href="#3-3-php版本切换脚本" class="headerlink" title="3.3 php版本切换脚本"></a>3.3 php版本切换脚本</h3><p>所有的<code>php-fpm</code>都配置的是监听<code>127.0.0.1:9000</code>，因此不需要对Nginx进行修改，直接修改当前php-fpm版本即可实现<code>php</code>的版本切换。</p>
+<p>写一个<code>shell</code>函数，保存在<code>~/.phpbrew/phpchange</code>文件下。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">function</span> phpchange()&#123;<br>        <span class="hljs-attribute">phpbrew</span> fpm stop;<br>        <span class="hljs-attribute">phpbrew</span> switch <span class="hljs-variable">$&#123;1&#125;</span>;<br>        <span class="hljs-attribute">phpbrew</span> fpm start;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>然后在<code>~/zshrc</code>文件末尾添加</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><span class="hljs-keyword">source</span> ~<span class="hljs-regexp">/.phpbrew/</span>phpchange<br></code></pre></td></tr></table></figure>
+<p>然后就可以直接在<code>shell</code>里面切换<code>php</code>版本了。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">phpchange</span> <span class="hljs-number">5</span>.<span class="hljs-number">6</span>.<span class="hljs-number">40</span><br></code></pre></td></tr></table></figure>
+<p>此时访问index.php，版本成功切换到了<code>php 5.6.40</code>。</p>
+<p><img src="https://image.mengsec.com/phpbrew+nginx/2.png" srcset="/img/loading.gif" alt="2"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%8A%98%E8%85%BE/">折腾</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/02/24/code-breaking/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">代码审计 Code-Breaking 做题记录</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/12/04/2018-5-18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/">
+                        <span class="hidden-mobile">2018-5-18-铁人三项赛数据赛数据包分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

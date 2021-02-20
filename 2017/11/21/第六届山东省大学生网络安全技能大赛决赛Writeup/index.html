@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>第六届山东省大学生网络安全技能大赛决赛Writeup - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="第六届山东省大学生网络安全技能大赛决赛Writeup">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2017-11-21 18:47" pubdate>
+        2017年11月21日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      31
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">第六届山东省大学生网络安全技能大赛决赛Writeup</h1>
+            
+            <div class="markdown-body">
+              <p>技能题部分难度不是很高，但是靶场挺难的，总的来说学到了不少东西</p>
+<a id="more"></a>
+
+<h2 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h2><h3 id="0x01-RSA1"><a href="#0x01-RSA1" class="headerlink" title="0x01 RSA1"></a>0x01 RSA1</h3><p>首先使用python脚本或者openssl解出n</p>
+<p>python脚本<br>​    </p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs processing">from Crypto.PublicKey <span class="hljs-keyword">import</span> RSA<br>pub = RSA.importKey(<span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;pub.key&#x27;</span>).read())<br>n = <span class="hljs-keyword">long</span>(pub.n)<br>e = <span class="hljs-keyword">long</span>(pub.e)<br><span class="hljs-built_in">print</span> <span class="hljs-string">&#x27;n:&#x27;</span>,n<br><span class="hljs-built_in">print</span> <span class="hljs-string">&#x27;e:&#x27;</span>,e<br><span class="hljs-built_in">print</span> <span class="hljs-string">&#x27;n(hex):&#x27;</span>,<span class="hljs-built_in">hex</span>(n)<br><span class="hljs-built_in">print</span> <span class="hljs-string">&#x27;e(hex):&#x27;</span>,<span class="hljs-built_in">hex</span>(e)<br></code></pre></td></tr></table></figure>
+<p>openssl命令</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs maxima">openssl rsa -<span class="hljs-keyword">in</span> pub.<span class="hljs-built_in">key</span> -pubin -<span class="hljs-built_in">modulus</span> -text<br></code></pre></td></tr></table></figure>
+<p>然后通过工具yafu将n进行大数分解获得p和q,然后使用脚本生成私钥</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><span class="hljs-keyword">import</span> math<br><span class="hljs-keyword">import</span> sys<br><span class="hljs-keyword">from</span> Crypto.PublicKey <span class="hljs-keyword">import</span> RSA<br><br>keypair = RSA.generate(<span class="hljs-number">1024</span>)<br><br>keypair.p = <span class="hljs-number">250527704258269</span><br>keypair.q = <span class="hljs-number">74891071972884336452892671945839935839027130680745292701175368094445819328761543101567760612778187287503041052186054409602799660254304070752542327616415127619185118484301676127655806327719998855075907042722072624352495417865982621374198943186383488123852345021090112675763096388320624127451586578874243946255833495297552979177208715296225146999614483257176865867572412311362252398105201644557511678179053171328641678681062496129308882700731534684329411768904920421185529144505494827908706070460177001921614692189821267467546120600239688527687872217881231173729468019623441005792563703237475678063375349</span><br>keypair.e = <span class="hljs-number">65537</span><br><br>keypair.n = keypair.p * keypair.q<br>Qn = <span class="hljs-keyword">long</span>((keypair.p-<span class="hljs-number">1</span>) * (keypair.q-<span class="hljs-number">1</span>))<br><br>i = <span class="hljs-number">1</span><br><span class="hljs-keyword">while</span> (<span class="hljs-keyword">True</span>):<br>    x = (Qn * i ) + <span class="hljs-number">1</span><br>    <span class="hljs-keyword">if</span> (x % keypair.e == <span class="hljs-number">0</span>):<br>        keypair.d = x / keypair.e<br>        <span class="hljs-keyword">break</span><br>    i += <span class="hljs-number">1</span><br><br><span class="hljs-keyword">private</span> = open(<span class="hljs-string">&#x27;private.pem&#x27;</span>,<span class="hljs-string">&#x27;w&#x27;</span>)<br><span class="hljs-keyword">private</span>.<span class="hljs-keyword">write</span>(keypair.exportKey())<br><span class="hljs-keyword">private</span>.close()<br></code></pre></td></tr></table></figure>
+<p>最后使用脚本或者openssl解密</p>
+<p>脚本</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs stylus">import rsa<br>prifile = open(<span class="hljs-string">&#x27;private.pem&#x27;</span>)<br><span class="hljs-selector-tag">p</span> = prifile<span class="hljs-selector-class">.read</span>()<br>privkey = rsa<span class="hljs-selector-class">.PrivateKey</span><span class="hljs-selector-class">.load_pkcs1</span>(p)<br>crypto = open(<span class="hljs-string">&#x27;enc1&#x27;</span>)<span class="hljs-selector-class">.read</span>()<br>message = rsa<span class="hljs-selector-class">.decrypt</span>(crypto, privkey)<br>print message<br></code></pre></td></tr></table></figure>
+<p>命令</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">openssl</span> rsautl -decrypt -in enc<span class="hljs-number">1</span> -inkey <span class="hljs-number">6</span>.key -out flag.txt <br></code></pre></td></tr></table></figure>
+<h3 id="0x02-RSA2"><a href="#0x02-RSA2" class="headerlink" title="0x02 RSA2"></a>0x02 RSA2</h3><p>给了两个n,而且e都一样，可以利用欧几里得算法求它们两个的最大公约数</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">def gcd(<span class="hljs-keyword">a</span>, b):<br>	<span class="hljs-keyword">if</span>(<span class="hljs-keyword">a</span> &lt; b):<br>		<span class="hljs-keyword">a</span>, b = b, <span class="hljs-keyword">a</span><br>	<span class="hljs-keyword">while</span> b != <span class="hljs-number">0</span>:<br>		temp = <span class="hljs-keyword">a</span> % b<br>		<span class="hljs-keyword">a</span> = b<br>		b = temp<br>	<span class="hljs-literal">return</span> <span class="hljs-keyword">a</span><br></code></pre></td></tr></table></figure>
+<p>分解后获得p,然后利用n=p*q获得q。</p>
+<p>已知了p、q、e,使用工具生成私钥，将给的数据利用python的m.decode(‘hex’)或者winhex写入到文件，然后解密即可，方法同RSA1</p>
+<h3 id="0x03-仿射加密"><a href="#0x03-仿射加密" class="headerlink" title="0x03 仿射加密"></a>0x03 仿射加密</h3><p>题目描述<br>​<br>​    已知仿射加密变换为c=（11m+7）mod26，试对密文dikxourxd解密</p>
+<p>解密python脚本</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs perl"><span class="hljs-comment">#coding:utf-8</span><br>m = <span class="hljs-string">&#x27;dikxourxd&#x27;</span><br>strs = <span class="hljs-string">&#x27;abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ&#x27;</span><br>flag = <span class="hljs-string">&#x27;&#x27;</span><br><span class="hljs-keyword">for</span> c in m:<br>	<span class="hljs-keyword">for</span> i in strs:<br>		<span class="hljs-keyword">if</span> ((<span class="hljs-number">11</span>*(<span class="hljs-keyword">ord</span>(i)-<span class="hljs-number">97</span>)+<span class="hljs-number">7</span>)%26) == (<span class="hljs-keyword">ord</span>(c)-<span class="hljs-number">97</span>):<br>			flag += i<br>			<span class="hljs-keyword">break</span><br><span class="hljs-keyword">print</span>(flag)<br></code></pre></td></tr></table></figure>
+<h3 id="0x04-小明的密码"><a href="#0x04-小明的密码" class="headerlink" title="0x04 小明的密码"></a>0x04 小明的密码</h3><pre><code>97年出生的小明用自己的生日作为自己网站的密码，
+现在，得到一串被篡改过一个字符的字符串，你能解出小明的生日吗？
+0175501585710a89h5a60dc9ed2f88d7
+</code></pre>
+<p>根据MD5的生成原理，可以发现被篡改的字符为中间的”h”，是小明的生日，那么为6位或者8位数字，脚本爆破即可</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">import</span> hashlib<br><span class="hljs-attribute">for</span> m in range(<span class="hljs-number">1</span>,<span class="hljs-number">13</span>):<br>	<span class="hljs-attribute">for</span> d in range(<span class="hljs-number">1</span>,<span class="hljs-number">33</span>):<br>		<span class="hljs-attribute">t</span> = &#x27;<span class="hljs-number">1997</span>&#x27;+str(m).zfill(<span class="hljs-number">2</span>)+str(d).zfill(<span class="hljs-number">2</span>)<br>		<span class="hljs-attribute">md5</span> = hashlib.md<span class="hljs-number">5</span>(t).hexdigest()<br>		<span class="hljs-attribute">if</span> md<span class="hljs-number">5</span>[:<span class="hljs-number">16</span>] == &#x27;<span class="hljs-number">0175501585710</span>a<span class="hljs-number">89</span>&#x27;:<br>			<span class="hljs-attribute">print</span> t<br></code></pre></td></tr></table></figure>
+<h2 id="Forensic"><a href="#Forensic" class="headerlink" title="Forensic"></a>Forensic</h2><h3 id="0x01-Web漏洞"><a href="#0x01-Web漏洞" class="headerlink" title="0x01 Web漏洞"></a>0x01 Web漏洞</h3><p>使用Apache Logs Viewer打开给的日志文件进行分析，发现进行了一个SQL盲注的过程</p>
+<p><img src="https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Web%E6%BC%8F%E6%B4%9E_1.png" srcset="/img/loading.gif"></p>
+<p>可以将整个注入过程的日志进行url解码后手工分析，可以发现在<br>​<br>​    26/Oct/2017:05:39:41<br>开始通过盲注来获得dvwa.flag的数据<br>比如<br>​<br>​    ?id=123’ AND (SELECT * FROM (SELECT(SLEEP(5-(IF(ORD(MID((SELECT IFNULL(CAST(COUNT(*) AS CHAR),0x20) FROM dvwa.flag),1,1))!=49,0,5)))))sbAQ)<br>通过该语句可判断flag第一个字符的ASCII值为49，类比着向下分析即可，最后将获得的所有ASCII转为字符拼接起来即可获得flag</p>
+<pre><code>102 108 97 103 123 51 50 56 55 102 101 51 48 48 102 50 56 101 50 52 97 101 102 97 50 100 56 54 56 56 51 56 51 50 99 57 102 125
+</code></pre>
+<p>也可以使用python脚本进行分析</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs stylus">import re<br>f = open(<span class="hljs-string">&quot;access.log&quot;</span>)<br>sqli = <span class="hljs-selector-attr">[]</span><br><span class="hljs-keyword">for</span> <span class="hljs-selector-tag">i</span> <span class="hljs-keyword">in</span> f:<br>	<span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;FROM dvwa.flag ORDER BY flag&#x27;</span> <span class="hljs-keyword">in</span> <span class="hljs-selector-tag">i</span>:<br>		sqli<span class="hljs-selector-class">.append</span>(i)<br>f<span class="hljs-selector-class">.close</span>()<br>flag = <span class="hljs-string">&#x27;&#x27;</span><br><span class="hljs-keyword">for</span> <span class="hljs-selector-tag">i</span> <span class="hljs-keyword">in</span> range(len(sqli)):<br>	char = re<span class="hljs-selector-class">.findall</span>(<span class="hljs-string">&#x27;\)\)!=(\d+),0,1\)\)&#x27;</span>, sqli<span class="hljs-selector-attr">[i]</span>)<br>	<span class="hljs-keyword">if</span> char:<br>	flag += chr(int(char<span class="hljs-selector-attr">[0]</span>))<br>print flag<br></code></pre></td></tr></table></figure>
+<h3 id="0x02-磁盘镜像、"><a href="#0x02-磁盘镜像、" class="headerlink" title="0x02 磁盘镜像、"></a>0x02 磁盘镜像、</h3><p>在linux中直接挂载镜像即可<br><img src="https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E7%A3%81%E7%9B%98%E9%95%9C%E5%83%8F_1.png" srcset="/img/loading.gif"></p>
+<p>也可以用命令，Mac本可以直接打开 = = </p>
+<h3 id="0x03-黑客的机密信息"><a href="#0x03-黑客的机密信息" class="headerlink" title="0x03 黑客的机密信息"></a>0x03 黑客的机密信息</h3><p>找的Webshell的流量，可以知道是用菜刀进行的管理，由于菜刀的命令是使用base64进行传输的，直接搜索字符串”flag”的base64值”ZmxhZw==”</p>
+<pre><code>http contains &quot;ZmxhZ3&quot;
+</code></pre>
+<p><img src="https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E9%BB%91%E5%AE%A2%E7%9A%84%E6%9C%BA%E5%AF%86%E4%BF%A1%E6%81%AF_1.png" srcset="/img/loading.gif"></p>
+<p>将找到的命令进行解码即可获得flag</p>
+<h3 id="0x04-远控木马"><a href="#0x04-远控木马" class="headerlink" title="0x04 远控木马"></a>0x04 远控木马</h3><p>这题要的是木马的控制端的IP以及端口号，木马运行后肯定会向控制端发送信息，将木马运行后使用Wireshark抓包即可</p>
+<p>最后可获得flag</p>
+<pre><code>flag&#123;192.168.233.222:9099&#125;
+</code></pre>
+<h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><h3 id="0x01-base家族"><a href="#0x01-base家族" class="headerlink" title="0x01 base家族"></a>0x01 base家族</h3><p>base混合加密呗，直接上脚本爆破</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs vim">import base64<br><span class="hljs-keyword">file</span> = <span class="hljs-keyword">open</span>(<span class="hljs-string">&#x27;base.txt&#x27;</span>,<span class="hljs-string">&#x27;r&#x27;</span>)<br><span class="hljs-keyword">st</span> = <span class="hljs-keyword">file</span>.<span class="hljs-keyword">read</span>()<br><span class="hljs-keyword">while</span> True:<br>	<span class="hljs-keyword">try</span>:<br>		<span class="hljs-keyword">st</span> = base64.b16decode(<span class="hljs-keyword">st</span>)<br>	excep<span class="hljs-variable">t:</span><br>		<span class="hljs-keyword">try</span>:<br>			<span class="hljs-keyword">st</span> = base64.b32decode(<span class="hljs-keyword">st</span>)<br>		excep<span class="hljs-variable">t:</span><br>			<span class="hljs-keyword">st</span> = base64.b64decode(<span class="hljs-keyword">st</span>)<br>	<span class="hljs-keyword">if</span>(<span class="hljs-keyword">st</span>.<span class="hljs-keyword">find</span>(<span class="hljs-string">&#x27;flag&#x27;</span>) == <span class="hljs-number">0</span>):<br>		<span class="hljs-keyword">print</span>(<span class="hljs-keyword">st</span>)<br></code></pre></td></tr></table></figure>
+<h3 id="0x02-人生苦短"><a href="#0x02-人生苦短" class="headerlink" title="0x02 人生苦短"></a>0x02 人生苦短</h3><p>使用Wireshark提取数据包里的文件</p>
+<pre><code>文件-导出对象-HTTP
+</code></pre>
+<p>发现存在flagaa,flagab,flagac,flagad,flagae,flagaf文件</p>
+<p><img src="https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E4%BA%BA%E7%94%9F%E8%8B%A6%E7%9F%AD_1.png" srcset="/img/loading.gif"></p>
+<p>提取出来使用Winhex打开，发现flagaa的文件头是PK,猜测是被分割的压缩包，使用Winhex的文件合并工具，将其合并</p>
+<p><img src="https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E4%BA%BA%E7%94%9F%E8%8B%A6%E7%9F%AD_2.jpg" srcset="/img/loading.gif"></p>
+<p>然后解伪加密即可获得flag</p>
+<h3 id="0x03-神奇的图片"><a href="#0x03-神奇的图片" class="headerlink" title="0x03 神奇的图片"></a>0x03 神奇的图片</h3><p>根据图片名称”xor”,可知是异或，写脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python">f = <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;flag.png&#x27;</span>)<br>enc = f.read()<br>f.close()<br>f = <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;xor.png&#x27;</span>)<br>xor = f.read()<br>f.close()<br>s = <span class="hljs-string">r&#x27;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!&quot;$\&#x27;()*+,-./:;&lt;=&gt;?@[\\]^`&#123;|&#125;~\&#x27;&quot;_%&#x27;</span><br>flag = <span class="hljs-string">&#x27;&#x27;</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">100</span>):<br>	<span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> s:<br>		<span class="hljs-keyword">if</span> <span class="hljs-built_in">ord</span>(xor[i]) ^ <span class="hljs-built_in">ord</span>(c) == <span class="hljs-built_in">ord</span>(enc[i]):<br>		flag += c<br>		<span class="hljs-built_in">print</span> flag<br></code></pre></td></tr></table></figure>
+<h3 id="0x04-颜文字"><a href="#0x04-颜文字" class="headerlink" title="0x04 颜文字"></a>0x04 颜文字</h3><p>直接拖到文件最后，找的那串颜文字，扔到浏览器的控制台里运行一下即可获得flag</p>
+<h2 id="Stego"><a href="#Stego" class="headerlink" title="Stego"></a>Stego</h2><h3 id="0x01-gakki"><a href="#0x01-gakki" class="headerlink" title="0x01 gakki"></a>0x01 gakki</h3><p>隐藏了图片的下半部分，使用UE或者Winhex修改图片头中长宽的大小即可。</p>
+<p>如图，将所示位置的03 1E改为06 1E即可</p>
+<p><img src="https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_gakki_1.png" srcset="/img/loading.gif"></p>
+<h3 id="0x02-hacker"><a href="#0x02-hacker" class="headerlink" title="0x02 hacker"></a>0x02 hacker</h3><p>使用Stegsolve打开图片，在Blue plane 0时获得一个二维码，扫描一下即可获得flag</p>
+<h3 id="0x03-神奇的二维码"><a href="#0x03-神奇的二维码" class="headerlink" title="0x03 神奇的二维码"></a>0x03 神奇的二维码</h3><p>直接打开flag.txt，给了一堆坐标，很明显是图片像素的RGB值，使用脚本将图片画出来,将文件拉到末尾可知有78400个点，开根号后为280，即图片的边长。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment">#!/usr/bin/env python</span><br><span class="hljs-attribute">from</span> PIL import Image<br><span class="hljs-attribute">MAX</span> = <span class="hljs-number">280</span><br><span class="hljs-attribute">pic</span> = Image.new(<span class="hljs-string">&quot;RGB&quot;</span>,(MAX, MAX))<br><span class="hljs-attribute">file</span> = open(<span class="hljs-string">&quot;flag.txt&quot;</span>,&#x27;r&#x27;)<br><span class="hljs-attribute">m</span> = file.read().split(&#x27;\n&#x27;)<br><span class="hljs-attribute">i</span>=<span class="hljs-number">0</span><br><span class="hljs-attribute">for</span> y in range (<span class="hljs-number">0</span>,MAX):<br>    <span class="hljs-attribute">for</span> x in range (<span class="hljs-number">0</span>,MAX):<br>        <span class="hljs-attribute">if</span>(m[i] == &#x27;(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>)&#x27;):<br>            <span class="hljs-attribute">pic</span>.putpixel([x,y],(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>))<br>        <span class="hljs-attribute">else</span>:<br>            <span class="hljs-attribute">pic</span>.putpixel([x,y],(<span class="hljs-number">255</span>,<span class="hljs-number">255</span>,<span class="hljs-number">255</span>))<br>        <span class="hljs-attribute">i</span> = i+<span class="hljs-number">1</span><br><span class="hljs-attribute">pic</span>.show()<br><span class="hljs-attribute">pic</span>.save(<span class="hljs-string">&quot;flag.png&quot;</span>)<br></code></pre></td></tr></table></figure>
+<p>扫一下二维码获得一个字符串<br>​<br>​    ONYXE6LSIVXF6ZTUOZTXWRRRIRPWCZLWORIGCLJQG56Q====</p>
+<p>base32解码</p>
+<pre><code>sqryrEn_ftvg&#123;F1D_aevtPa-07&#125;
+</code></pre>
+<p>看格式应该是有栅栏加密，使用工具</p>
+<p><img src="https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_%E7%A5%9E%E5%A5%87%E7%9A%84%E4%BA%8C%E7%BB%B4%E7%A0%81_1.png" srcset="/img/loading.gif"></p>
+<p>根据flag的格式为flag{},猜测第三栏是正确的，然后进行凯撒解密</p>
+<pre><code>第3栏synt&#123;DeP0qr_vF_va7rEfg1at-&#125;
+</code></pre>
+<p>脚本如下</p>
+<pre><code>message = &#39;synt&#123;DeP0qr_vF_va7rEfg1at-&#125;&#39;
+
+LETTERS = &#39;ABCDEFGHIJKLMNOPQRSTUVWXYZ&#39;
+letters = &#39;abcdefghijklmnopqrstuvwxyz&#39;
+
+for key in range(len(LETTERS)):
+    tran = &#39;&#39;
+    for i in message:
+        if i in LETTERS:
+            num = LETTERS.find(i)
+            num = num - key
+            if num &lt; 0:
+                num = num + len(LETTERS)
+            tran = tran + LETTERS[num]
+        elif i in letters:
+            num = letters.find(i)
+            num = num - key
+            if num &lt; 0:
+                num = num + len(letters)
+            tran = tran + letters[num]
+        else:
+            tran = tran + i
+    print(&#39;key = %s: %s&#39; % (key, tran))
+</code></pre>
+<p>flag为</p>
+<pre><code>key = 13: flag&#123;QrC0de_iS_in7eRst1ng-&#125;
+</code></pre>
+<h2 id="Reverse"><a href="#Reverse" class="headerlink" title="Reverse"></a>Reverse</h2><h3 id="0x01-时光机"><a href="#0x01-时光机" class="headerlink" title="0x01 时光机"></a>0x01 时光机</h3><p>很容易就可以找到关键代码</p>
+<p><img src="https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Re_1.png" srcset="/img/loading.gif"></p>
+<p>只有当程序运行200000秒后才会出flag..<br>我们可以看到flag只与k有关。</p>
+<p>从200000到0的每一秒都进入is2函数，如果为true, k+=100,否则k–<br>当beg与now相等时，k在stringFromJNI2函数中经过一系列计算后返回flag<br>但是看stringFromJNI2函数时发现特别麻烦…<br>所以我们的思路为:</p>
+<ol>
+<li>   写代码实现k的计算过程,求出k。</li>
+<li>   在mainactivity中将k的计算过程删去，直接赋值我们求出来的k。</li>
+<li>   更改程序的流程，直接出flag。</li>
+</ol>
+<p>求k的脚本如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">k</span>=<span class="hljs-number">0</span><br><span class="hljs-attribute">flag</span>=<span class="hljs-number">0</span><br><span class="hljs-attribute">for</span> i in xrange(<span class="hljs-number">200000</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">1</span>):<br>   	<span class="hljs-attribute">flag</span>=<span class="hljs-number">0</span><br>   	<span class="hljs-attribute">if</span> i&gt;<span class="hljs-number">3</span>:<br>   	    <span class="hljs-attribute">if</span> i%<span class="hljs-number">2</span>!=<span class="hljs-number">0</span> and i %<span class="hljs-number">3</span>!=<span class="hljs-number">0</span>:<br>   	        <span class="hljs-attribute">v0</span>=<span class="hljs-number">5</span><br>		<span class="hljs-attribute">while</span> <span class="hljs-number">1</span>:       	    <br>      	        <span class="hljs-attribute">if</span> v<span class="hljs-number">0</span>*v<span class="hljs-number">0</span>&lt;=i:<br>      	            <span class="hljs-attribute">if</span> i%v<span class="hljs-number">0</span>!=<span class="hljs-number">0</span> and i%(v<span class="hljs-number">0</span>+<span class="hljs-number">2</span>)!=<span class="hljs-number">0</span>:<br>      	                <span class="hljs-attribute">v0</span>+=<span class="hljs-number">6</span><br>      	            <span class="hljs-attribute">else</span>:<br>      	                <span class="hljs-attribute">k</span>-=<span class="hljs-number">1</span><br>      	                <span class="hljs-attribute">break</span><br>      	        <span class="hljs-attribute">else</span>:<br>      	            <span class="hljs-attribute">k</span>+=<span class="hljs-number">100</span><br>      	            <span class="hljs-attribute">flag</span>=<span class="hljs-number">1</span><br>      	            <span class="hljs-attribute">break</span><br>      	<span class="hljs-attribute">else</span>:<br>      	<br>      	    <span class="hljs-attribute">k</span>-=<span class="hljs-number">1</span><br>  	<span class="hljs-attribute">elif</span> i==<span class="hljs-number">1</span>:<br>      	<span class="hljs-attribute">k</span>-=<span class="hljs-number">1</span><br>  	<span class="hljs-attribute">else</span>:<br>      	<span class="hljs-attribute">k</span>+=<span class="hljs-number">100</span><br>     <br>  <span class="hljs-attribute">print</span> k<br></code></pre></td></tr></table></figure>
+<p>直接赋值k的smali语句</p>
+<p><img src="https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Re_2.png" srcset="/img/loading.gif"></p>
+<h2 id="靶场"><a href="#靶场" class="headerlink" title="靶场"></a>靶场</h2><h3 id="0x01-黄铜2-LFI-Web"><a href="#0x01-黄铜2-LFI-Web" class="headerlink" title="0x01 黄铜2 LFI(Web)"></a>0x01 黄铜2 LFI(Web)</h3><p>测试poj=index<br>无限循环包含index.php，可判断后台会自动拼接.php</p>
+<p>于是<br>​<br>​    ?poj=php://filter/read=convert.base64-encode/resource=index</p>
+<p>可用来读取源码</p>
+<p>然后利用phar伪协议或zip伪协议包含上传的文件，可拿到权限</p>
+<h3 id="0x02-白银1-yes-you-see-it-Web"><a href="#0x02-白银1-yes-you-see-it-Web" class="headerlink" title="0x02 白银1 yes you see it (Web)"></a>0x02 白银1 yes you see it (Web)</h3><p>source.tar.gz 源码泄露<br>反序列化 对象注⼊</p>
+<pre><code>flag&#123;9kWIS4kcx066vD7p&#125;
+</code></pre>
+<h3 id="0x03-Pwn1"><a href="#0x03-Pwn1" class="headerlink" title="0x03 Pwn1"></a>0x03 Pwn1</h3><p>可以看到为格式化字符串漏洞，通过格式化字符串实现任意地址写从而更改key的值</p>
+<p><img src="https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Pwn_1.png" srcset="/img/loading.gif"></p>
+<p>我们先用%x来查找字符串的偏移值（偏移值既字符串在栈中的位置距调用printf函数时当前栈的距离，可以通过gdb直接查看）</p>
+<p><img src="https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Pwn_2.png" srcset="/img/loading.gif"></p>
+<p>可以看到当输入为12个%x时，正好输出aaaa，所以偏移值为12</p>
+<p>下面我们构造格式化字符串<br>可以通过使用%nx(n为任意长度的十进制数字)来控制字符串长度，字符串长度为len(address)+n,通过将长度写入到偏移地址中来进行对任意地址进行任意读写。<br>注意$n是更改两位，$hn更改四位</p>
+<p><img src="https://image.mengsec.com/%E7%AC%AC%E5%85%AD%E5%B1%8A%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9C%81%E8%B5%9B%E5%86%B3%E8%B5%9B_Pwn_3.png" srcset="/img/loading.gif"></p>
+<p>如上我们就更改了最右边的两位为0x22<br>同理，构造本题的exp为</p>
+<pre><code>\x30\xa0\x04\x08\x31\xa0\x04\x08\x32\xa0\x04\x08%22x%12\$n%17x%13\$n%495x%14\$hn
+</code></pre>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/CTF/">CTF</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Writeup/">Writeup</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2017/11/25/Typecho-v1-1-%E5%89%8D%E5%8F%B0Getshell%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Typecho v1.1 前台Getshell漏洞分析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017/10/10/%E5%90%88%E5%A4%A9Web%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86%E9%A2%98%E7%9B%AEWriteup/">
+                        <span class="hidden-mobile">合天Web进阶部分题目Writeup</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

